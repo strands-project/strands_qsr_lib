@@ -1,0 +1,47 @@
+QSR_Lib
+=======
+
+Can be run as python standalone, as well as a ROS server is provided with an example client.
+
+Notes for users
+----------------
+1) Running it as python standalone
+Just run the example.py in the $STRANDS_QSR_LIB/qsr_lib/scripts/standalone
+
+2) Running it via ROS
+$ rosrun qsr_lib qsr_lib_ros_server.py
+
+example client:
+$ rosrun qsr_lib qsr_lib_ros_client.py
+
+
+Notes for QSR developers
+------------------------
+You need to change two files:
+
+1) Make a copy of
+$STRANDS_QSR_LIB/qsr_lib/scripts/standalone/makers/maker_qsr_rcc3_rectangle_bounding_boxes_2d.py
+rename it to something suitable (preferably keepung maker_qsr prefix) and edit that file.
+
+Change the 3 attribute variables:
+- self.qsr_type : is a string
+- self.required_fields : list of strings, what type and order of input data the QSR requires
+- self.all_possible_relations : list of string, what QSRs it provides
+
+Change the method:
+- make : see in the code for where to start and finish your code
+
+Optionally change the following also:
+- custom_help
+- custom_checks
+
+2) Edit qsrlib.py in $STRANDS_QSR_LIB/qsr_lib/scripts/standalone/
+a) import your new QSR class
+b) Append to the dictionary (self.__const_qsrs_available) of the QSR_Lib class an appropriate entry for your new QSR using as key the same string you have assigned to YOUR_QSR_CLASS.qsr_type and as value the class name WITHOUT parentheses in the end
+
+
+That's it!
+For any trouble preferably  a ticket via the github system or alternatively if you are unable to do so contact me directly in the email address y.gatsoulis@leeds.ac.uk
+
+Cheers!
+Yianni

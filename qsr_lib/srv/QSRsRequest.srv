@@ -1,0 +1,6 @@
+Header header
+ManyObjectsData input_data
+string which_qsr
+bool reset
+---
+QSRs data
