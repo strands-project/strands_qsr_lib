@@ -23,8 +23,8 @@ if __name__ == "__main__":
     # qsrlib object
     qsrlib = QSR_Lib()
     # make a qsr request
-    out, timestamp_request_received = qsrlib.request(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
+    out = qsrlib.request(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
     # print the timestamps, ids and qsrs
-    print("Request was received at", timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
+    print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
     print("Objects:", out.ids)
     print("QSRs:", out.data)
