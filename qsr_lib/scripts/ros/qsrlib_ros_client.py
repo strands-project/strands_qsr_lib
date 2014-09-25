@@ -1,4 +1,14 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""QSRlib ROS client sample.
+
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Organization: University of Leeds
+:Date: 22 September 2014
+:Version: 0.1
+:Status: Development
+:Copyright: STRANDS default
+"""
 
 from __future__ import print_function, division
 from docutils.nodes import description
@@ -17,7 +27,7 @@ if add_folder not in sys.path:
     sys.path.insert(0, add_folder)
 from input_data import Input_Data_Block, Input_Data_One
 
-class QSR_Lib_ROS_Client(object):
+class QSRlib_ROS_Client(object):
     def __init__(self, service_node_name="qsr_lib"):
         self.client_node = rospy.init_node("qsr_lib_ros_client_example")  # needed for rospy.get_rostime() in the request method
         self.service_topic_names = {"request": service_node_name+"/request"}
@@ -25,7 +35,7 @@ class QSR_Lib_ROS_Client(object):
         rospy.wait_for_service(self.service_topic_names["request"])
         print("\tdone")
 
-    def cln_qsrs_request(self, req):
+    def request_qsrs(self, req):
         print("Requesting QSRs...")
         try:
             proxy = rospy.ServiceProxy(self.service_topic_names["request"], QSRsRequest)
@@ -66,14 +76,14 @@ class QSR_Lib_ROS_Client(object):
 
 
 if __name__ == "__main__":
-    cln = QSR_Lib_ROS_Client()
+    cln = QSRlib_ROS_Client()
     input_data = Input_Data_Block(data=[Input_Data_One("1", [1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0]),
                                         Input_Data_One("2", [11.0, 11.0, 22.0, 22.0, 1.5, 1.5, 22.0, 22.0, 1.5, 1.5, 1.5, 1.5])],
                                   fields=["x1", "y1", "x2", "y2"],
                                   timesteps=3,
                                   description="some 2d bounding boxes")
     req = cln.make_request_message(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
-    res = cln.cln_qsrs_request(req)
+    res = cln.request_qsrs(req)
     print("--------------")
     print("Response is:")
     print(res)

@@ -9,10 +9,11 @@ Notes for users
 Just run the example.py in the $STRANDS_QSR_LIB/qsr_lib/scripts/standalone
 
 2) Running it via ROS
-$ rosrun qsr_lib qsr_lib_ros_server.py
+$ rosrun qsr_lib qsrlib_ros_server.py
 
 example client:
-$ rosrun qsr_lib qsr_lib_ros_client.py
+$ rosrun qsr_lib example_using_builtin_ros_client.py
+see qsrlib_ros_client.py for more details
 
 
 Notes for QSR developers
@@ -37,7 +38,7 @@ Optionally change the following also:
 
 2) Edit qsrlib.py in $STRANDS_QSR_LIB/qsr_lib/scripts/standalone/
 a) import your new QSR class
-b) Append to the dictionary (self.__const_qsrs_available) of the QSR_Lib class an appropriate entry for your new QSR using as key the same string you have assigned to YOUR_QSR_CLASS.qsr_type and as value the class name WITHOUT parentheses in the end
+b) Append to the dictionary (self.__const_qsrs_available) of the QSRlib class an appropriate entry for your new QSR using as key the same string you have assigned to YOUR_QSR_CLASS.qsr_type and as value the class name WITHOUT parentheses in the end
 
 
 That's it!

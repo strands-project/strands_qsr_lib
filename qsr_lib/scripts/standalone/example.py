@@ -11,7 +11,7 @@
 
 from __future__ import print_function, division
 from input_data import Input_Data_One, Input_Data_Block
-from qsrlib import QSR_Lib
+from qsrlib import QSRlib
 
 if __name__ == "__main__":
     # define some dummy sample data
@@ -20,10 +20,10 @@ if __name__ == "__main__":
                                   fields=["x1", "y1", "x2", "y2"],
                                   timesteps=3,
                                   description="some 2d bounding boxes")
-    # qsrlib object
-    qsrlib = QSR_Lib()
-    # make a qsr request
-    out = qsrlib.request(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
+    # make a QSRlib object
+    qsrlib = QSRlib()
+    # request QSRs
+    out = qsrlib.request_qsrs(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
     # print the timestamps, ids and qsrs
     print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
     print("Objects:", out.ids)

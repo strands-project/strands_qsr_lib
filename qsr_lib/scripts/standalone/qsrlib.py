@@ -27,7 +27,7 @@ from output_data import Output_Data
 # Import implemented makers
 from maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
 
-class QSR_Lib(object):
+class QSRlib(object):
     """The LIB
 
     At the moment the data data variables bounding_boxes_2d & 3d and trajectories_2d & 3d
@@ -109,7 +109,7 @@ class QSR_Lib(object):
     def get_input_data(self):
         return self.input_data
 
-    def request(self, which_qsr, input_data=None, reset=False):
+    def request_qsrs(self, which_qsr, input_data=None, reset=False):
         self.timestamp_request_received = datetime.now()
         self.set_which_qsr(which_qsr)
         if input_data:
@@ -137,5 +137,5 @@ if __name__ == "__main__":
                                   fields=["x1", "y1", "x2", "y2"],
                                   timesteps=3,
                                   description="some 2d bounding boxes")
-    qsrlib = QSR_Lib()
-    out = qsrlib.request(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
+    qsrlib = QSRlib()
+    out = qsrlib.request_qsrs(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)

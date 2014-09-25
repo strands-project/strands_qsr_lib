@@ -1,4 +1,15 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""QSRlib ROS server interface.
+
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Organization: University of Leeds
+:Date: 22 September 2014
+:Version: 0.1
+:Status: Development
+:Copyright: STRANDS default
+"""
+
 from __future__ import print_function, division
 import datetime
 import os
@@ -11,25 +22,25 @@ if add_folder not in sys.path:
 add_folder += "/../standalone"
 if add_folder not in sys.path:
     sys.path.insert(0, add_folder)
-from qsrlib import QSR_Lib
+from qsrlib import QSRlib
 import rospy
 from qsr_lib.msg import *
 from qsr_lib.srv import *
 from input_data import Input_Data_Block, Input_Data_One
 
-class QSR_Lib_ROS_Server(object):
+class QSRlib_ROS_Server(object):
     def __init__(self, node_name="qsr_lib", active_qsrs=None):
-        self.qsrlib = QSR_Lib(active_qsrs)
+        self.qsrlib = QSRlib(active_qsrs)
         self.node_name = node_name
         self.node = rospy.init_node(self.node_name)
         self.service_topic_names = {"request": self.node_name+"/request"}
         self.srv_qsrs_request = rospy.Service(self.service_topic_names["request"], QSRsRequest, self.handle_qsrs_request)
-        print("QSR_Lib_ROS_Server up and running, listening to:", self.service_topic_names["request"])
+        print("QSRlib_ROS_Server up and running, listening to:", self.service_topic_names["request"])
 
     def handle_qsrs_request(self, req):
         print("Handling QSRs request made at", str(req.header.stamp.secs)+"."+str(req.header.stamp.nsecs))
         input_data = self.many_objects_data_to_input_data_block(req.input_data)
-        qsrlib_res = self.qsrlib.request(which_qsr=req.which_qsr, input_data=input_data, reset=req.reset)
+        qsrlib_res = self.qsrlib.request_qsrs(which_qsr=req.which_qsr, input_data=input_data, reset=req.reset)
         res = QSRsRequestResponse(self.output_data_to_ros_qsrs(qsrlib_res))
         # res = QSRsRequestResponse()
         return res
@@ -56,6 +67,6 @@ class QSR_Lib_ROS_Server(object):
         return rospy.Time.from_sec(tsecs)
 
 if __name__ == "__main__":
-    srv = QSR_Lib_ROS_Server()
+    srv = QSRlib_ROS_Server()
     srv.qsrlib.help()
     rospy.spin()
