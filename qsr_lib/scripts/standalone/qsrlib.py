@@ -100,8 +100,17 @@ class QSRlib(object):
         return self.which_qsr
 
     def set_input_data(self, input_data):
+        if input_data is None:
+            input_data = Input_Data_Block()
         if isinstance(input_data, Input_Data_Block):
-            self.input_data = input_data
+            if len(input_data.data) > 0:
+                self.input_data = input_data
+            else:
+                if self.__out:
+                    if len(self.input_data.data) > 0:
+                        print("Reusing previous input data.")
+                    else:
+                        print("Warning (QSRlib.set_input_data): It seems you are trying to reuse previous data, but previous data is empty")
         else:
             if self.__out: print("ERROR (QSR_Lib.set_input_data): input data has incorrect type, must be of type 'Input_Data_Block'")
             self.input_data = Input_Data_Block(description="error: input data has incorrect type")
@@ -112,21 +121,19 @@ class QSRlib(object):
     def request_qsrs(self, which_qsr, input_data=None, reset=False):
         self.timestamp_request_received = datetime.now()
         self.set_which_qsr(which_qsr)
-        if input_data:
-            self.set_input_data(input_data=input_data)
-        else:
-            if self.__out: print("info (QSR_Lib.request): Using previous input data")
-        if not isinstance(input_data, Input_Data_Block):
-            if self.__out: print("ERROR (QSR_Lib.request): input data has incorrect type, must be of type 'Input_Data_Block'")
-            ret = Output_Data(qsr_type="error: input data has incorrect type")
-        else:
-            try:
-                ret = self.__qsrs_active[self.which_qsr].make(input_data=self.input_data,
-                                                              timestamp_request_received=self.timestamp_request_received)
-            except KeyError:
-                print("ERROR (QSR_Lib.request): it seems that the QSR you requested (" + which_qsr + ") is not implemented yet or has not been activated")
-                ret = Output_Data(qsr_type="error", timestamp_request_received=self.timestamp_request_received)
+        self.set_input_data(input_data=input_data)
+        # if not isinstance(input_data, Input_Data_Block):
+        #     if self.__out: print("ERROR (QSR_Lib.request_qsrs): input data has incorrect type, must be of type 'Input_Data_Block'")
+        #     ret = Output_Data(qsr_type="error: input data has incorrect type")
+        # else:
+        try:
+            ret = self.__qsrs_active[self.which_qsr].make(input_data=self.input_data,
+                                                          timestamp_request_received=self.timestamp_request_received)
+        except KeyError:
+            print("ERROR (QSR_Lib.request): it seems that the QSR you requested (" + which_qsr + ") is not implemented yet or has not been activated")
+            ret = Output_Data(qsr_type="error", timestamp_request_received=self.timestamp_request_received)
         if reset:
+            if self.__out: print("Resetting self.input_data in QSRlib")
             self.reset_all()
         return ret
 

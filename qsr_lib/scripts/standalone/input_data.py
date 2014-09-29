@@ -34,7 +34,7 @@ class Input_Data_Block(object):
         if len(data) > 0:
             ret = data
         else:
-            print("Warning (Input_Data_Block.process_input): argument data is empty")
+            print("Warning (Input_Data_Block.process_input): argument data is empty (which is fine if you want to reuse previous sent data)")
         return ret
 
     def convert_fields_to_dict(self):

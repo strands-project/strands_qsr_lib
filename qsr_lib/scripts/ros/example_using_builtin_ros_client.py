@@ -41,3 +41,15 @@ if __name__ == "__main__":
     print("--------------")
     print("Response is:")
     print(res)
+
+    print()
+    print("--- Testing reusing previous data ---")
+    input_data = Input_Data_Block()
+    req = cln.make_request_message(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
+    # request qsrs
+    res = cln.request_qsrs(req)
+    # output the results (in QSRsRequestResponse message format)
+    print("--------------")
+    print("Response is:")
+    print(res)
+

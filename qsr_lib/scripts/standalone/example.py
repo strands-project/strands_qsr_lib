@@ -28,3 +28,11 @@ if __name__ == "__main__":
     print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
     print("Objects:", out.ids)
     print("QSRs:", out.data)
+
+    print()
+    print("--- Testing reusing previous data ---")
+    out = qsrlib.request_qsrs(which_qsr="rcc3_rectangle_bounding_boxes_2d")
+    # print the timestamps, ids and qsrs
+    print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
+    print("Objects:", out.ids)
+    print("QSRs:", out.data)
