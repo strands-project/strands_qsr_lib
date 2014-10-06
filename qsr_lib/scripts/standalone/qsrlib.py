@@ -26,6 +26,7 @@ from output_data import Output_Data
 
 # Import implemented makers
 from maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
 
 class QSRlib(object):
     """The LIB
@@ -39,7 +40,8 @@ class QSRlib(object):
     or define a new class probably for input_data
     """
     def __init__(self, qsrs_active=None, print_messages=True, help=False):
-        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D}
+        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                                       "qtc_b_simplified": Maker_QSR_QTC_B_Simplified}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:
