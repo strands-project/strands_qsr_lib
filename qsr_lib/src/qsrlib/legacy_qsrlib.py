@@ -10,23 +10,13 @@
 """
 
 from __future__ import print_function, division
-import os
-import sys
-import inspect
-# http://stackoverflow.com/questions/279237/import-a-module-from-a-relative-path
-add_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile( inspect.currentframe() ))[0]))
-if add_folder not in sys.path:
-    sys.path.insert(0, add_folder)
-add_folder += "/makers"
-if add_folder not in sys.path:
-    sys.path.insert(0, add_folder)
 from datetime import datetime
 from input_data import Input_Data_One, Input_Data_Block
 from output_data import Output_Data
 
 # Import implemented makers
-from maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
-from maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
+from makers.maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from makers.maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
 
 class QSRlib(object):
     """The LIB
@@ -141,10 +131,17 @@ class QSRlib(object):
 
 
 if __name__ == "__main__":
+    # define some dummy sample data
     input_data = Input_Data_Block(data=[Input_Data_One("1", [1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0]),
                                         Input_Data_One("2", [11.0, 11.0, 22.0, 22.0, 1.5, 1.5, 22.0, 22.0, 1.5, 1.5, 1.5, 1.5])],
                                   fields=["x1", "y1", "x2", "y2"],
                                   timesteps=3,
                                   description="some 2d bounding boxes")
+    # make a QSRlib object
     qsrlib = QSRlib()
+    # request QSRs
     out = qsrlib.request_qsrs(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
+    # print the timestamps, ids and qsrs
+    print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
+    print("Objects:", out.ids)
+    print("QSRs:", out.data)

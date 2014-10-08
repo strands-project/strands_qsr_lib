@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Usage example.
 
@@ -10,8 +11,8 @@
 """
 
 from __future__ import print_function, division
-from input_data import Input_Data_One, Input_Data_Block
-from qsrlib import QSRlib
+from qsrlib.input_data import Input_Data_One, Input_Data_Block
+from qsrlib.qsrlib import QSRlib
 
 if __name__ == "__main__":
     # define some dummy sample data
@@ -20,6 +21,7 @@ if __name__ == "__main__":
                                   fields=["x1", "y1", "x2", "y2"],
                                   timesteps=3,
                                   description="some 2d bounding boxes")
+
     # make a QSRlib object
     qsrlib = QSRlib()
     # request QSRs

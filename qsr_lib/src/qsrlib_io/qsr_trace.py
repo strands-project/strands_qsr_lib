@@ -1,62 +1,45 @@
 from __future__ import print_function, division
 import copy
 
-class Object_State(object):
-    def __init__(self, name, timestamp,
-                 x=0., y=0., z=0.,
-                 roll=0., pitch=0., yaw=0.,
-                 length=0., width=0., height=0.,
-                 *args, **kwargs):
-        self.name = name
+class QSR(object):
+    def __init__(self, timestamp, type, between, qsr):
+        self.type = type
         self.timestamp = timestamp
-        self.x = x
-        self.y = y
-        self.z = z
-        self.roll = roll
-        self.pitch = pitch
-        self.yaw = yaw
-        self.length = length
-        self.width = width
-        self.height = height
-        self.args = args
-        self.kwargs = kwargs
-
-        self.bb2d = self.return_bounding_box_2d()
+        self.between = between
+        self.qsr = qsr
 
 
-    def return_bounding_box_2d(self):
-        return {'x1': self.x-self.width/2, 'y1': self.y-self.length/2,
-                'x2': self.x+self.width/2, 'y2': self.y+self.length/2}
-
-
-class World_State(object):
-    def __init__(self, timestamp, objects={}):
+class World_QSR_State(object):
+    def __init__(self, timestamp, qsrs={}):
         self.timestamp = timestamp
-        self.objects = objects
+        self.qsrs = qsrs
 
-    def add_object_snapshot(self, object_snapshot):
-        self.objects[object_snapshot.name] = object_snapshot
+    def add_qsr(self, qsr):
+        self.qsrs[qsr.between] = qsr
 
-class World_Trace(object):
+class World_QSR_Trace(object):
     def __init__(self, last_updated=False, timestamps=[], trace={}):
         self.last_updated = last_updated
         self.timestamps = timestamps
         self.trace = trace
 
-    def add_object_snapshot_to_history(self, object_snapshot, timestamp=None):
+    def add_qsr_to_trace(self, qsr, timestamp=None):
         if not timestamp:
-            timestamp = object_snapshot.timestamp
+            timestamp = qsr.timestamp
         try:
-            self.trace[timestamp].add_object_snapshot(object_snapshot)
+            self.trace[timestamp].add_qsr(qsr)
         except KeyError:
-            world_snapshot = World_State(timestamp=timestamp, objects={object_snapshot.name: object_snapshot})
-            self.trace[timestamp] = world_snapshot
+            world_qsr_state = World_QSR_State(timestamp=timestamp, qsrs={qsr.between: qsr})
+            self.trace[timestamp] = world_qsr_state
             self.insert_timestamp(timestamp=timestamp, append=False)
         self.last_updated = timestamp
 
-    def add_object_snapshot_series_to_history(self, object_snapshots):
+    def add_object_state_series_to_history(self, object_snapshots):
         for s in object_snapshots:
-            self.add_object_snapshot_to_history(object_snapshot=s)
+            self.add_qsr_to_trace(object_state=s)
+
+
+
 
     def insert_timestamp(self, timestamp, append):
         if append:
@@ -131,6 +114,6 @@ if __name__ == "__main__":
     o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
           Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
           Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
-    world.add_object_snapshot_series_to_history(o1)
-    world.add_object_snapshot_series_to_history(o2)
-    world.add_object_snapshot_series_to_history(o3)
+    world.add_object_state_series_to_history(o1)
+    world.add_object_state_series_to_history(o2)
+    world.add_object_state_series_to_history(o3)
