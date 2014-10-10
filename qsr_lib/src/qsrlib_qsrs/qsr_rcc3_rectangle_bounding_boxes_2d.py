@@ -13,7 +13,6 @@
 """
 
 from __future__ import print_function, division
-from datetime import datetime
 from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
 from qsrlib_io.qsr_trace import *
 
@@ -41,7 +40,8 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
 
         :param args: not used at the moment
         :param kwargs:
-        :return:
+                        - input_data: World_Trace
+        :return: World_QSR_Trace
         """
         input_data = kwargs["input_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)

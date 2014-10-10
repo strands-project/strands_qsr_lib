@@ -11,33 +11,62 @@
 """
 
 from __future__ import print_function, division
+import sys
 from qsrlib_io.world_trace import Object_State, World_Trace
 from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 
 if __name__ == "__main__":
+    options = {"rcc3":"rcc3_rectangle_bounding_boxes_2d",
+                   "qtcb":"qtc_b_simplified"}
+    try:
+        which_qsr = options[sys.argv[1]]
+    except IndexError:
+        print("ERROR: provide which qsr you want to test")
+        print("keywords:", options.keys())
+        sys.exit(1)
+    except KeyError:
+        print("ERROR: qsr not found")
+        print("keywords:", options.keys())
+        sys.exit(1)
+
     world = World_Trace()
-    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-          Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-          Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
 
-    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-          Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
-          Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
-          Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
+    if which_qsr == options["rcc3"]:
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
 
-    o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-          Object_State(name="o3", timestamp=2, x=2., y=11., width=5., length=8.),
-          Object_State(name="o3", timestamp=3, x=3., y=11., width=5., length=8.)]
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
+              Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
+              Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
 
-    world.add_object_state_series_to_trace(o1)
-    world.add_object_state_series_to_trace(o2)
-    world.add_object_state_series_to_trace(o3)
+        o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=2., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=3, x=3., y=11., width=5., length=8.)]
+
+        world.add_object_state_series_to_trace(o1)
+        world.add_object_state_series_to_trace(o2)
+        world.add_object_state_series_to_trace(o3)
+
+    elif which_qsr == options["qtcb"]:
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
+
+        o2 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+
+        world.add_object_state_series_to_trace(o1)
+        world.add_object_state_series_to_trace(o2)
+
 
 
     # make a QSRlib object
     qsrlib = QSRlib()
     # make a request message
-    request_message = QSRlib_Request_Message(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=world)
+    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world)
     # request QSRs
     out = qsrlib.request_qsrs(request_message=request_message)
     # some print some nice data

@@ -11,7 +11,7 @@
 
 from __future__ import print_function, division
 import abc
-from qsrlib.input_data import Input_Data_Block
+
 
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""

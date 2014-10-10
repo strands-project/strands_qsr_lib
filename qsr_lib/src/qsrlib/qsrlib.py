@@ -15,6 +15,7 @@ from qsrlib_io.world_trace import World_Trace
 
 # Import implemented makers
 from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
 
 class QSRlib_Response_Message(object):
     def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
@@ -64,7 +65,8 @@ class QSRlib(object):
     """The LIB
     """
     def __init__(self, qsrs_active=None, print_messages=True, help=True, request_message=None):
-        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D}
+        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                                       "qtc_b_simplified": QSR_QTC_B_Simplified}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:
@@ -108,6 +110,12 @@ class QSRlib(object):
                     print("ERROR (QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
     def request_qsrs(self, request_message=None, reset=False):
+        """
+
+        :param request_message: QSRlib_Request_Message, default=None
+        :param reset: Boolean, if to reset the self.request_message, default=False
+        :return: QSRlib_Response_Message
+        """
         self.timestamp_request_received = datetime.now()
         if request_message:
             self.request_message = request_message
