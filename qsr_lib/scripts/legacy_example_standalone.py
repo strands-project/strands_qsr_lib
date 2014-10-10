@@ -11,8 +11,8 @@
 """
 
 from __future__ import print_function, division
-from qsrlib.input_data import Input_Data_One, Input_Data_Block
-from qsrlib.qsrlib import QSRlib
+from qsrlib_legacy.input_data import Input_Data_One, Input_Data_Block
+from qsrlib_legacy.qsrlib import QSRlib
 
 if __name__ == "__main__":
     # define some dummy sample data

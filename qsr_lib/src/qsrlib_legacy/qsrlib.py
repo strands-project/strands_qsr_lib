@@ -11,12 +11,12 @@
 
 from __future__ import print_function, division
 from datetime import datetime
-from input_data import Input_Data_One, Input_Data_Block
-from output_data import Output_Data
+from qsrlib_legacy.input_data import Input_Data_One, Input_Data_Block
+from qsrlib_legacy.output_data import Output_Data
 
 # Import implemented makers
-from makers.maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
-from makers.maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
+from qsrlib_legacy.maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from qsrlib_legacy.maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
 
 class QSRlib(object):
     """The LIB

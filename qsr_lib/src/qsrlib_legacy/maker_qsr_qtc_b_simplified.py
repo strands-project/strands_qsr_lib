@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Example that shows how to implement QSR makers.
 
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
+:Author: Christan Dondrup <>
+:Organization: University of Lincoln
 :Date: 10 September 2014
 :Version: 0.1
 :Status: Development
@@ -16,14 +16,14 @@ from __future__ import print_function, division
 from datetime import datetime
 from maker_qsr_abstractclass import Maker_QSR_Abstractclass
 from output_data import Output_Data
+import math
 
-
-class Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D(Maker_QSR_Abstractclass):
+class Maker_QSR_QTC_B_Simplified(Maker_QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        self.qsr_type = "rcc3_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.required_fields = ["x1", "y1", "x2", "y2"]
-        self.all_possible_relations = ["dc", "po", "o"]
+        self.qsr_type = "qtc_b_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
+        self.required_fields = ["x", "y"]
+        self.all_possible_relations = ["0,0", "0,1", "1,0", "1,1", "0,-1", "-1,0", "-1,-1"]  # 0: no change, 1: moving away, -1: moving towards
 
     def custom_help(self):
         """Write your own help message function"""
@@ -56,10 +56,8 @@ class Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D(Maker_QSR_Abstractclass):
         qsrs = []
 
         # begin of your code, feel free to write your own methods within the class to keep code neat
-        pairs = self.__return_all_possible_combinations(input_data)
-        for p in pairs:
-            ids.append([input_data.data[p[0]].id, input_data.data[p[1]].id])
-            qsrs.append(self.__compute_pairwise_qsrs(input_data.data[p[0]].data, input_data.data[p[1]].data))
+        ids.append([input_data.data[0].id, input_data.data[1].id])
+        qsrs.append(self.__compute_qsrs(input_data.data[0].data, input_data.data[1].data))
         # end of your code
 
         ret = Output_Data(ids=ids,
@@ -70,35 +68,37 @@ class Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D(Maker_QSR_Abstractclass):
                           timestamp_qsrs_processed=datetime.now())
         return ret
 
-    # custom functions follow
-    def __return_all_possible_combinations(self, input_data):
-        ret = []
-        for i in range(len(input_data.data)):
-            for j in range(len(input_data.data)):
-                if i != j:
-                    ret.append([i, j])
-        return ret
-
-    def __compute_pairwise_qsrs(self, bb1, bb2):
-        if len(bb1) != len(bb2):
-            print("ERROR: lengths of bounding boxes for the two objects are not equal")
+    def __compute_qsrs(self, k, l):
+        if len(k) != len(l):
+            print("ERROR: lengths of trajectories for the two objects are not equal")
             return []
-        timesteps = int(len(bb1) / len(self.required_fields))
+        timesteps = int(len(k) / len(self.required_fields))
         step = len(self.required_fields)
         ret = []
-        for t in range(timesteps):
+        for t in range(timesteps-1):
             i = t * step
-            ret.append(self.__compute_qsr(bb1[i:i+step], bb2[i:i+step]))
+            ret.append(self.__compute_qsr(k[i:i+2*step], l[i:i+2*step]))
         return ret
 
-    def __compute_qsr(self, bb1, bb2):
-        results = {0: "dc", 1: "po", 2: "o"}
-        count_occluded_points = 0
-        for i in range(0, len(bb2), 2):
-            if self.__is_point_in_rectangle([bb2[i], bb2[i+1]], bb1):
-                count_occluded_points += 1
-        ret = results[count_occluded_points]
+    def __compute_qsr(self, k, l):
+        euclidean_initial = self.__euclidean(k[0:2], l[0:2])
+        if k[0] == k[2] and k[1] == k[3]:
+            qsr_k = "0"
+        elif self.__euclidean(k[2:], l[0:2]) < euclidean_initial:
+            qsr_k = "-1"
+        else:
+            qsr_k = "1"
+
+        if l[0] == l[2] and l[1] == l[3]:
+            qsr_l = "0"
+        elif self.__euclidean(l[2:], k[0:2]) < euclidean_initial:
+            qsr_l = "-1"
+        else:
+            qsr_l = "1"
+        ret = qsr_k + "," + qsr_l
         return ret
 
-    def __is_point_in_rectangle(self, p, r, d=0.):
-        return p[0] >= r[0]-d and p[0] <= r[2]+d and p[1] >= r[0]-d and p[1] <= r[3]+d
+    def __euclidean(self, a, b):
+        euc = math.sqrt((a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1]))
+        print(euc)
+        return euc
