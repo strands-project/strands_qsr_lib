@@ -11,26 +11,66 @@
 
 from __future__ import print_function, division
 from datetime import datetime
-from input_data import Input_Data_One, Input_Data_Block
-from output_data import Output_Data
+from qsrlib_io.world_trace import World_Trace
 
 # Import implemented makers
-from makers.maker_qsr_rcc3_rectangle_bounding_boxes_2d import Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D
-from makers.maker_qsr_qtc_b_simplified import Maker_QSR_QTC_B_Simplified
+from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
+
+class QSRlib_Response_Message(object):
+    def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
+        self.qsrs = qsrs
+        self.timestamp_request_made = timestamp_request_made
+        self.timestamp_request_received = timestamp_request_received
+        self.timestamp_qsrs_computed = timestamp_qsrs_computed
+
+class QSRlib_Request_Message(object):
+    def __init__(self, which_qsr="", input_data=None, timestamp_request_made=None,
+                 start=0, finish=-1, objects_names=[]):
+        self.which_qsr = which_qsr
+        self.input_data = None
+        self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
+        self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
+
+    def make(self, which_qsr, input_data, timestamp_request_made=None):
+        self.which_qsr = which_qsr
+        self.input_data = self.set_input_data(input_data)
+        self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
+
+    def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
+        error = False
+        if input_data is None:
+            input_data = World_Trace()
+        if isinstance(input_data, World_Trace):
+            if len(input_data.trace) > 0:
+                self.input_data = input_data
+            else:
+                if self.input_data is not None and len(self.input_data.trace) > 0:
+                    print("Reusing previous input data")
+                else:
+                    print("Warning (QSRlib_Request_Message.set_input_data): It seems you are trying to reuse previous data, but previous data is empty")
+                    self.input_data = World_Trace(description="error")
+                    error = True
+        else:
+            print("ERROR (QSRLib_.set_input_data): input data has incorrect type, must be of type 'World_Trace'")
+            self.input_data = World_Trace(description="error")
+            error = True
+        if not error:
+            if finish >= 0:
+                self.input_data = self.input_data.get_at_timestamp_range(start=start, finish=finish)
+            if len(objects_names) > 0:
+                self.input_data = self.input_data.get_for_objects(objects_names=objects_names)
 
 class QSRlib(object):
     """The LIB
     """
-    def __init__(self, qsrs_active=None, print_messages=True, help=False):
-        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": Maker_QSR_RCC3_Rectangle_Bounding_Boxes_2D,
-                                       "qtc_b_simplified": Maker_QSR_QTC_B_Simplified}
+    def __init__(self, qsrs_active=None, print_messages=True, help=True, request_message=None):
+        self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:
             self.help()
+        self.request_message = request_message
         self.timestamp_request_received = None
-        self.which_qsr = None
-        self.input_data = None
 
         # these are the droids you are not looking for
         self.__out = print_messages
@@ -43,11 +83,6 @@ class QSRlib(object):
 
     def set_out(self, b):
         self.__out = b
-
-    def reset_all(self):
-        self.timestamp_request_received = None
-        self.input_data = None
-        self.which_qsr = None
 
     def print_qsrs_available(self):
         l = sorted(self.__const_qsrs_available)
@@ -72,68 +107,21 @@ class QSRlib(object):
                 except KeyError:
                     print("ERROR (QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
-    def set_which_qsr(self, which_qsr):
-        code = 0
-        if which_qsr is None:
-            if self.__out: print("ERROR (QSR_Lib.set_which_qsr): argument is empty, please specify which qsr you would like computed")
-            code = 1
-        self.which_qsr = which_qsr
-        return code
-
-    def get_which_qsr(self):
-        return self.which_qsr
-
-    def set_input_data(self, input_data):
-        if input_data is None:
-            input_data = Input_Data_Block()
-        if isinstance(input_data, Input_Data_Block):
-            if len(input_data.data) > 0:
-                self.input_data = input_data
-            else:
-                if self.__out:
-                    if len(self.input_data.data) > 0:
-                        print("Reusing previous input data.")
-                    else:
-                        print("Warning (QSRlib.set_input_data): It seems you are trying to reuse previous data, but previous data is empty")
-        else:
-            if self.__out: print("ERROR (QSR_Lib.set_input_data): input data has incorrect type, must be of type 'Input_Data_Block'")
-            self.input_data = Input_Data_Block(description="error: input data has incorrect type")
-
-    def get_input_data(self):
-        return self.input_data
-
-    def request_qsrs(self, which_qsr, input_data=None, reset=False):
+    def request_qsrs(self, request_message=None, reset=False):
         self.timestamp_request_received = datetime.now()
-        self.set_which_qsr(which_qsr)
-        self.set_input_data(input_data=input_data)
-        # if not isinstance(input_data, Input_Data_Block):
-        #     if self.__out: print("ERROR (QSR_Lib.request_qsrs): input data has incorrect type, must be of type 'Input_Data_Block'")
-        #     ret = Output_Data(qsr_type="error: input data has incorrect type")
-        # else:
+        if request_message:
+            self.request_message = request_message
         try:
-            ret = self.__qsrs_active[self.which_qsr].make(input_data=self.input_data,
+            world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
                                                           timestamp_request_received=self.timestamp_request_received)
         except KeyError:
-            print("ERROR (QSR_Lib.request): it seems that the QSR you requested (" + which_qsr + ") is not implemented yet or has not been activated")
-            ret = Output_Data(qsr_type="error", timestamp_request_received=self.timestamp_request_received)
+            print("ERROR (QSR_Lib.request): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
+            world_qsr_trace = False
         if reset:
-            if self.__out: print("Resetting self.input_data in QSRlib")
-            self.reset_all()
-        return ret
-
-
-if __name__ == "__main__":
-    # define some dummy sample data
-    input_data = Input_Data_Block(data=[Input_Data_One("1", [1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 2.0, 2.0]),
-                                        Input_Data_One("2", [11.0, 11.0, 22.0, 22.0, 1.5, 1.5, 22.0, 22.0, 1.5, 1.5, 1.5, 1.5])],
-                                  fields=["x1", "y1", "x2", "y2"],
-                                  timesteps=3,
-                                  description="some 2d bounding boxes")
-    # make a QSRlib object
-    qsrlib = QSRlib()
-    # request QSRs
-    out = qsrlib.request_qsrs(which_qsr="rcc3_rectangle_bounding_boxes_2d", input_data=input_data)
-    # print the timestamps, ids and qsrs
-    print("Request was received at", out.timestamp_request_received, "and finished processing at", out.timestamp_qsrs_processed)
-    print("Objects:", out.ids)
-    print("QSRs:", out.data)
+            if self.__out: print("Resetting QSRlib data")
+            self.request_message = None
+        qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
+                                                  timestamp_request_made=request_message.timestamp_request_made,
+                                                  timestamp_request_received=self.timestamp_request_received,
+                                                  timestamp_qsrs_computed=datetime.now())
+        return qsrlib_response

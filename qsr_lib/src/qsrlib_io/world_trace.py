@@ -22,8 +22,10 @@ class Object_State(object):
         self.kwargs = kwargs
 
     def return_bounding_box_2d(self):
-        return {'x1': self.x-self.width/2, 'y1': self.y-self.length/2,
-                'x2': self.x+self.width/2, 'y2': self.y+self.length/2}
+        if self.width <= 0 or self.length <= 0:
+            print("ERROR: can't compute bounding box, width or height has no positive value")
+            return []
+        return [self.x-self.width/2, self.y-self.length/2, self.x+self.width/2, self.y+self.length/2]
 
 
 class World_State(object):
@@ -35,7 +37,8 @@ class World_State(object):
         self.objects[object_state.name] = object_state
 
 class World_Trace(object):
-    def __init__(self, last_updated=False, timestamps=[], trace={}):
+    def __init__(self, description="", last_updated=False, timestamps=[], trace={}):
+        self.description = description
         self.last_updated = last_updated
         self.timestamps = timestamps
         self.trace = trace
