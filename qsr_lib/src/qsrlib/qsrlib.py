@@ -26,11 +26,12 @@ class QSRlib_Response_Message(object):
 
 class QSRlib_Request_Message(object):
     def __init__(self, which_qsr="", input_data=None, timestamp_request_made=None,
-                 start=0, finish=-1, objects_names=[]):
+                 start=0, finish=-1, objects_names=[], include_missing_data=True):
         self.which_qsr = which_qsr
         self.input_data = None
         self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
+        self.include_missing_data = include_missing_data
 
     def make(self, which_qsr, input_data, timestamp_request_made=None):
         self.which_qsr = which_qsr
@@ -121,9 +122,10 @@ class QSRlib(object):
             self.request_message = request_message
         try:
             world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
-                                                          timestamp_request_received=self.timestamp_request_received)
+                                                                                     include_missing_data=self.request_message.include_missing_data,
+                                                                                     timestamp_request_received=self.timestamp_request_received)
         except KeyError:
-            print("ERROR (QSR_Lib.request): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
+            print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False
         if reset:
             if self.__out: print("Resetting QSRlib data")

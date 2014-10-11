@@ -51,16 +51,19 @@ class QSR_QTC_B_Simplified(QSR_Abstractclass):
         between = o1_name + "," + o2_name
         for t0, t1 in zip(input_data.timestamps, input_data.timestamps[1:]):
             timestamp = t1
-            k = [input_data.trace[t0].objects[o1_name].x,
-                 input_data.trace[t0].objects[o1_name].y,
-                 input_data.trace[t1].objects[o1_name].x,
-                 input_data.trace[t1].objects[o1_name].y]
-            l = [input_data.trace[t0].objects[o2_name].x,
-                 input_data.trace[t0].objects[o2_name].y,
-                 input_data.trace[t1].objects[o2_name].x,
-                 input_data.trace[t1].objects[o2_name].y]
-            qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(k ,l))
-            ret.add_qsr_to_trace(qsr, timestamp)
+            try:
+                k = [input_data.trace[t0].objects[o1_name].x,
+                     input_data.trace[t0].objects[o1_name].y,
+                     input_data.trace[t1].objects[o1_name].x,
+                     input_data.trace[t1].objects[o1_name].y]
+                l = [input_data.trace[t0].objects[o2_name].x,
+                     input_data.trace[t0].objects[o2_name].y,
+                     input_data.trace[t1].objects[o2_name].x,
+                     input_data.trace[t1].objects[o2_name].y]
+                qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(k, l))
+                ret.add_qsr(qsr, timestamp)
+            except KeyError:
+                ret.add_empty_world_qsr_state(timestamp)
         return ret
 
     def __compute_qsr(self, k, l):

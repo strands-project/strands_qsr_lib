@@ -1,5 +1,5 @@
 from __future__ import print_function, division
-import copy
+# import copy
 
 class QSR(object):
     def __init__(self, timestamp, between, qsr):
@@ -23,15 +23,31 @@ class World_QSR_Trace(object):
         self.timestamps = timestamps
         self.trace = trace
 
-    def add_qsr_to_trace(self, qsr, timestamp):
+    def __add_world_qsr_state(self, world_qsr_state):
+        self.trace[world_qsr_state.timestamp] = world_qsr_state
+        if world_qsr_state.timestamp not in self.timestamps:
+            self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
+        self.last_updated = world_qsr_state.timestamp
+
+    def add_world_qsr_state(self, world_qsr_state, overwrite=False):
+        if world_qsr_state.timestamp in self.trace:
+            print("Warning: state already exists")
+            if overwrite:
+                print("Overwrite is enabled, overwriting...")
+                self.__add_world_qsr_state(world_qsr_state)
+        else:
+            self.__add_world_qsr_state(world_qsr_state)
+
+    def add_qsr(self, qsr, timestamp):
         try:
             self.trace[timestamp].add_qsr(qsr)
         except KeyError:
             world_qsr_state = World_QSR_State(timestamp=timestamp, qsrs={qsr.between: qsr})
-            self.trace[timestamp] = world_qsr_state
-            self.insert_timestamp(timestamp=timestamp, append=False)
+            self.add_world_qsr_state(world_qsr_state)
         self.last_updated = timestamp
 
+    def add_empty_world_qsr_state(self, timestamp):
+        self.add_world_qsr_state(World_QSR_State(timestamp=timestamp))
 
     def insert_timestamp(self, timestamp, append):
         if append:
@@ -91,20 +107,3 @@ class World_QSR_Trace(object):
     #     except:
     #         print("ERROR: something went wrong")
     #         return False
-
-# if __name__ == "__main__":
-#     world = World_Trace()
-#
-#     o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-#           Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-#           Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
-#     o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-#           Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
-#           Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
-#           Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
-#     o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-#           Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
-#           Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
-#     world.add_object_state_series_to_history(o1)
-#     world.add_object_state_series_to_history(o2)
-#     world.add_object_state_series_to_history(o3)

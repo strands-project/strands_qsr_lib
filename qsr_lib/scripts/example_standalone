@@ -42,8 +42,8 @@ if __name__ == "__main__":
               Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
 
         o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-              Object_State(name="o3", timestamp=2, x=2., y=11., width=5., length=8.),
-              Object_State(name="o3", timestamp=3, x=3., y=11., width=5., length=8.)]
+              Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
 
         world.add_object_state_series_to_trace(o1)
         world.add_object_state_series_to_trace(o2)
@@ -66,13 +66,13 @@ if __name__ == "__main__":
     # make a QSRlib object
     qsrlib = QSRlib()
     # make a request message
-    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world)
+    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
     # request QSRs
     out = qsrlib.request_qsrs(request_message=request_message)
     # some print some nice data
     print("Request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
     for t in out.qsrs.timestamps:
-        foo = ""
+        foo = str(t) + ": "
         for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):
             foo += str(k) + ":" + str(v.qsr) + "; "
         print(foo)

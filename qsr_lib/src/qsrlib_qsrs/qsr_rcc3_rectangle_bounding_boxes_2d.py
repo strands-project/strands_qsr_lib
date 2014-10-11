@@ -44,17 +44,22 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         :return: World_QSR_Trace
         """
         input_data = kwargs["input_data"]
+        include_missing_data = kwargs["include_missing_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
         for t in input_data.timestamps:
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
             pairs = self.__return_all_possible_combinations(world_state.objects.keys())
-            for p in pairs:
-                between = str(p[0]) + "," + str(p[1])
-                bb1 = world_state.objects[p[0]].return_bounding_box_2d()
-                bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(bb1, bb2))
-                ret.add_qsr_to_trace(qsr, timestamp)
+            if pairs:
+                for p in pairs:
+                    between = str(p[0]) + "," + str(p[1])
+                    bb1 = world_state.objects[p[0]].return_bounding_box_2d()
+                    bb2 = world_state.objects[p[1]].return_bounding_box_2d()
+                    qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(bb1, bb2))
+                    ret.add_qsr(qsr, timestamp)
+            else:
+                if include_missing_data:
+                    ret.add_empty_world_qsr_state(timestamp)
         return ret
 
     # custom functions follow
