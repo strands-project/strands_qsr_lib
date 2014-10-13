@@ -54,9 +54,9 @@ if __name__ == "__main__":
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
 
-        world.add_object_state_series_to_trace(o1)
-        world.add_object_state_series_to_trace(o2)
-        world.add_object_state_series_to_trace(o3)
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
+        world.add_object_state_series(o3)
 
     elif which_qsr_argv == "rcc3a":
         print("rcc3a")
@@ -65,8 +65,8 @@ if __name__ == "__main__":
 
         o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.)]
 
-        world.add_object_state_series_to_trace(o1)
-        world.add_object_state_series_to_trace(o2)
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -77,11 +77,12 @@ if __name__ == "__main__":
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
 
-        world.add_object_state_series_to_trace(o1)
-        world.add_object_state_series_to_trace(o2)
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
 
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
     cln = QSRlib_ROS_Client()
+    print("bye")
     req = cln.make_ros_request_message(qsrlib_request_message)
     res = cln.request_qsrs(req)
     out = pickle.loads(res.data)

@@ -46,8 +46,6 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
-        print("ret timestamps on creation:", ret.get_sorted_timestamps())
-        print(ret)
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
@@ -62,7 +60,6 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
             else:
                 if include_missing_data:
                     ret.add_empty_world_qsr_state(timestamp)
-            print("ret.timestamps:", ret.get_sorted_timestamps())
         return ret
 
     # custom functions follow

@@ -30,7 +30,7 @@ if __name__ == "__main__":
         print("keywords:", options.keys())
         sys.exit(1)
 
-    world = World_Trace()
+    world_trace = World_Trace()
 
     if which_qsr == options["rcc3"]:
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -46,9 +46,9 @@ if __name__ == "__main__":
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
 
-        world.add_object_state_series_to_trace(o1)
-        world.add_object_state_series_to_trace(o2)
-        world.add_object_state_series_to_trace(o3)
+        world_trace.add_object_state_series(o1)
+        world_trace.add_object_state_series(o2)
+        world_trace.add_object_state_series(o3)
 
     elif which_qsr == options["qtcb"]:
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -59,15 +59,15 @@ if __name__ == "__main__":
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
 
-        world.add_object_state_series_to_trace(o1)
-        world.add_object_state_series_to_trace(o2)
+        world_trace.add_object_state_series(o1)
+        world_trace.add_object_state_series(o2)
 
 
 
     # make a QSRlib object
     qsrlib = QSRlib()
     # make a request message
-    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
+    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world_trace, include_missing_data=True)
     # request QSRs
     out = qsrlib.request_qsrs(request_message=request_message)
     # some print some nice data

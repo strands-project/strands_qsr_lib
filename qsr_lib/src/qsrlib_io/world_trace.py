@@ -51,7 +51,6 @@ class World_Trace(object):
     def __init__(self, description="", last_updated=False, trace=None):
         self.description = description
         self.last_updated = last_updated
-        # self.timestamps = timestamps if timestamps else []
         self.trace = trace if trace else {}
 
     def get_sorted_timestamps(self):
@@ -65,18 +64,11 @@ class World_Trace(object):
         except KeyError:
             world_state = World_State(timestamp=timestamp, objects={object_state.name: object_state})
             self.trace[timestamp] = world_state
-            # self.insert_timestamp(timestamp=timestamp, append=False)
         self.last_updated = timestamp
 
-    def add_object_state_series_to_trace(self, object_states):
+    def add_object_state_series(self, object_states):
         for s in object_states:
             self.add_object_state_to_trace(object_state=s)
-
-    # def insert_timestamp(self, timestamp, append):
-    #     if append:
-    #         self.timestamps.append(timestamp)
-    #     else: # for now always append
-    #         self.timestamps.append(timestamp)
 
     def get_last(self):
         timestamps = self.get_sorted_timestamps()

@@ -54,7 +54,7 @@ class World_QSR_Trace(object):
 
     # def insert_timestamp(self, timestamp, append):
     #     if append:
-    #         self.timestamps.append(timestamp)
+    #           self.timestamps.append(timestamp)
     #     else: # for now always append
     #         self.timestamps.append(timestamp)
     #

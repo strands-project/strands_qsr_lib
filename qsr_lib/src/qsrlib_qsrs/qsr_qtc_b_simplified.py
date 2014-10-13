@@ -45,7 +45,8 @@ class QSR_QTC_B_Simplified(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
-        objects_names = sorted(input_data.trace[input_data.timestamps[0]].objects.keys())
+        timestamps = input_data.get_sorted_timestamps()
+        objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
         o1_name = objects_names[0]
         o2_name = objects_names[1]
         between = o1_name + "," + o2_name
