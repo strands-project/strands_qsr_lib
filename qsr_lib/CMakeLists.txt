@@ -44,19 +44,14 @@ catkin_python_setup()
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  ObjectData.msg
-  ManyObjectsData.msg
-  ObjectsQSRs.msg
-  QSRs.msg
-)
+#add_message_files(
+#  FILES
+#)
 
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
   RequestQSRs.srv
-  RequestQSRsLegacy.srv
 )
 
 ## Generate actions in the 'action' folder
