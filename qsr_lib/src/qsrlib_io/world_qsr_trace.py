@@ -17,16 +17,19 @@ class World_QSR_State(object):
         self.qsrs[qsr.between] = qsr
 
 class World_QSR_Trace(object):
-    def __init__(self, qsr_type, last_updated=False, timestamps=None, trace=None):
+    def __init__(self, qsr_type, last_updated=False, trace=None):
         self.qsr_type = qsr_type
         self.last_updated = last_updated
-        self.timestamps = timestamps if timestamps else []
+        # self.timestamps = timestamps if timestamps else []
         self.trace = trace if trace else {}
+
+    def get_sorted_timestamps(self):
+        return sorted(self.trace.keys())
 
     def __add_world_qsr_state(self, world_qsr_state):
         self.trace[world_qsr_state.timestamp] = world_qsr_state
-        if world_qsr_state.timestamp not in self.timestamps:
-            self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
+        # if world_qsr_state.timestamp not in self.timestamps:
+        #     self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
         self.last_updated = world_qsr_state.timestamp
 
     def add_world_qsr_state(self, world_qsr_state, overwrite=False):
@@ -49,12 +52,12 @@ class World_QSR_Trace(object):
     def add_empty_world_qsr_state(self, timestamp):
         self.add_world_qsr_state(World_QSR_State(timestamp=timestamp))
 
-    def insert_timestamp(self, timestamp, append):
-        if append:
-            self.timestamps.append(timestamp)
-        else: # for now always append
-            self.timestamps.append(timestamp)
-
+    # def insert_timestamp(self, timestamp, append):
+    #     if append:
+    #         self.timestamps.append(timestamp)
+    #     else: # for now always append
+    #         self.timestamps.append(timestamp)
+    #
     # def get_last(self):
     #     timestamp = self.timestamps[-1]
     #     return World_QSR_Trace(last_updated=self.last_updated,

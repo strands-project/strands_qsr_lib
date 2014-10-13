@@ -121,9 +121,8 @@ class QSRlib(object):
         if request_message:
             print("setting request message")
             self.request_message = request_message
-        print(self.request_message.which_qsr, self.request_message.input_data.timestamps,
-              len(self.request_message.input_data.timestamps),
-              len(self.request_message.input_data.trace))
+        timestamps = self.request_message.input_data.get_sorted_timestamps()
+        print(self.request_message.which_qsr, timestamps, len(timestamps), len(self.request_message.input_data.trace))
         try:
             world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
                                                                                      include_missing_data=self.request_message.include_missing_data,

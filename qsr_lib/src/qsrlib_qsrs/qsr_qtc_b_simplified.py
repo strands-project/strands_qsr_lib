@@ -49,7 +49,8 @@ class QSR_QTC_B_Simplified(QSR_Abstractclass):
         o1_name = objects_names[0]
         o2_name = objects_names[1]
         between = o1_name + "," + o2_name
-        for t0, t1 in zip(input_data.timestamps, input_data.timestamps[1:]):
+        timestamps = input_data.get_sorted_timestamps()
+        for t0, t1 in zip(timestamps, timestamps[1:]):
             timestamp = t1
             try:
                 k = [input_data.trace[t0].objects[o1_name].x,

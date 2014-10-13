@@ -88,7 +88,7 @@ if __name__ == "__main__":
     print("--------------")
     print("Response is:")
     print("Request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
-    for t in out.qsrs.timestamps:
+    for t in out.qsrs.get_sorted_timestamps():
         foo = str(t) + ": "
         for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):
             foo += str(k) + ":" + str(v.qsr) + "; "

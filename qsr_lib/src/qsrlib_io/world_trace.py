@@ -48,11 +48,14 @@ class World_State(object):
         self.objects[object_state.name] = object_state
 
 class World_Trace(object):
-    def __init__(self, description="", last_updated=False, timestamps=None, trace=None):
+    def __init__(self, description="", last_updated=False, trace=None):
         self.description = description
         self.last_updated = last_updated
-        self.timestamps = timestamps if timestamps else []
+        # self.timestamps = timestamps if timestamps else []
         self.trace = trace if trace else {}
+
+    def get_sorted_timestamps(self):
+        return sorted(self.trace.keys())
 
     def add_object_state_to_trace(self, object_state, timestamp=None):
         if not timestamp:
@@ -62,23 +65,23 @@ class World_Trace(object):
         except KeyError:
             world_state = World_State(timestamp=timestamp, objects={object_state.name: object_state})
             self.trace[timestamp] = world_state
-            self.insert_timestamp(timestamp=timestamp, append=False)
+            # self.insert_timestamp(timestamp=timestamp, append=False)
         self.last_updated = timestamp
 
     def add_object_state_series_to_trace(self, object_states):
         for s in object_states:
             self.add_object_state_to_trace(object_state=s)
 
-    def insert_timestamp(self, timestamp, append):
-        if append:
-            self.timestamps.append(timestamp)
-        else: # for now always append
-            self.timestamps.append(timestamp)
+    # def insert_timestamp(self, timestamp, append):
+    #     if append:
+    #         self.timestamps.append(timestamp)
+    #     else: # for now always append
+    #         self.timestamps.append(timestamp)
 
     def get_last(self):
-        timestamp = self.timestamps[-1]
+        timestamps = self.get_sorted_timestamps()
+        timestamp = timestamps[-1]
         return World_Trace(last_updated=self.last_updated,
-                           timestamps=[timestamp],
                            trace=copy.deepcopy(self.trace[timestamp]))
 
     def get_at_timestamp(self, timestamp):
@@ -90,21 +93,22 @@ class World_Trace(object):
             return False
 
     def get_at_timestamp_range(self, start, finish):
+        timestamps = self.get_sorted_timestamps()
         ret = World_Trace(last_updated=self.last_updated, timestamps=[], trace={})
         try:
-            iStart = self.timestamps.index(start)
+            iStart = timestamps.index(start)
         except ValueError:
             print("ERROR: start not found")
             return False
         try:
-            iFinish = self.timestamps.index(finish)
+            iFinish = timestamps.index(finish)
         except ValueError:
             print("ERROR: finish not found")
             return False
         if iStart > iFinish:
             print("ERROR: start after finish")
             return False
-        ret.timestamps = self.timestamps[iStart:iFinish] + [self.timestamps[iFinish]]
+        ret.timestamps = timestamps[iStart:iFinish] + [timestamps[iFinish]]
         for timestamp in ret.timestamps:
             ret.trace[timestamp] = copy.deepcopy(self.trace[timestamp])
         return ret
@@ -112,7 +116,6 @@ class World_Trace(object):
 
     def get_for_objects(self, objects_names):
         ret = World_Trace(last_updated=self.last_updated,
-                          timestamps=copy.deepcopy(self.timestamps),
                           trace=copy.deepcopy(self.trace))
         for world_state in ret.trace.values():
             for object_state_name in world_state.objects.keys():
