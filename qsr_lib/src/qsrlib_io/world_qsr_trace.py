@@ -9,19 +9,19 @@ class QSR(object):
 
 
 class World_QSR_State(object):
-    def __init__(self, timestamp, qsrs={}):
+    def __init__(self, timestamp, qsrs=None):
         self.timestamp = timestamp
-        self.qsrs = qsrs
+        self.qsrs = qsrs if qsrs else {}
 
     def add_qsr(self, qsr):
         self.qsrs[qsr.between] = qsr
 
 class World_QSR_Trace(object):
-    def __init__(self, qsr_type, last_updated=False, timestamps=[], trace={}):
+    def __init__(self, qsr_type, last_updated=False, timestamps=None, trace=None):
         self.qsr_type = qsr_type
         self.last_updated = last_updated
-        self.timestamps = timestamps
-        self.trace = trace
+        self.timestamps = timestamps if timestamps else []
+        self.trace = trace if trace else {}
 
     def __add_world_qsr_state(self, world_qsr_state):
         self.trace[world_qsr_state.timestamp] = world_qsr_state

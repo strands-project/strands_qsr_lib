@@ -6,7 +6,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 d = generate_distutils_setup(
     # #  don't do this unless you want a globally visible script
     # scripts=['bin/myscript'],
-    packages=['qsrlib', 'qsrlib_qsrs', 'qsrlib_ros', 'qsrlib_io', 'qsrlib_legacy'],
+    packages=['qsrlib', 'qsrlib_qsrs', 'qsrlib_ros', 'qsrlib_io', 'qsrlib_utils', 'qsrlib_legacy'],
     package_dir={'': 'src'}
 )
 

@@ -55,7 +55,8 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  QSRsRequest.srv
+  RequestQSRs.srv
+  RequestQSRsLegacy.srv
 )
 
 ## Generate actions in the 'action' folder

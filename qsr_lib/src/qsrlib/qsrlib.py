@@ -110,7 +110,7 @@ class QSRlib(object):
                 except KeyError:
                     print("ERROR (QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
-    def request_qsrs(self, request_message=None, reset=False):
+    def request_qsrs(self, request_message=None, reset=True):
         """
 
         :param request_message: QSRlib_Request_Message, default=None
@@ -119,7 +119,11 @@ class QSRlib(object):
         """
         self.timestamp_request_received = datetime.now()
         if request_message:
+            print("setting request message")
             self.request_message = request_message
+        print(self.request_message.which_qsr, self.request_message.input_data.timestamps,
+              len(self.request_message.input_data.timestamps),
+              len(self.request_message.input_data.trace))
         try:
             world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
                                                                                      include_missing_data=self.request_message.include_missing_data,
@@ -129,9 +133,11 @@ class QSRlib(object):
             world_qsr_trace = False
         if reset:
             if self.__out: print("Resetting QSRlib data")
+            self.timestamp_request_received = None
             self.request_message = None
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
                                                   timestamp_request_made=request_message.timestamp_request_made,
                                                   timestamp_request_received=self.timestamp_request_received,
                                                   timestamp_qsrs_computed=datetime.now())
+
         return qsrlib_response

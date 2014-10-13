@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Usage example.
+"""QSRlib ROS client example
 
 :Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
 :Organization: University of Leeds
@@ -12,15 +12,22 @@
 
 from __future__ import print_function, division
 import sys
+try:
+    import cPickle as pickle
+except:
+    import pickle
+from qsrlib.qsrlib import QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
-from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
+from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
 
 
 if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
-               "qtcb": "qtc_b_simplified"}
+               "qtcb": "qtc_b_simplified",
+               "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
     try:
-        which_qsr = options[sys.argv[1]]
+        which_qsr_argv = sys.argv[1]
+        which_qsr = options[which_qsr_argv]
     except IndexError:
         print("ERROR: provide which qsr you want to test")
         print("keywords:", options.keys())
@@ -32,7 +39,8 @@ if __name__ == "__main__":
 
     world = World_Trace()
 
-    if which_qsr == options["rcc3"]:
+    if which_qsr_argv == "rcc3":
+        print("rcc3")
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -50,7 +58,17 @@ if __name__ == "__main__":
         world.add_object_state_series_to_trace(o2)
         world.add_object_state_series_to_trace(o3)
 
-    elif which_qsr == options["qtcb"]:
+    elif which_qsr_argv == "rcc3a":
+        print("rcc3a")
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.)]
+
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.)]
+
+        world.add_object_state_series_to_trace(o1)
+        world.add_object_state_series_to_trace(o2)
+
+    elif which_qsr_argv == "qtcb":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -62,18 +80,17 @@ if __name__ == "__main__":
         world.add_object_state_series_to_trace(o1)
         world.add_object_state_series_to_trace(o2)
 
-
-
-    # make a QSRlib object
-    qsrlib = QSRlib()
-    # make a request message
-    request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
-    # request QSRs
-    out = qsrlib.request_qsrs(request_message=request_message)
-    # some print some nice data
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
+    cln = QSRlib_ROS_Client()
+    req = cln.make_ros_request_message(qsrlib_request_message)
+    res = cln.request_qsrs(req)
+    out = pickle.loads(res.data)
+    print("--------------")
+    print("Response is:")
     print("Request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
     for t in out.qsrs.timestamps:
         foo = str(t) + ": "
         for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):
             foo += str(k) + ":" + str(v.qsr) + "; "
         print(foo)
+

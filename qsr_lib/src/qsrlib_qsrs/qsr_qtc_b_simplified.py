@@ -14,7 +14,7 @@
 
 from __future__ import print_function, division
 from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
-from qsrlib_io.qsr_trace import *
+from qsrlib_io.world_qsr_trace import *
 import math
 
 class QSR_QTC_B_Simplified(QSR_Abstractclass):

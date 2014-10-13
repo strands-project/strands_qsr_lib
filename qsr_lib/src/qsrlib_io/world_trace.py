@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""World state, provides input to QSRlib
+
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Organization: University of Leeds
+:Date: 22 September 2014
+:Version: 0.1
+:Status: Development
+:Copyright: STRANDS default
+"""
+
 from __future__ import print_function, division
 import copy
 
@@ -29,19 +40,19 @@ class Object_State(object):
 
 
 class World_State(object):
-    def __init__(self, timestamp, objects={}):
+    def __init__(self, timestamp, objects=None):
         self.timestamp = timestamp
-        self.objects = objects
+        self.objects = objects if objects else {}
 
     def add_object_state(self, object_state):
         self.objects[object_state.name] = object_state
 
 class World_Trace(object):
-    def __init__(self, description="", last_updated=False, timestamps=[], trace={}):
+    def __init__(self, description="", last_updated=False, timestamps=None, trace=None):
         self.description = description
         self.last_updated = last_updated
-        self.timestamps = timestamps
-        self.trace = trace
+        self.timestamps = timestamps if timestamps else []
+        self.trace = trace if trace else {}
 
     def add_object_state_to_trace(self, object_state, timestamp=None):
         if not timestamp:
@@ -54,8 +65,8 @@ class World_Trace(object):
             self.insert_timestamp(timestamp=timestamp, append=False)
         self.last_updated = timestamp
 
-    def add_object_state_series_to_trace(self, object_snapshots):
-        for s in object_snapshots:
+    def add_object_state_series_to_trace(self, object_states):
+        for s in object_states:
             self.add_object_state_to_trace(object_state=s)
 
     def insert_timestamp(self, timestamp, append):
@@ -117,20 +128,3 @@ class World_Trace(object):
         except:
             print("ERROR: something went wrong")
             return False
-
-if __name__ == "__main__":
-    world = World_Trace()
-
-    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-          Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-          Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
-    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-          Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
-          Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
-          Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
-    o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-          Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
-          Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
-    world.add_object_state_series_to_trace(o1)
-    world.add_object_state_series_to_trace(o2)
-    world.add_object_state_series_to_trace(o3)
