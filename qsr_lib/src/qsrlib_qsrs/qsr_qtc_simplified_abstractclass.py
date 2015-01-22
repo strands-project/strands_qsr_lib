@@ -273,7 +273,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                      input_data.trace[t0].objects[o2_name].y,
                      input_data.trace[t1].objects[o2_name].x,
                      input_data.trace[t1].objects[o2_name].y]
-                qtc = self.create_qtc_representation(k, l, 0.)
+                qtc = self.create_qtc_representation(
+                    k, 
+                    l, 
+                    input_data.trace[t0].objects[o1_name].kwargs["quantisation_factor"]
+                )
                 qtc = self.qtc_to_string(qtc)
                 qsr = QSR(
                     timestamp=timestamp,
