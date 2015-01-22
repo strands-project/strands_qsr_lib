@@ -26,18 +26,6 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
         self.qsr_type = "qtc_c_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")
-
-    def custom_checks(self, input_data):
-        """Write your own custom checks on top of the default ones
-
-
-        :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
-        """
-        return 0, ""
-        
     def qtc_to_string(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.

@@ -71,28 +71,30 @@ if __name__ == "__main__":
 
     elif which_qsr_argv == "qtcb":
         quantisation_factor = 0 # Has to be the same for all timesteps and objects
+        validate=True
 
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=quantisation_factor)]
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate)]
 
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor)]
+        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor, validate=validate)]
 
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
         quantisation_factor = 0 # Has to be the same for all timesteps and objects
+        validate=True
 
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=quantisation_factor),
-              Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=quantisation_factor)]
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=quantisation_factor, validate=validate)]
 
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor),
-              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor)]
+        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
+              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor, validate=validate)]
 
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
