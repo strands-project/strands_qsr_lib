@@ -6,6 +6,8 @@ Created on Mon Jan 19 11:22:16 2015
 @author: cdondrup
 """
 from abc import abstractmethod, ABCMeta, abstractproperty
+from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
+from qsrlib_io.world_qsr_trace import *
 from exceptions import Exception, AttributeError
 import numpy as np
 
@@ -14,7 +16,7 @@ class QTCException(Exception):
     pass
 
 
-class QSR_QTC_Simplified_Abstractclass(object):
+class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     """Abstract class for the QSR makers"""
     __metaclass__ = ABCMeta
 
@@ -88,6 +90,17 @@ class QSR_QTC_Simplified_Abstractclass(object):
         return newqtc.reshape(-1, 4)
 
     def create_qtc_representation(self, pos_k, pos_l, quantisation_factor=0):
+        """Creating the QTCC representation for the given data. Uses the 
+        double cross to determine to which side of the lines the points are 
+        moving.
+        
+        :param pos_k: An array of positions for agent k, exactly 2 entries of x,y positions
+        :param pos_l: An array of positions for agent l, exactly 2 entries of x,y positions
+        :param quantisation_factor: The minimum distance the points have to diverge from either line to be regrded a non-0-state
+        
+        :return: The QTCC 4-tuple (q1,q2,q4,q5) for the movement of the two agents: [k[0],l[0],k[1],l[1]]
+        
+        """
         #print "######################################################"
         pos_k = np.array(pos_k).reshape(-1, 2)
         pos_l = np.array(pos_l).reshape(-1, 2)
@@ -117,7 +130,7 @@ class QSR_QTC_Simplified_Abstractclass(object):
         )
         #print "transl", trans_RL_l
 
-        # Test for constraints for k
+        # Test constraints for k
         k = np.append(
             self._test_constraint(
                 pos_k,
@@ -131,7 +144,7 @@ class QSR_QTC_Simplified_Abstractclass(object):
         )
         #print "k", k
 
-        # Test for constraints for l
+        # Test constraints for l
         l = np.append(
             self._test_constraint(
                 pos_l,
@@ -189,7 +202,7 @@ class QSR_QTC_Simplified_Abstractclass(object):
 
     def _test_constraint(self, pos, line, quantisation_factor=0, constraint=""):
         """Testing for distance and side constraint using the double cross. To
-        determine if a point moved it uses a line (from the cross) and checks
+        determine if a point moved, it uses a line (from the cross) and checks
         the side the point moved to (depending on the orientation of the line)
         and how far away it moved. The latter is used for the quantisation_factor
         and to create 0-states from noisy data.
@@ -199,7 +212,7 @@ class QSR_QTC_Simplified_Abstractclass(object):
             
         :param pos: The position of the agent, point in space
         :param line: The line to use as reference for the movement
-        :param quantisation_factor=0: Minimum distance a point has to move to be considered a non-0-state. sam unit of mesuarment in which the points are described
+        :param quantisation_factor=0: Minimum distance a point has to move to be considered a non-0-state. same unit of mesuarment in which the points are described
         :param constraint="": Set to "side" if checking for the side constraint. 
         The result for the side has to be inverted.
         
@@ -232,3 +245,55 @@ class QSR_QTC_Simplified_Abstractclass(object):
 
         # Side constraints need to be inverted to give the correct qtc state
         return res*-1 if constraint == "side" else res
+        
+    def make(self, *args, **kwargs):
+        """Make the QSRs
+
+        :param args: not used at the moment
+        :param kwargs:
+                        - input_data: World_Trace
+        :return: World_QSR_Trace
+        """
+        input_data = kwargs["input_data"]
+        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        timestamps = input_data.get_sorted_timestamps()
+        objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
+        o1_name = objects_names[0]
+        o2_name = objects_names[1]
+        between = o1_name + "," + o2_name
+        timestamps = input_data.get_sorted_timestamps()
+        for t0, t1 in zip(timestamps, timestamps[1:]):
+            timestamp = t1
+            try:
+                k = [input_data.trace[t0].objects[o1_name].x,
+                     input_data.trace[t0].objects[o1_name].y,
+                     input_data.trace[t1].objects[o1_name].x,
+                     input_data.trace[t1].objects[o1_name].y]
+                l = [input_data.trace[t0].objects[o2_name].x,
+                     input_data.trace[t0].objects[o2_name].y,
+                     input_data.trace[t1].objects[o2_name].x,
+                     input_data.trace[t1].objects[o2_name].y]
+                qtc = self.create_qtc_representation(k, l, 0.)
+                qtc = self.qtc_to_string(qtc)
+                qsr = QSR(
+                    timestamp=timestamp,
+                    between=between,
+                    qsr=qtc
+                )
+                ret.add_qsr(qsr, timestamp)
+            except KeyError:
+                ret.add_empty_world_qsr_state(timestamp)
+        return ret
+        
+    @abstractmethod
+    def qtc_to_string(self, qtc):
+        """Overwrite this for the different QTC veriants to select only the parts
+        from the QTCC tuple that you would like to return.
+        Example for QTCB: return str(qtc[0]) + "," + str(qtc[1])
+        
+        :param qtc: The full QTCC tuple [q1,q2,q4,q5]
+        
+        :return: The part of the tuple you would to have as a result converted 
+        to a comma separated string
+        """
+        return ""
