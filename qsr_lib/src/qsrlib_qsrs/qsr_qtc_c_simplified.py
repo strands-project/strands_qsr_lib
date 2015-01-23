@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Example that shows how to implement QSR makers.
 
-:Author: Christan Dondrup <cdondrup@lincoln.ac.uk>, Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Author: Christan Dondrup <cdondrup@lincoln.ac.uk>
 :Organization: University of Lincoln
 :Date: 10 September 2014
 :Version: 0.1
@@ -18,12 +18,12 @@ import math
 import sys
 
 
-class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
+class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        super(QSR_QTC_B_Simplified, self).__init__()
-        self.qtc_type = "b"
-        self.qsr_type = "qtc_b_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
+        super(QSR_QTC_C_Simplified, self).__init__()
+        self.qtc_type = "c"
+        self.qsr_type = "qtc_c_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
     def custom_help(self):
@@ -45,6 +45,9 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
         
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
         
-        :return: q1,q2 converted to a comma separated string
+        :return: q1,q2,q4,q5 converted to a comma separated string
         """
-        return str(qtc[0]) + "," + str(qtc[1])
+        return str(qtc[0]) + \
+            "," + str(qtc[1]) + \
+            "," + str(qtc[2]) + \
+            "," + str(qtc[3])

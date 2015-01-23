@@ -16,6 +16,7 @@ from qsrlib_io.world_trace import World_Trace
 # Import implemented makers
 from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
 from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
+from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
 
 class QSRlib_Response_Message(object):
     def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
@@ -67,7 +68,8 @@ class QSRlib(object):
     """
     def __init__(self, qsrs_active=None, print_messages=True, help=True, request_message=None):
         self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D,
-                                       "qtc_b_simplified": QSR_QTC_B_Simplified}
+                                       "qtc_b_simplified": QSR_QTC_B_Simplified,
+                                       "qtc_c_simplified": QSR_QTC_C_Simplified}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:

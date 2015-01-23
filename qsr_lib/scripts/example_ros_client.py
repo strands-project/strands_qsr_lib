@@ -24,6 +24,7 @@ from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
 if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
                "qtcb": "qtc_b_simplified",
+               "qtcc": "qtc_c_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
     try:
         which_qsr_argv = sys.argv[1]
@@ -69,13 +70,25 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-              Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
+              Object_State(name="o1", timestamp=1, x=2., y=1.),
+              Object_State(name="o1", timestamp=2, x=1., y=1.)]
 
-        o2 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-              Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
-              Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
+              Object_State(name="o2", timestamp=1, x=4., y=1.),
+              Object_State(name="o2", timestamp=2, x=5., y=1.)]
+
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
+
+    elif which_qsr_argv == "qtcc":
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
+              Object_State(name="o1", timestamp=1, x=2., y=2.),
+              Object_State(name="o1", timestamp=2, x=1., y=2.)]
+
+        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
+              Object_State(name="o2", timestamp=1, x=4., y=1.),
+              Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
