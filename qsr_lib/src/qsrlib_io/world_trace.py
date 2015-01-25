@@ -14,9 +14,9 @@ import copy
 
 class Object_State(object):
     def __init__(self, name, timestamp,
-                 x=0., y=0., z=0.,
-                 roll=0., pitch=0., yaw=0.,
-                 length=0., width=0., height=0.,
+                 x=float('nan'), y=float('nan'), z=float('nan'),
+                 roll=float('nan'), pitch=float('nan'), yaw=float('nan'),
+                 length=float('nan'), width=float('nan'), height=float('nan'),
                  *args, **kwargs):
         self.name = name
         self.timestamp = timestamp
