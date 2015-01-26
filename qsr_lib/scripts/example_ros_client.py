@@ -19,6 +19,8 @@ except:
 from qsrlib.qsrlib import QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
 from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
+import argparse
+import csv
 
 
 if __name__ == "__main__":
@@ -26,13 +28,17 @@ if __name__ == "__main__":
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
+    parser.add_argument("-i", "--input", help="file from which to read object states", type=str)
+    parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
+    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states. Only QTC", type=float)
+    args = parser.parse_args()
+        
     try:
-        which_qsr_argv = sys.argv[1]
+        which_qsr_argv = args.qsr
         which_qsr = options[which_qsr_argv]
-    except IndexError:
-        print("ERROR: provide which qsr you want to test")
-        print("keywords:", options.keys())
-        sys.exit(1)
     except KeyError:
         print("ERROR: qsr not found")
         print("keywords:", options.keys())
@@ -70,34 +76,86 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        quantisation_factor = 0 # Has to be the same for all timesteps and objects
-        validate=True
+        q = args.quantisation_factor if args.quantisation_factor else 0.
+        v = args.validate
+        
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file:")
+                for idx,row in enumerate(reader):
+                    print(idx, row['agent1'], row['x1'], row['y1'],row['agent2'], row['x2'], row['y2'])
+                    ob.append(Object_State(
+                        name=row['agent1'], 
+                        timestamp=idx, 
+                        x=float(row['x1']), 
+                        y=float(row['y1']), 
+                        quantisation_factor=q, 
+                        validate=v
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'], 
+                        timestamp=idx, 
+                        x=float(row['x2']), 
+                        y=float(row['y2']), 
+                        quantisation_factor=q, 
+                        validate=v
+                    ))
+                    
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=q, validate=v)]
+    
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v)]
 
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate)]
-
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor, validate=validate)]
-
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
-        quantisation_factor = 0 # Has to be the same for all timesteps and objects
-        validate=True
+        q = args.quantisation_factor if args.quantisation_factor else 0.
+        v = args.validate
 
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=quantisation_factor, validate=validate)]
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file:")
+                for idx,row in enumerate(reader):
+                    print(idx, row['agent1'], row['x1'], row['y1'],row['agent2'], row['x2'], row['y2'])
+                    ob.append(Object_State(
+                        name=row['agent1'], 
+                        timestamp=idx, 
+                        x=float(row['x1']), 
+                        y=float(row['y1']), 
+                        quantisation_factor=q, 
+                        validate=v
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'], 
+                        timestamp=idx, 
+                        x=float(row['x2']), 
+                        y=float(row['y2']), 
+                        quantisation_factor=q, 
+                        validate=v
+                    ))
+                    
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v),
+                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v)]
+    
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v)]
 
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=quantisation_factor, validate=validate),
-              Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=quantisation_factor, validate=validate)]
-
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
 
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
     cln = QSRlib_ROS_Client()
