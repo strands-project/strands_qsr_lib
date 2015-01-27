@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.1 (2015-01-27)
+------------------
 * Adding proper install targets and adjusting package.xml
 * Update README.md
 * Added .md to readme to make it markdown
