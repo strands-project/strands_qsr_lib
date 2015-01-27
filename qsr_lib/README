@@ -1,23 +1,54 @@
-QSR_Lib
-=======
+# QSR_Lib
 
 Can be run as python standalone, as well as a ROS server is provided with an example client.
 
-Notes for users
-----------------
+## Notes for users
+
 1) Running it as python standalone
 Just run the example.py in the $STRANDS_QSR_LIB/qsr_lib/scripts/standalone
 
 2) Running it via ROS
+```
 $ rosrun qsr_lib qsrlib_ros_server.py
+```
 
 example client:
-$ rosrun qsr_lib example_using_builtin_ros_client.py
+```
+$ rosrun qsr_lib example_ros_client.py
+```
 see qsrlib_ros_client.py for more details
 
+### QTC
+QTC descirbes the movement of 2 agents in 2d space. The implemented version is described in [1].
+Both agents need to have their x,y coordinates described for at least two timesteps. Please see `qsr_lib/share/qtc_data` or the `example_ros_client.py` for a very short example.
 
-Notes for QSR developers
-------------------------
+To run the ros example client uisng qtc:
+```
+rosrun qsr_lib example_ros_client.py <qtc-varaient>
+```
+This has a few options
+
+* Mendatory: 
+ * `<qtc-varaient>`: Can be either `qtcb` or `qtcc`. Please refer to [1] for additional infromation about the variants
+* Optional:
+ * `-h|--help`: to display usage information
+ * `-i|--input FILE`: read x,y coordinates from a csv file. See `qsr_lib/share/qtc_data/qtc_example.csv`
+ * `--quantisation_factor FLOAT`: Determines the minimum distance one of the agents have to diverge from the double cross to be counted as movement. Please refer to [1] to read more about smoothing and quantisation of QTC.
+ * `--validate`: Creates a QTC representation that is valid according to the CND [2]
+ * `--no_collapse`: Does not collapse similar adjacent states as it the default in QTC since it does not represent discrete time but a sequence of states
+
+To create a valid QTCC state chain with a quantisation factor of 1 (in the same unit as x,y) one would run:
+```
+  rosrun qsr_lib example_ros_client.py qtcc --validate --quantisation_factor 1 -i my_file.csv
+```
+To create a QTCB state for each transition from one timestep to the other without validating them, one would run:
+```
+  rosrun qsr_lib example_ros_client.py qtcb -i my_file.csv --no_collapse
+```
+
+
+## Notes for QSR developers
+
 You need to change two files:
 
 1) Make a copy of
@@ -46,3 +77,6 @@ For any trouble preferably  a ticket via the github system or alternatively if y
 
 Cheers!
 Yianni
+
+[1] Christian Dondrup, Nicola Bellotto, and Marc Hanheide. "A probabilistic model of human-robot spatial interaction using a qualitative trajectory calculus." 2014 AAAI Spring Symposium Series. 2014.
+[2] Matthias Delafontaine. Modelling and analysing moving objects and travelling subjects: Bridging theory and practice. Diss. Ghent University, 2011.

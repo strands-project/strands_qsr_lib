@@ -361,7 +361,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 ret.add_empty_world_qsr_state(timestamp)
         if input_data.trace[0].objects[o1_name].kwargs["validate"]:
             qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
-        if not input_data.trace[0].objects[o1_name].kwargs["no_collaps"]:
+        if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
             qtc_sequence = self._collapse_similar_states(qtc_sequence)
         for idx, qtc in enumerate(qtc_sequence):
             qtc_str = self.qtc_to_string((qtc))
