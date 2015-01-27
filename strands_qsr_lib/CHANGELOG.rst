@@ -2,6 +2,9 @@
 Changelog for package strands_qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.0.2 (2015-01-27)
 ------------------
 * Created changelog
