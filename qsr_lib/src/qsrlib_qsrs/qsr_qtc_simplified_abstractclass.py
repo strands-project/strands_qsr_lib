@@ -307,16 +307,17 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     input_data.trace[t].objects[o]
                 except KeyError:
                         return 51, "Only one object defined for timestep %f. Two objects have to be present at any given step." % t
-            for o in objects_names:
+                if np.isnan(input_data.trace[t].objects[o].x) \
+                    or np.isnan(input_data.trace[t].objects[o].y):
+                        return 52, "Coordinates x: %f, y: %f are not defined correctly for timestep %f." % (x, y, t)
                 try :
                     input_data.trace[t].objects[o].kwargs["quantisation_factor"]
                 except KeyError:
-                        return 52, "One or several of the objects are missing the quantisation_factor argument."
-            for o in objects_names:
+                        return 53, "One or several of the objects are missing the quantisation_factor argument."
                 try :
                     input_data.trace[t].objects[o].kwargs["validate"]
                 except KeyError:
-                        return 53, "One or several of the objects are missing the validate argument."
+                        return 54, "One or several of the objects are missing the validate argument."
         return 0, ""
 
     def make(self, *args, **kwargs):
