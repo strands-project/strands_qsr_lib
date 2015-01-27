@@ -112,6 +112,19 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         return legal_qtc
 
+    def _collapse_similar_states(self, qtc):
+        if len(qtc.shape) == 1:
+            return qtc  # Only one state in chain.
+
+        col_qtc = np.array([qtc[0,:].copy()])
+        j = 0
+        for i in xrange(1, qtc.shape[0]):
+            if not np.array_equal(col_qtc[j,:], qtc[i,:]):
+                col_qtc = np.append(col_qtc, [qtc[i,:]], axis=0)
+                j += 1
+
+        return col_qtc
+
     def _create_qtc_representation(self, pos_k, pos_l, quantisation_factor=0):
         """Creating the QTCC representation for the given data. Uses the
         double cross to determine to which side of the lines the points are
@@ -343,6 +356,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 ret.add_empty_world_qsr_state(timestamp)
         if input_data.trace[0].objects[o1_name].kwargs["validate"]:
             qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
+        if not input_data.trace[0].objects[o1_name].kwargs["no_collaps"]:
+            qtc_sequence = self._collapse_similar_states(qtc_sequence)
         for idx, qtc in enumerate(qtc_sequence):
             qtc_str = self.qtc_to_string((qtc))
             qsr = QSR(
