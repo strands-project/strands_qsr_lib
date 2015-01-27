@@ -79,4 +79,5 @@ Cheers!
 Yianni
 
 [1] Christian Dondrup, Nicola Bellotto, and Marc Hanheide. "A probabilistic model of human-robot spatial interaction using a qualitative trajectory calculus." 2014 AAAI Spring Symposium Series. 2014.
+
 [2] Matthias Delafontaine. Modelling and analysing moving objects and travelling subjects: Bridging theory and practice. Diss. Ghent University, 2011.
