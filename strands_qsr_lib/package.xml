@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package>
+  <name>strands_qsr_lib</name>
+  <version>0.0.1</version>
+  <description>The strands_qsr_lib metapackage</description>
+
+  <maintainer email="y.gatsoulis@leeds.ac.uk">Yiannis Gatsoulis</maintainer>
+  <maintainer email="cdondrup@lincoln.ac.uk">Christian Dondrup</maintainer>
+
+  <license>MIT</license>
+
+  <url type="website">https://github.com/strands-project/strands_qsr_lib</url> 
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>qsr_lib</run_depend>
+
+  <export>
+    <metapackage/> 
+  </export>
+</package>
