@@ -77,7 +77,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        q = args.quantisation_factor if args.quantisation_factor else 0.
+        q = args.quantisation_factor
         v = args.validate
         n = args.no_collaps
 
@@ -87,7 +87,6 @@ if __name__ == "__main__":
                 reader = csv.DictReader(csvfile)
                 print("Reading file '%s':" % args.input)
                 for idx,row in enumerate(reader):
-                    print(idx, row['agent1'], row['x1'], row['y1'],row['agent2'], row['x2'], row['y2'])
                     ob.append(Object_State(
                         name=row['agent1'],
                         timestamp=idx,
@@ -121,7 +120,7 @@ if __name__ == "__main__":
             world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
-        q = args.quantisation_factor if args.quantisation_factor else 0.
+        q = args.quantisation_factor
         v = args.validate
         n = args.no_collaps
 
@@ -131,7 +130,6 @@ if __name__ == "__main__":
                 reader = csv.DictReader(csvfile)
                 print("Reading file '%s':" % args.input)
                 for idx,row in enumerate(reader):
-                    print(idx, row['agent1'], row['x1'], row['y1'],row['agent2'], row['x2'], row['y2'])
                     ob.append(Object_State(
                         name=row['agent1'],
                         timestamp=idx,

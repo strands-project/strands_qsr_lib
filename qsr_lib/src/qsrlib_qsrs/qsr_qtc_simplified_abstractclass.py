@@ -335,6 +335,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         o1_name = objects_names[0]
         o2_name = objects_names[1]
         between = o1_name + "," + o2_name
+        quantisation_factor = \
+            input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+            if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+            else 0.
         qtc_sequence = np.array([], dtype=int)
         for t0, t1 in zip(timestamps, timestamps[1:]):
             timestamp = t1
@@ -350,7 +354,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
                     k,
                     l,
-                    input_data.trace[t0].objects[o1_name].kwargs["quantisation_factor"]
+                    quantisation_factor
                 )).reshape(-1,4)
 
             except KeyError:
