@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """QSRlib ROS client example
 
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>, Christan Dondrup <cdondrup@lincoln.ac.uk>
 :Organization: University of Leeds
 :Date: 22 September 2014
 :Version: 0.1
@@ -27,6 +27,7 @@ if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
+               "qtcbc": "qtc_bc_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
 
     parser = argparse.ArgumentParser()
@@ -35,6 +36,7 @@ if __name__ == "__main__":
     parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
     parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states. Only QTC", type=float)
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
+    parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     args = parser.parse_args()
 
     try:
@@ -158,6 +160,52 @@ if __name__ == "__main__":
             o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
                   Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
                   Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
+
+    elif which_qsr_argv == "qtcbc":
+        q = args.quantisation_factor
+        v = args.validate
+        n = args.no_collapse
+        d = args.distance_threshold
+
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file '%s':" % args.input)
+                for idx,row in enumerate(reader):
+                    ob.append(Object_State(
+                        name=row['agent1'],
+                        timestamp=idx,
+                        x=float(row['x1']),
+                        y=float(row['y1']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n,
+                        distance_threshold=d
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'],
+                        timestamp=idx,
+                        x=float(row['x2']),
+                        y=float(row['y2']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n,
+                        distance_threshold=d
+                    ))
+
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
+
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
 
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
