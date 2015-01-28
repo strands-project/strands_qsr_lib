@@ -113,17 +113,41 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         return legal_qtc
 
     def _collapse_similar_states(self, qtc):
+        """Collapses similar adjacent QTC states.
+
+        :param qtc: a qtc state sequence
+
+        :return: the input sequence without similar adjacent states
+        """
         if len(qtc.shape) == 1:
             return qtc  # Only one state in chain.
+
+        if self.qtc_type == "b":
+            qtc = qtc[:,0:2].copy()
 
         col_qtc = np.array([qtc[0,:].copy()])
         j = 0
         for i in xrange(1, qtc.shape[0]):
-            if not np.array_equal(col_qtc[j,:], qtc[i,:]):
+            if not self._nan_equal(col_qtc[j,:], qtc[i,:]):
                 col_qtc = np.append(col_qtc, [qtc[i,:]], axis=0)
                 j += 1
 
         return col_qtc
+
+    def _nan_equal(self, a, b):
+        """Uses assert equal to compare if two arrays containing nan values
+        are equal.
+
+        :param a: first array
+        :param b: second array
+
+        :return: True|False
+        """
+        try:
+            np.testing.assert_equal(a,b)
+        except AssertionError:
+            return False
+        return True
 
     def _create_qtc_representation(self, pos_k, pos_l, quantisation_factor=0):
         """Creating the QTCC representation for the given data. Uses the
@@ -318,6 +342,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     input_data.trace[t].objects[o].kwargs["validate"]
                 except KeyError:
                         return 54, "One or several of the objects are missing the validate argument."
+                try :
+                    input_data.trace[t].objects[o].kwargs["distance_threshold"]
+                except KeyError:
+                    if self.qtc_type == "bc":
+                        return 55, "A distance_threshold has to be definde to determine when to transiction from QTCB to QTCC and vice-versa."
         return 0, ""
 
     def make(self, *args, **kwargs):
@@ -359,10 +388,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
             except KeyError:
                 ret.add_empty_world_qsr_state(timestamp)
-        if input_data.trace[0].objects[o1_name].kwargs["validate"]:
-            qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
         if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
             qtc_sequence = self._collapse_similar_states(qtc_sequence)
+        if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+            qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
         for idx, qtc in enumerate(qtc_sequence):
             qtc_str = self.qtc_to_string((qtc))
             qsr = QSR(
