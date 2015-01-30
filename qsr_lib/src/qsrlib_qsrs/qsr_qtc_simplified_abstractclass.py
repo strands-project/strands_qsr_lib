@@ -407,11 +407,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     def qtc_to_string(self, qtc):
         """Overwrite this for the different QTC variants to select only the parts
         from the QTCC tuple that you would like to return.
-        Example for QTCB: return str(qtc[0]) + "," + str(qtc[1])
+        Example for QTCB: return qtc[0:2]
 
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
 
-        :return: The part of the tuple you would to have as a result converted
-        to a comma separated string
+        :return: The part of the tuple you would to have as a result
         """
         return ""

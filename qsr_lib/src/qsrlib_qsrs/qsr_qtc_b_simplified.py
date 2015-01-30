@@ -24,15 +24,15 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
         super(QSR_QTC_B_Simplified, self).__init__()
         self.qtc_type = "b"
         self.qsr_type = "qtc_b_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.all_possible_relations = self.return_all_possible_state_combinations()[0]
+        self.all_possible_relations = self.return_all_possible_state_combinations()[1]
 
     def qtc_to_string(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.
-        Example for QTCB: return str(qtc[0]) + "," + str(qtc[1])
+        Example for QTCB: return qtc[0:2]
         
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
         
-        :return: q1,q2 converted to a comma separated string
+        :return: q1,q2
         """
-        return str(qtc[0]) + "," + str(qtc[1])
+        return qtc[0:2]

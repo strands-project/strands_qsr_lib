@@ -25,7 +25,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         super(QSR_QTC_BC_Simplified, self).__init__()
         self.qtc_type = "bc"
         self.qsr_type = "qtc_bc_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.all_possible_relations = self.return_all_possible_state_combinations()[0]
+        self.all_possible_relations = self.return_all_possible_state_combinations()[1]
 
     def make(self, *args, **kwargs):
         """Make the QSRs
@@ -107,16 +107,13 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
     def qtc_to_string(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.
-        Example for QTCB: return str(qtc[0]) + "," + str(qtc[1])
+        Example for QTCB: return qtc[0:2]
 
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
 
-        :return: q1,q2,q4,q5 converted to a comma separated string
+        :return: q1,q2,q4,q5
         """
-        return str(int(qtc[0])) + \
-            "," + str(int(qtc[1])) + \
-            (("," + str(int(qtc[2]))) if not np.isnan(qtc[2]) else "") + \
-            (("," + str(int(qtc[3]))) if not np.isnan(qtc[3]) else "")
+        return qtc if not np.isnan(qtc[2]) else qtc[0:2]
             
     def _get_euclidean_distance(self, p, q):
         """Calculate the Euclidean distance between points p and q
