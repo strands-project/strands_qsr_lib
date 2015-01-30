@@ -11,6 +11,7 @@
 """
 
 from __future__ import print_function, division
+import rospy
 import sys
 try:
     import cPickle as pickle
@@ -38,6 +39,8 @@ if __name__ == "__main__":
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     args = parser.parse_args()
+
+    client_node = rospy.init_node("qsr_lib_ros_client_example")
 
     try:
         which_qsr_argv = args.qsr
