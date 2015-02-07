@@ -21,7 +21,6 @@ from qsr_lib.srv import *
 
 class QSRlib_ROS_Client(object):
     def __init__(self, service_node_name="qsr_lib"):
-        self.client_node = rospy.init_node("qsr_lib_ros_client_example")  # needed for rospy.get_rostime() in the request method
         self.service_topic_names = {"request": service_node_name+"/request"}
         print("Waiting for service '" + self.service_topic_names["request"] + "' to come up", end="")
         rospy.wait_for_service(self.service_topic_names["request"])

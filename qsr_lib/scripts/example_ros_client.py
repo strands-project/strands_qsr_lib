@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """QSRlib ROS client example
 
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>, Christan Dondrup <cdondrup@lincoln.ac.uk>
 :Organization: University of Leeds
 :Date: 22 September 2014
 :Version: 0.1
@@ -11,6 +11,7 @@
 """
 
 from __future__ import print_function, division
+import rospy
 import sys
 try:
     import cPickle as pickle
@@ -19,20 +20,31 @@ except:
 from qsrlib.qsrlib import QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
 from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
+import argparse
+import csv
 
 
 if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
+               "qtcbc": "qtc_bc_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
+    parser.add_argument("-i", "--input", help="file from which to read object states", type=str)
+    parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
+    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states. Only QTC", type=float)
+    parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
+    parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
+    args = parser.parse_args()
+
+    client_node = rospy.init_node("qsr_lib_ros_client_example")
+
     try:
-        which_qsr_argv = sys.argv[1]
+        which_qsr_argv = args.qsr
         which_qsr = options[which_qsr_argv]
-    except IndexError:
-        print("ERROR: provide which qsr you want to test")
-        print("keywords:", options.keys())
-        sys.exit(1)
     except KeyError:
         print("ERROR: qsr not found")
         print("keywords:", options.keys())
@@ -70,28 +82,136 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
-              Object_State(name="o1", timestamp=1, x=2., y=1.),
-              Object_State(name="o1", timestamp=2, x=1., y=1.)]
+        q = args.quantisation_factor
+        v = args.validate
+        n = args.no_collapse
 
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
-              Object_State(name="o2", timestamp=1, x=4., y=1.),
-              Object_State(name="o2", timestamp=2, x=5., y=1.)]
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file '%s':" % args.input)
+                for idx,row in enumerate(reader):
+                    ob.append(Object_State(
+                        name=row['agent1'],
+                        timestamp=idx,
+                        x=float(row['x1']),
+                        y=float(row['y1']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'],
+                        timestamp=idx,
+                        x=float(row['x2']),
+                        y=float(row['y2']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n
+                    ))
 
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
-              Object_State(name="o1", timestamp=1, x=2., y=2.),
-              Object_State(name="o1", timestamp=2, x=1., y=2.)]
+        q = args.quantisation_factor
+        v = args.validate
+        n = args.no_collapse
 
-        o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
-              Object_State(name="o2", timestamp=1, x=4., y=1.),
-              Object_State(name="o2", timestamp=2, x=5., y=1.)]
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file '%s':" % args.input)
+                for idx,row in enumerate(reader):
+                    ob.append(Object_State(
+                        name=row['agent1'],
+                        timestamp=idx,
+                        x=float(row['x1']),
+                        y=float(row['y1']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'],
+                        timestamp=idx,
+                        x=float(row['x2']),
+                        y=float(row['y2']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n
+                    ))
 
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v, no_collapse=n)]
+
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
+
+    elif which_qsr_argv == "qtcbc":
+        q = args.quantisation_factor
+        v = args.validate
+        n = args.no_collapse
+        d = args.distance_threshold
+
+        if args.input:
+            ob = []
+            with open(args.input) as csvfile:
+                reader = csv.DictReader(csvfile)
+                print("Reading file '%s':" % args.input)
+                for idx,row in enumerate(reader):
+                    ob.append(Object_State(
+                        name=row['agent1'],
+                        timestamp=idx,
+                        x=float(row['x1']),
+                        y=float(row['y1']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n,
+                        distance_threshold=d
+                    ))
+                    ob.append(Object_State(
+                        name=row['agent2'],
+                        timestamp=idx,
+                        x=float(row['x2']),
+                        y=float(row['y2']),
+                        quantisation_factor=q,
+                        validate=v,
+                        no_collapse=n,
+                        distance_threshold=d
+                    ))
+
+            world.add_object_state_series(ob)
+        else:
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
+
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
+                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
+
+            world.add_object_state_series(o1)
+            world.add_object_state_series(o2)
 
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
     cln = QSRlib_ROS_Client()
