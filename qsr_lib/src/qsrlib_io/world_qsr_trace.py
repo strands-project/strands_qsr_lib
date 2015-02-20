@@ -2,10 +2,11 @@ from __future__ import print_function, division
 # import copy
 
 class QSR(object):
-    def __init__(self, timestamp, between, qsr):
+    def __init__(self, timestamp, between, qsr, qsr_type=""):
         self.timestamp = timestamp
         self.between = between
         self.qsr = qsr
+        self.type = qsr_type
 
 
 class World_QSR_State(object):
