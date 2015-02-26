@@ -25,7 +25,14 @@ class World_QSR_Trace(object):
         self.trace = trace if trace else {}
 
     def get_sorted_timestamps(self):
-        return sorted(self.trace.keys())
+        # TODO this is so inefficient, why do I store the timestamps as strings in the first place (answer ros serializ)
+        ret = self.trace.keys()
+        foo = ret[0]
+        ret = [int(i) for i in ret]
+        ret = sorted(ret)
+        if type(foo) is str:
+            ret = [str(i) for i in ret]  # if they were str make them strs again
+        return ret
 
     def __add_world_qsr_state(self, world_qsr_state):
         self.trace[world_qsr_state.timestamp] = world_qsr_state

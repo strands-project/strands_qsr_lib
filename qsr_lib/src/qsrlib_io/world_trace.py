@@ -54,7 +54,14 @@ class World_Trace(object):
         self.trace = trace if trace else {}
 
     def get_sorted_timestamps(self):
-        return sorted(self.trace.keys())
+        # TODO this is so inefficient, why do I store the timestamps as strings in the first place (answer ros serializ)
+        ret = self.trace.keys()
+        foo = ret[0]
+        ret = [float(i) for i in ret]
+        ret = sorted(ret)
+        if type(foo) is str:  # if they were str make them strs again
+            ret = [str(i) for i in ret]
+        return ret
 
     def add_object_state_to_trace(self, object_state, timestamp=None):
         if not timestamp:
