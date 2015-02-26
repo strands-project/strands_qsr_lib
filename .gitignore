@@ -55,3 +55,4 @@ target/
 
 #IDEs
 .spyder*
+.idea/

@@ -57,7 +57,7 @@ class World_Trace(object):
         # TODO this is so inefficient, why do I store the timestamps as strings in the first place (answer ros serializ)
         ret = self.trace.keys()
         foo = ret[0]
-        ret = [float(i) for i in ret]
+        ret = [int(i) for i in ret]
         ret = sorted(ret)
         if type(foo) is str:  # if they were str make them strs again
             ret = [str(i) for i in ret]
