@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.5 (2015-02-27)
+------------------
 * There was a tag with a higher version number. Adjusting numbers to release for necessary bug fixes in the ROS client.
 * Contributors: Christian Dondrup
 
