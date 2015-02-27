@@ -2,6 +2,11 @@
 Changelog for package strands_qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* There was a tag with a higher version number. Adjusting numbers to release for necessary bug fixes in the ROS client.
+* Contributors: Christian Dondrup
+
 0.0.3 (2015-01-27)
 ------------------
 
