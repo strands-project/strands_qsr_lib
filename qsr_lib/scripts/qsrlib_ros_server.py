@@ -27,10 +27,10 @@ class QSRlib_ROS_Server(object):
         self.node = rospy.init_node(self.node_name)
         self.service_topic_names = {"request": self.node_name+"/request"}
         self.srv_qsrs_request = rospy.Service(self.service_topic_names["request"], RequestQSRs, self.handle_request_qsrs)
-        print("QSRlib_ROS_Server up and running, listening to:", self.service_topic_names["request"])
+        rospy.loginfo("QSRlib_ROS_Server up and running, listening to: %s" % self.service_topic_names["request"])
 
     def handle_request_qsrs(self, req):
-        print("Handling QSRs request made at", str(req.header.stamp.secs)+"."+str(req.header.stamp.nsecs))
+        rospy.logdebug("Handling QSRs request made at %i.%i" % (req.header.stamp.secs, req.header.stamp.nsecs))
         request_message = pickle.loads(req.data)
         qsrs_response_message = self.qsrlib.request_qsrs(request_message=request_message)
         res = RequestQSRsResponse()
