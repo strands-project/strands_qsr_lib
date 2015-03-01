@@ -22,7 +22,7 @@ from qsr_lib.srv import *
 class QSRlib_ROS_Client(object):
     def __init__(self, service_node_name="qsr_lib"):
         self.service_topic_names = {"request": service_node_name+"/request"}
-        rospy.logdebug("Waiting for service '" + self.service_topic_names["request"] + "' to come up", end="")
+        rospy.logdebug("Waiting for service '" + self.service_topic_names["request"] + "' to come up")
         rospy.wait_for_service(self.service_topic_names["request"])
         rospy.logdebug("done")
 
