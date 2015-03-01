@@ -22,18 +22,18 @@ from qsr_lib.srv import *
 class QSRlib_ROS_Client(object):
     def __init__(self, service_node_name="qsr_lib"):
         self.service_topic_names = {"request": service_node_name+"/request"}
-        print("Waiting for service '" + self.service_topic_names["request"] + "' to come up", end="")
+        rospy.logdebug("Waiting for service '" + self.service_topic_names["request"] + "' to come up", end="")
         rospy.wait_for_service(self.service_topic_names["request"])
-        print("\tdone")
+        rospy.logdebug("done")
 
     def request_qsrs(self, req):
-        print("Requesting QSRs...")
+        rospy.logdebug("Requesting QSRs...")
         try:
             proxy = rospy.ServiceProxy(self.service_topic_names["request"], RequestQSRs)
             res = proxy(req)
             return res
         except rospy.ServiceException, e:
-            print("Service call failed: %s"%e)
+            rospy.logwarn("Service call failed: %s"%e)
 
     def make_ros_request_message(self, qsrlib_request_message):
             # following line gives the following error if there is no rospy.init_node(),
