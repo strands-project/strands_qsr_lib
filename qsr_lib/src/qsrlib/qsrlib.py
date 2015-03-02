@@ -131,9 +131,10 @@ class QSRlib(object):
             print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False
         if reset:
-            if self.__out: print("Resetting QSRlib data")
             self.timestamp_request_received = None
             self.request_message = None
+        else:
+            if self.__out: print("QSRlib data not resetted, working with previous held data. Pass the data as this feature is planned to be deprecated.")
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
                                                   timestamp_request_made=request_message.timestamp_request_made,
                                                   timestamp_request_received=self.timestamp_request_received,
