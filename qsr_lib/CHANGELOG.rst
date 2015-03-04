@@ -2,6 +2,13 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Closes `#23 <https://github.com/strands-project/strands_qsr_lib/issues/23>`_: removed annoying message: "Resetting QSRlib data"
+* Removing the `end` operator
+* Using rospy.log* for ROS node outputs. Prevents spamming the terminal bu setting most of it to debug level
+* Contributors: Christian Dondrup, Yiannis
+
 0.0.5 (2015-02-27)
 ------------------
 * There was a tag with a higher version number. Adjusting numbers to release for necessary bug fixes in the ROS client.
