@@ -53,7 +53,6 @@ if __name__ == "__main__":
     world = World_Trace()
 
     if which_qsr_argv == "rcc3":
-        print("rcc3")
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -72,7 +71,6 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
 
     elif which_qsr_argv == "rcc3a":
-        print("rcc3a")
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.)]
 
@@ -213,15 +211,15 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
+    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, qsrs_for=[("o1", "o3"), ("o2", "o3")], include_missing_data=True)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
     cln = QSRlib_ROS_Client()
-    print("bye")
     req = cln.make_ros_request_message(qsrlib_request_message)
     res = cln.request_qsrs(req)
     out = pickle.loads(res.data)
-    print("--------------")
+    print(which_qsr_argv, "request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
+    print("---")
     print("Response is:")
-    print("Request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
     for t in out.qsrs.get_sorted_timestamps():
         foo = str(t) + ": "
         for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):

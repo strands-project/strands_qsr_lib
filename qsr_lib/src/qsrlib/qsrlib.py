@@ -27,17 +27,19 @@ class QSRlib_Response_Message(object):
         self.timestamp_qsrs_computed = timestamp_qsrs_computed
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr="", input_data=None, timestamp_request_made=None,
+    def __init__(self, which_qsr="", input_data=None, qsrs_for=[], timestamp_request_made=None,
                  start=0, finish=-1, objects_names=[], include_missing_data=True):
         self.which_qsr = which_qsr
         self.input_data = None
         self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
+        self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
         self.include_missing_data = include_missing_data
 
-    def make(self, which_qsr, input_data, timestamp_request_made=None):
+    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None):
         self.which_qsr = which_qsr
         self.input_data = self.set_input_data(input_data)
+        self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
 
     def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
@@ -118,7 +120,7 @@ class QSRlib(object):
         """
 
         :param request_message: QSRlib_Request_Message, default=None
-        :param reset: Boolean, if to reset the self.request_message, default=False
+        :param reset: Boolean, if to reset the self.request_message, default=True
         :return: QSRlib_Response_Message
         """
         self.timestamp_request_received = datetime.now()
@@ -126,7 +128,8 @@ class QSRlib(object):
         try:
             world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
                                                                                      include_missing_data=self.request_message.include_missing_data,
-                                                                                     timestamp_request_received=self.timestamp_request_received)
+                                                                                     timestamp_request_received=self.timestamp_request_received,
+                                                                                     qsrs_for=self.request_message.qsrs_for)
         except KeyError:
             print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False

@@ -35,6 +35,15 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         """
         return 0, ""
 
+    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
+        """Custom checks of the qsrs_for field
+
+        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
+        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
+        :return: qsrs_for, error_found
+        """
+        return qsrs_for, error_found
+
     def make(self, *args, **kwargs):
         """Make the QSRs
 
@@ -49,9 +58,12 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
-            pairs = self.__return_all_possible_combinations(world_state.objects.keys())
-            if pairs:
-                for p in pairs:
+            if kwargs["qsrs_for"]:
+                qsrs_for, error_found = self.check_qsrs_for_data_exist(world_state.objects.keys(), kwargs["qsrs_for"])
+            else:
+                qsrs_for = self.__return_all_possible_combinations(world_state.objects.keys())
+            if qsrs_for:
+                for p in qsrs_for:
                     between = str(p[0]) + "," + str(p[1])
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
@@ -70,7 +82,7 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         for i in objects_names:
             for j in objects_names:
                 if i != j:
-                    ret.append([i, j])
+                    ret.append((i, j))
         return ret
 
     def __compute_qsr(self, bb1, bb2):
