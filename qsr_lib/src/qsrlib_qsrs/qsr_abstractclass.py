@@ -76,6 +76,19 @@ class QSR_Abstractclass(object):
 
     @abc.abstractmethod
     def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
+        """Custom checks of the qsrs_for field.
+        Hint: If you have to iterate over the qsrs_for make sure you do it on a copy of it or there might be dragons,
+        e.g.:
+         for p in list(qsrs_for):
+            if p is not valid:
+                qsrs_for.remove(p)
+                error_found = True
+
+        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
+        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
+        :return: qsrs_for, error_found
+        """
+
         return qsrs_for, error_found
 
     @abc.abstractmethod

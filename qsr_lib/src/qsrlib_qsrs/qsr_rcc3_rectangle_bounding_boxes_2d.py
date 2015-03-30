@@ -36,12 +36,22 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         return 0, ""
 
     def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """Custom checks of the qsrs_for field
+        """qsrs_for must be tuples of two objects.
 
         :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
         :param error_found: if an error was found in the qsrs_for that violates the QSR rules
         :return: qsrs_for, error_found
         """
+        for p in list(qsrs_for):
+            if type(p) is tuple:
+                if len(p) > 2:
+                    qsrs_for.remove(p)
+                    error_found = True
+            elif type(p) is str:
+                qsrs_for.remove(p)
+                error_found = True
+            else:
+                raise ValueError("rcc3: qsrs_for must contain tuples of two objects")
         return qsrs_for, error_found
 
     def make(self, *args, **kwargs):
