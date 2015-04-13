@@ -29,7 +29,8 @@ if __name__ == "__main__":
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
                "qtcbc": "qtc_bc_simplified",
-               "rcc3a": "rcc3_rectangle_bounding_boxes_2d"}
+               "rcc3a": "rcc3_rectangle_bounding_boxes_2d",
+               "arg_distance": "arg_relations_distance"}
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
@@ -52,6 +53,9 @@ if __name__ == "__main__":
 
     world = World_Trace()
 
+
+    qsr_relations_and_values = {}
+
     if which_qsr_argv == "rcc3":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
@@ -69,6 +73,25 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
+
+    elif which_qsr_argv == "arg_distance":
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=1., y=2., width=5., length=8.)]
+
+        o2 = [Object_State(name="o2", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
+              Object_State(name="o2", timestamp=2, x=21., y=2., width=5., length=8.)]
+
+        o3 = [Object_State(name="o3", timestamp=0, x=21., y=1., width=5., length=8.),
+              Object_State(name="o3", timestamp=1, x=31., y=2., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=41., y=2., width=5., length=8.)]
+
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
+        world.add_object_state_series(o3)
+
+        qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
 
     elif which_qsr_argv == "rcc3a":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -211,8 +234,11 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, qsrs_for=[("o1", "o3"), ("o2", "o3")], include_missing_data=True)
-    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True)
+    # uncomment this to test qsrs_for (and comment out the next line)
+    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+    #                                                 qsr_relations_and_values=qsr_relations_and_values, qsrs_for=[("o1", "o3"), ("o2", "o3")])
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+                                                    qsr_relations_and_values=qsr_relations_and_values)
     cln = QSRlib_ROS_Client()
     req = cln.make_ros_request_message(qsrlib_request_message)
     res = cln.request_qsrs(req)

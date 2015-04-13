@@ -18,6 +18,7 @@ from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_
 from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
 from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
 from qsrlib_qsrs.qsr_qtc_bc_simplified import QSR_QTC_BC_Simplified
+from qsrlib_qsrs.qsr_arg_relations_distance import QSR_Arg_Relations_Distance
 
 class QSRlib_Response_Message(object):
     def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
@@ -28,13 +29,14 @@ class QSRlib_Response_Message(object):
 
 class QSRlib_Request_Message(object):
     def __init__(self, which_qsr="", input_data=None, qsrs_for=[], timestamp_request_made=None,
-                 start=0, finish=-1, objects_names=[], include_missing_data=True):
+                 start=0, finish=-1, objects_names=[], include_missing_data=True, qsr_relations_and_values={}):
         self.which_qsr = which_qsr
         self.input_data = None
         self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
         self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
         self.include_missing_data = include_missing_data
+        self.qsr_relations_and_values = qsr_relations_and_values
 
     def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None):
         self.which_qsr = which_qsr
@@ -73,7 +75,8 @@ class QSRlib(object):
         self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D,
                                        "qtc_b_simplified": QSR_QTC_B_Simplified,
                                        "qtc_c_simplified": QSR_QTC_C_Simplified,
-                                       "qtc_bc_simplified": QSR_QTC_BC_Simplified}
+                                       "qtc_bc_simplified": QSR_QTC_BC_Simplified,
+                                       "arg_relations_distance": QSR_Arg_Relations_Distance}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:
@@ -129,7 +132,8 @@ class QSRlib(object):
             world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
                                                                                      include_missing_data=self.request_message.include_missing_data,
                                                                                      timestamp_request_received=self.timestamp_request_received,
-                                                                                     qsrs_for=self.request_message.qsrs_for)
+                                                                                     qsrs_for=self.request_message.qsrs_for,
+                                                                                     qsr_relations_and_values=self.request_message.qsr_relations_and_values)
         except KeyError:
             print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False
