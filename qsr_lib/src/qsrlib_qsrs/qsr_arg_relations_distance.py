@@ -35,7 +35,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         :return: qsrs_for, error_found
         """
         for p in list(qsrs_for):
-            if (type(p) is not tuple) or (type(p) is not list) or (len(p) != 2):
+            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
                 qsrs_for.remove(p)
                 error_found = True
         return qsrs_for, error_found
@@ -60,6 +60,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
             if kwargs["qsrs_for"]:
+                # print(kwargs["qsrs_for"])
                 qsrs_for, error_found = self.check_qsrs_for_data_exist(world_state.objects.keys(), kwargs["qsrs_for"])
             else:
                 qsrs_for = self.qsrs_for_default(world_state.objects.keys())
@@ -84,7 +85,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                 return relation
         return self.all_possible_relations[-1]
 
-    def qsrs_for_default(self, objects_names):
+    def qsrs_for_default(self, objects_names, mirrors=False):
         if len(objects_names) < 2:
             return []
         ret = []
