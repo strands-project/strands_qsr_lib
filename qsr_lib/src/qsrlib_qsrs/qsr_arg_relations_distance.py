@@ -85,13 +85,13 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                 return relation
         return self.all_possible_relations[-1]
 
-    def qsrs_for_default(self, objects_names, mirrors=False):
+    def qsrs_for_default(self, objects_names):
         if len(objects_names) < 2:
             return []
         ret = []
-        for i in objects_names:
+        for i in sorted(objects_names):
             for j in objects_names:
-                if i != j:
+                if i != j and (j, i) not in ret:
                     ret.append((i, j))
         return ret
 
