@@ -423,4 +423,4 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :return: The part of the tuple you would to have as a result
         """
-        return ""
+        return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')

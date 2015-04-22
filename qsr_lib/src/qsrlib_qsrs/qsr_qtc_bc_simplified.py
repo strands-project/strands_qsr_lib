@@ -14,7 +14,6 @@
 
 from __future__ import print_function, division
 from qsrlib_qsrs.qsr_qtc_simplified_abstractclass import QSR_QTC_Simplified_Abstractclass
-import math
 import numpy as np
 from qsrlib_io.world_qsr_trace import *
 
@@ -68,16 +67,16 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                 distances = np.append(
                     distances,
                     self._get_euclidean_distance(
-                        (input_data.trace[timestamp].objects[o1_name].x, 
+                        (input_data.trace[timestamp].objects[o1_name].x,
                              input_data.trace[timestamp].objects[o1_name].y),
-                        (input_data.trace[timestamp].objects[o2_name].x, 
+                        (input_data.trace[timestamp].objects[o2_name].x,
                              input_data.trace[timestamp].objects[o2_name].y)
                     )
                 )
 
             except KeyError:
                 ret.add_empty_world_qsr_state(timestamp)
-        
+
         qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
         if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
             qtc_sequence = self._collapse_similar_states(qtc_sequence)
@@ -95,7 +94,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         return ret
 
     def _create_bc_chain(self, qtc, distances, distance_threshold):
-        ret = np.array([])        
+        ret = np.array([])
         for dist, state in zip(distances, qtc):
             if dist > distance_threshold:
                 ret = np.append(ret, np.append(state[0:2],[np.nan,np.nan]), axis=0)
@@ -113,14 +112,14 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
 
         :return: q1,q2,q4,q5
         """
-        return qtc if not np.isnan(qtc[2]) else qtc[0:2]
-            
+        return super(QSR_QTC_BC_Simplified, self).qtc_to_string(qtc) if not np.isnan(qtc[2]) else super(QSR_QTC_BC_Simplified, self).qtc_to_string(qtc[0:2])
+
     def _get_euclidean_distance(self, p, q):
         """Calculate the Euclidean distance between points p and q
-        
+
         :param p: tuple of x,y coordinates
         :param q: tuple of x,y coordinates
-        
+
         :return: the euclidean distance between p and q
         """
         return np.sqrt(np.power((float(p[0])-float(q[0])),2)+np.power((float(p[1])-float(q[1])),2))
