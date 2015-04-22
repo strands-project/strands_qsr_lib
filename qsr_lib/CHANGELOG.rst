@@ -2,6 +2,16 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* changed in qsrs/arg_distance the qsrs_for_default to not include mirrors and be alphabetically sorted
+* changed to sorter code rcc3 custom checks for qsrs_for (same to arg_distance corrected one)
+* fixed qsrs_for bug that did not perform correctly custom check in qsr_arg_relations_distance
+* arg_relations_distance QSR
+* added doc to qsr_abstraclass.custom_checks_for_qsrs_for, added rcc3.custom_checks_for_qsrs_for, closes `#32 <https://github.com/strands-project/strands_qsr_lib/issues/32>`_ which was OK
+* closes `#30 <https://github.com/strands-project/strands_qsr_lib/issues/30>`_ and `#26 <https://github.com/strands-project/strands_qsr_lib/issues/26>`_
+* Contributors: Yiannis Gatsoulis
+
 0.0.6 (2015-03-04)
 ------------------
 * Closes `#23 <https://github.com/strands-project/strands_qsr_lib/issues/23>`_: removed annoying message: "Resetting QSRlib data"
