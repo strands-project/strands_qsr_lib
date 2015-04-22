@@ -398,6 +398,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
             except KeyError:
                 ret.add_empty_world_qsr_state(timestamp)
+
+        if not type(input_data.trace[0].objects[o1_name].kwargs["no_collapse"]) is bool \
+            or not type(input_data.trace[0].objects[o1_name].kwargs["validate"]) is bool:
+            raise Exception("'no_collapse' and 'validate' have to be boolean values.")
+
         if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
             qtc_sequence = self._collapse_similar_states(qtc_sequence)
         if input_data.trace[0].objects[o1_name].kwargs["validate"]:
