@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>strands_qsr_lib</name>
-  <version>0.0.6</version>
+  <version>0.0.7</version>
   <description>The strands_qsr_lib metapackage</description>
 
   <maintainer email="y.gatsoulis@leeds.ac.uk">Yiannis Gatsoulis</maintainer>

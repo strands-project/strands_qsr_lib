@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.7 (2015-04-22)
+------------------
 * changed in qsrs/arg_distance the qsrs_for_default to not include mirrors and be alphabetically sorted
 * changed to sorter code rcc3 custom checks for qsrs_for (same to arg_distance corrected one)
 * fixed qsrs_for bug that did not perform correctly custom check in qsr_arg_relations_distance
