@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Example that shows how to implement QSR makers.
+"""Computes symmetrical RCC3 relations: 'dc':disconnected, 'po':partial overlap, 'o': occluded/part of
 
 :Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
 :Organization: University of Leeds
@@ -90,13 +90,83 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         return ret
 
     def __compute_qsr(self, bb1, bb2):
-        count_occluded_points = 0
-        for i in range(0, len(bb2), 2):
-            if self.__is_point_in_rectangle([bb2[i], bb2[i+1]], bb1):
-                count_occluded_points += 1
-        results = {0: "dc", 1: "po", 2: "o"} # pythonic case
-        ret = results[count_occluded_points]
-        return ret
+        """Return symmetrical RCC3 relation
+
+        :param bb1: first bounding box (x_bottom_left, y_bottom_left, x_top_right, y_top_right)
+        :param bb2: second bounding box (x_bottom_left, y_bottom_left, x_top_right, y_top_right)
+        :return: an RCC3 relation from the following: 'dc':disconnected, 'po':partial overlap, 'o': occluded/part of
+        """
+
+        bboxes_intercept_v, rabx, raxPrbx, raby, rayPrby = self.__bboxes_intercept(bb1, bb2)
+        if bboxes_intercept_v:
+            if rabx > 0.0 or raby > 0:
+                return "po"
+            else:
+                occluded_points = self.__count_occluded_points(bb1, bb2)
+                if occluded_points >= 4:
+                    return "o"
+                else:
+                    return "po"
+        else:
+            return "dc"
+
+
+    def __count_occluded_points(self, bb1, bb2):
+        occluded_points = 0
+        bb1_4corners = ((bb1[0], bb1[1]),  # BL
+                        (bb1[2], bb1[1]),  # BR
+                        (bb1[2], bb1[3]),  # TR
+                        (bb1[0], bb1[3]))  # TL
+        bb2_4corners = ((bb2[0], bb2[1]),  # BL
+                        (bb2[2], bb2[1]),  # BR
+                        (bb2[2], bb2[3]),  # TR
+                        (bb2[0], bb2[3]))  # TL
+
+        for p in bb1_4corners:
+            if self.is_point_in_rectangle(p, bb2):
+                occluded_points += 1
+        for p in bb2_4corners:
+            if self.is_point_in_rectangle(p, bb1):
+                occluded_points += 1
+
+        return occluded_points
+
 
     def __is_point_in_rectangle(self, p, r, d=0.):
         return p[0] >= r[0]-d and p[0] <= r[2]+d and p[1] >= r[0]-d and p[1] <= r[3]+d
+
+
+    def __bboxes_intercept(self, bb1, bb2):
+        """
+        https://rbrundritt.wordpress.com/2009/10/03/determining-if-two-bounding-boxes-overlap/
+
+        :param bb1: first bounding box (x_bottom_left, y_bottom_left, x_top_right, y_top_right)
+        :param bb2: second bounding box (x_bottom_left, y_bottom_left, x_top_right, y_top_right)
+        :return:
+        """
+
+        # First bounding box, top left corner, bottom right corner
+        ATLx = bb1[0]
+        ATLy = bb1[3]
+        ABRx = bb1[2]
+        ABRy = bb1[1]
+
+        # Second bounding box, top left corner, bottom right corner
+        BTLx = bb2[0]
+        BTLy = bb2[3]
+        BBRx = bb2[2]
+        BBRy = bb2[1]
+
+        rabx = abs(ATLx + ABRx - BTLx - BBRx)
+        raby = abs(ATLy + ABRy - BTLy - BBRy)
+
+        # rAx + rBx
+        raxPrbx = ABRx - ATLx + BBRx - BTLx
+
+        # rAy + rBy
+        rayPrby = ATLy - ABRy + BTLy - BBRy
+
+        if(rabx <= raxPrbx) and (raby <= rayPrby):
+            return True, rabx, raxPrbx, raby, rayPrby
+        else:
+            return False, rabx, raxPrbx, raby, rayPrby
