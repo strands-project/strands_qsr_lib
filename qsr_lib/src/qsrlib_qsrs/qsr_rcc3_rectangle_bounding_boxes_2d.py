@@ -113,14 +113,14 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
 
     def __count_occluded_points(self, bb1, bb2):
         occluded_points = 0
-        bb1_4corners = ((bb1[0], bb1[1]),  # BL
-                        (bb1[2], bb1[1]),  # BR
-                        (bb1[2], bb1[3]),  # TR
-                        (bb1[0], bb1[3]))  # TL
-        bb2_4corners = ((bb2[0], bb2[1]),  # BL
-                        (bb2[2], bb2[1]),  # BR
-                        (bb2[2], bb2[3]),  # TR
-                        (bb2[0], bb2[3]))  # TL
+        bb1_4corners = ((bb1[0], bb1[1]),
+                        (bb1[2], bb1[1]),
+                        (bb1[2], bb1[3]),
+                        (bb1[0], bb1[3]))
+        bb2_4corners = ((bb2[0], bb2[1]),
+                        (bb2[2], bb2[1]),
+                        (bb2[2], bb2[3]),
+                        (bb2[0], bb2[3]))
 
         for p in bb1_4corners:
             if self.is_point_in_rectangle(p, bb2):
