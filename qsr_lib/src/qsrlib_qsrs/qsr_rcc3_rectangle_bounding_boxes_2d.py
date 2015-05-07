@@ -123,10 +123,10 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                         (bb2[0], bb2[3]))
 
         for p in bb1_4corners:
-            if self.is_point_in_rectangle(p, bb2):
+            if self.__is_point_in_rectangle(p, bb2):
                 occluded_points += 1
         for p in bb2_4corners:
-            if self.is_point_in_rectangle(p, bb1):
+            if self.__is_point_in_rectangle(p, bb1):
                 occluded_points += 1
 
         return occluded_points
