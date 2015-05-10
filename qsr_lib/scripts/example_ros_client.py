@@ -26,6 +26,7 @@ import csv
 
 if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
+               "rcc8": "rcc8_rectangle_bounding_boxes_2d",
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
                "qtcbc": "qtc_bc_simplified",
@@ -73,6 +74,29 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
+        
+    elif which_qsr_argv == "rcc8":
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
+    
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
+              Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
+              Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
+    
+        o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+              
+        o4 = [Object_State(name="o4", timestamp=0, x=1., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=1, x=2., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=2, x=3., y=11., width=7., length=9.)]
+              
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
+        world.add_object_state_series(o3)        
+        world.add_object_state_series(o4)
 
     elif which_qsr_argv == "arg_distance":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
