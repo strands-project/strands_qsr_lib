@@ -15,6 +15,7 @@ from qsrlib_io.world_trace import World_Trace
 
 # Import implemented makers
 from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from qsrlib_qsrs.qsr_rcc8_rectangle_bounding_boxes_2d import QSR_RCC8_Rectangle_Bounding_Boxes_2D
 from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
 from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
 from qsrlib_qsrs.qsr_qtc_bc_simplified import QSR_QTC_BC_Simplified
@@ -73,6 +74,7 @@ class QSRlib(object):
     """
     def __init__(self, qsrs_active=None, print_messages=True, help=True, request_message=None):
         self.__const_qsrs_available = {"rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                                       "rcc8_rectangle_bounding_boxes_2d": QSR_RCC8_Rectangle_Bounding_Boxes_2D,
                                        "qtc_b_simplified": QSR_QTC_B_Simplified,
                                        "qtc_c_simplified": QSR_QTC_C_Simplified,
                                        "qtc_bc_simplified": QSR_QTC_BC_Simplified,
