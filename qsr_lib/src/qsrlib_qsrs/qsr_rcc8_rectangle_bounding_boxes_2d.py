@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
-"""Example that shows how to implement QSR makers.
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 10 September 2014
+"""
+:Author: Peter Lightbody <plightbody@lincoln.ac.uk>
+:Organization: University of Lincoln
+:Date: 12 May 2015
 :Version: 0.1
 :Status: Development
 :Copyright: STRANDS default
-:Notes: future extension to handle polygons, to do that use matplotlib.path.Path.contains_points
-        although might want to have a read on the following also...
-        http://matplotlib.1069221.n5.nabble.com/How-to-properly-use-path-Path-contains-point-td40718.html
+
 """
 
 from __future__ import print_function, division
@@ -21,14 +18,14 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         self.qsr_type = "rcc8_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-#         {0:'dc'}      x is disconnected from y
-#         {1:'ec'}      x is externally connected with y
-#         {2:'po'}      x partially overlaps y
-#         {3:'eq'}      x equals y
-#         {4:'tpp'}     x is a tangential proper part of y
-#         {5:'ntpp'}    y is a non-tangential proper part of x
-#         {6:'tppi'}    y is a tangential proper part of x
-#         {7:'ntppi'}   y is a non-tangential proper part of x
+#         'dc'     bb1 is disconnected from bb2
+#         'ec'     bb1 is externally connected with bb2
+#         'po'     bb1 partially overlaps bb2
+#         'eq'     bb1 equals bb2
+#         'tpp'    bb1 is a tangential proper part of bb2
+#         'ntpp'   bb1 is a non-tangential proper part of bb2
+#         'tppi'   bb2 is a tangential proper part of bb1
+#         'ntppi'  bb2 is a non-tangential proper part of bb1
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
     def custom_help(self):
@@ -98,25 +95,25 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         return ret
 
     def __compute_qsr(self, bb1, bb2):
-        """Return symmetrical RCC3 relation
+        """Return symmetrical RCC8 relation
             :param bb1: diagonal points coordinates of first bounding box (x1, y1, x2, y2)
             :param bb2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
             :return: an RCC8 relation from the following:
-             {0:'dc'}      x is disconnected from y
-             {1:'ec'}      x is externally connected with y
-             {2:'po'}      x partially overlaps y
-             {3:'eq'}      x equals y
-             {4:'tpp'}     x is a tangential proper part of y
-             {5:'ntpp'}    y is a non-tangential proper part of x
-             {6:'tppi'}    y is a tangential proper part of x
-             {7:'ntppi'}   y is a non-tangential proper part of x
-             +-------------+         +-------------+
-             |a            |         |a            |
-             |             |         |             |
-             |      A      |         |      B      |
-             |             |         |             |
-             |            b|         |            b|
-             +-------------+         +-------------+  
+                'dc'     bb1 is disconnected from bb2
+                'ec'     bb1 is externally connected with bb2
+                'po'     bb1 partially overlaps bb2
+                'eq'     bb1 equals bb2
+                'tpp'    bb1 is a tangential proper part of bb2
+                'ntpp'   bb1 is a non-tangential proper part of bb2
+                'tppi'   bb2 is a tangential proper part of bb1
+                'ntppi'  bb2 is a non-tangential proper part of bb1
+                 +-------------+         +-------------+
+                 |a            |         |c            |
+                 |             |         |             |
+                 |     bb1     |         |     bb2     |
+                 |             |         |             |
+                 |            b|         |            d|
+                 +-------------+         +-------------+
         """
         
         # Object 1 Top Left X
