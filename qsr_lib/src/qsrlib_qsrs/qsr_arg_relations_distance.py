@@ -70,7 +70,6 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["qsr_relations_and_values"])
         if self.qsr_relations_and_values is None:
             raise ValueError("qsr_relations_and_values is uninitialized")
-        print("in make:", self.qsr_relations_and_values)
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
