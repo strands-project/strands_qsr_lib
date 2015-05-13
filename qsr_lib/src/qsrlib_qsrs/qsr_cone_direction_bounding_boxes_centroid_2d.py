@@ -115,12 +115,12 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
     # Switch Statement convert number into region label
     def directionSwitch(self,x):
         return {
-            0 : 'north',
-            1 : 'north-east',
-            2 : 'east',
-            3 : 'south-east',
-            4 : 'south',
-            5 : 'south-west',
-            6 : 'west',
-            7 : 'north-west',
+            0 : 'south',
+            1 : 'south-west',
+            2 : 'west',
+            3 : 'north-west',
+            4 : 'north',
+            5 : 'north-east',
+            6 : 'east',
+            7 : 'south-east',
         }.get((x), 'unknown')
