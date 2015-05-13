@@ -19,6 +19,7 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
         self.qsr_relations_and_values = None
         self.all_possible_relations = None
         self.all_possible_values = None
+        self.qsr_keys = "argd"
 
     def __populate_possible_relations_and_values(self):
         ret_relations = []

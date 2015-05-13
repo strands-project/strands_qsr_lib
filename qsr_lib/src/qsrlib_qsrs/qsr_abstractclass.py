@@ -101,3 +101,12 @@ class QSR_Abstractclass(object):
         :return:
         """
         return
+
+
+    def handle_future(self, future, v, k=None):
+        if future:
+            if k is None:
+                raise ValueError("None qsr key")
+            return {k: v}
+        else:
+            return v

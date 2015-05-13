@@ -30,7 +30,9 @@ class QSRlib_Response_Message(object):
 
 class QSRlib_Request_Message(object):
     def __init__(self, which_qsr="", input_data=None, qsrs_for=[], timestamp_request_made=None,
-                 start=0, finish=-1, objects_names=[], include_missing_data=True, qsr_relations_and_values={}):
+                 start=0, finish=-1, objects_names=[], include_missing_data=True, qsr_relations_and_values={},
+                 future=False):
+        self.future = future
         self.which_qsr = which_qsr
         self.input_data = None
         self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
@@ -39,7 +41,9 @@ class QSRlib_Request_Message(object):
         self.include_missing_data = include_missing_data
         self.qsr_relations_and_values = qsr_relations_and_values
 
-    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None):
+    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None, future=None):
+        if future:
+            self.future = future
         self.which_qsr = which_qsr
         self.input_data = self.set_input_data(input_data)
         self.qsrs_for = qsrs_for
@@ -135,7 +139,8 @@ class QSRlib(object):
                                                                                      include_missing_data=self.request_message.include_missing_data,
                                                                                      timestamp_request_received=self.timestamp_request_received,
                                                                                      qsrs_for=self.request_message.qsrs_for,
-                                                                                     qsr_relations_and_values=self.request_message.qsr_relations_and_values)
+                                                                                     qsr_relations_and_values=self.request_message.qsr_relations_and_values,
+                                                                                     future=self.request_message.future)
         except KeyError:
             print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False

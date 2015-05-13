@@ -68,14 +68,15 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                 for p in qsrs_for:
                     between = str(p[0]) + "," + str(p[1])
                     objs = (world_state.objects[p[0]], world_state.objects[p[1]])
-                    qsr = QSR(timestamp=timestamp, between=between, qsr=self.compute_qsr(objs))
+                    qsr = QSR(timestamp=timestamp, between=between,
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(objs), self.qsr_keys))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
                     ret.add_empty_world_qsr_state(timestamp)
         return ret
 
-    def compute_qsr(self, objs):
+    def __compute_qsr(self, objs):
         if np.isnan(objs[0].z) or np.isnan(objs[1].z):
             d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y))
         else:
