@@ -34,7 +34,7 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
         if type(qsr_relations_and_values) is not dict:
             raise ValueError("qsr_relations_and_values must be a dict")
         for k, v in qsr_relations_and_values.items():
-            if (type(k) is not str) and ((type(v) is not float) or (type(v) is not int)):
+            if (type(k) is not str) or ((type(v) is not float) and (type(v) is not int)):
                 raise ValueError("qsr_relations_and_values must be a dict of str:float|int")
         return True
 

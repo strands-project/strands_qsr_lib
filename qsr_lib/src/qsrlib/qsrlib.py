@@ -31,7 +31,7 @@ class QSRlib_Response_Message(object):
 class QSRlib_Request_Message(object):
     def __init__(self, which_qsr="", input_data=None, qsrs_for=[], timestamp_request_made=None,
                  start=0, finish=-1, objects_names=[], include_missing_data=True, qsr_relations_and_values={},
-                 future=False):
+                 future=False, ini=None, dynamic_args=None):
         self.future = future
         self.which_qsr = which_qsr
         self.input_data = None
@@ -39,15 +39,20 @@ class QSRlib_Request_Message(object):
         self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
         self.include_missing_data = include_missing_data
-        self.qsr_relations_and_values = qsr_relations_and_values
+        self.qsr_relations_and_values = qsr_relations_and_values # should be more dynamic
+        self.ini = ini
+        self.dynamic_args = dynamic_args
 
-    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None, future=None):
+    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None, future=None, ini=None,
+             dynamic_args=None):
         if future:
             self.future = future
         self.which_qsr = which_qsr
         self.input_data = self.set_input_data(input_data)
         self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
+        self.ini = None
+        self.dynamic_args = None
 
     def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
         error = False
@@ -140,7 +145,9 @@ class QSRlib(object):
                                                                                      timestamp_request_received=self.timestamp_request_received,
                                                                                      qsrs_for=self.request_message.qsrs_for,
                                                                                      qsr_relations_and_values=self.request_message.qsr_relations_and_values,
-                                                                                     future=self.request_message.future)
+                                                                                     future=self.request_message.future,
+                                                                                     ini=self.request_message.ini,
+                                                                                     dynamic_args=self.request_message.dynamic_args)
         except KeyError:
             print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
             world_qsr_trace = False

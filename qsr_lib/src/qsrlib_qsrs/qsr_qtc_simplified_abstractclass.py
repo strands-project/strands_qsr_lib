@@ -24,6 +24,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     def __init__(self):
         self.qtc_type = ""
 
+    def custom_set_from_ini(self, parser):
+        pass
+
     def return_all_possible_state_combinations(self):
         """Method that returns all possible state combinations for the qtc_type
         defined for this calss instance.

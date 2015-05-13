@@ -24,6 +24,9 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         self.qsr_keys = "rcc3"
         self.all_possible_relations = ["dc", "po", "o"]
 
+    def custom_set_from_ini(self, parser):
+        pass
+
     def custom_help(self):
         """Write your own help message function"""
         print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")

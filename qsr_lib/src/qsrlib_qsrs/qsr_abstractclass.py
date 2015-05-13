@@ -11,6 +11,9 @@
 
 from __future__ import print_function, division
 import abc
+import ConfigParser
+import rospkg
+import os
 
 
 class QSR_Abstractclass(object):
@@ -102,6 +105,17 @@ class QSR_Abstractclass(object):
         """
         return
 
+    def set_from_ini(self, ini):
+        if ini is None:
+            ini = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.ini")
+        parser = ConfigParser.SafeConfigParser()
+        if len(parser.read(ini)) == 0:
+            raise IOError
+        self.custom_set_from_ini(parser)
+
+    @abc.abstractmethod
+    def custom_set_from_ini(self, parser):
+        return
 
     def handle_future(self, future, v, k=None):
         if future:

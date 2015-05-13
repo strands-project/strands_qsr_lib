@@ -31,6 +31,9 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
 #         'ntppi'  bb2 is a non-tangential proper part of bb1
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
+    def custom_set_from_ini(self, parser):
+        pass
+
     def custom_help(self):
         """Write your own help message function"""
         print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")
