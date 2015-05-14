@@ -18,6 +18,8 @@ from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 
 if __name__ == "__main__":
     options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
+               "rcc8": "rcc8_rectangle_bounding_boxes_2d",
+               "cone_direction": "cone_direction_bounding_boxes_centroid_2d",
                "qtcb": "qtc_b_simplified"}
     try:
         which_qsr = options[sys.argv[1]]
@@ -45,10 +47,61 @@ if __name__ == "__main__":
         o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+              
+        o4 = [Object_State(name="o4", timestamp=0, x=1., y=11., width=5., length=8.),
+              Object_State(name="o4", timestamp=1, x=2., y=11., width=5., length=8.),
+              Object_State(name="o4", timestamp=2, x=3., y=11., width=5., length=8.)]
 
         world_trace.add_object_state_series(o1)
         world_trace.add_object_state_series(o2)
         world_trace.add_object_state_series(o3)
+        world_trace.add_object_state_series(o4)
+
+    elif which_qsr == options["rcc8"]:
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
+    
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
+              Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
+              Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
+    
+        o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
+              Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+              
+        o4 = [Object_State(name="o4", timestamp=0, x=1., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=1, x=2., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=2, x=3., y=11., width=7., length=9.)]
+              
+        world_trace.add_object_state_series(o1)
+        world_trace.add_object_state_series(o2)
+        world_trace.add_object_state_series(o3)
+        world_trace.add_object_state_series(o4)
+
+    elif which_qsr == options["cone_direction"]:
+        o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
+              Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
+              Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]
+    
+        o2 = [Object_State(name="o2", timestamp=0, x=8., y=8., width=2., length=2.),
+              Object_State(name="o2", timestamp=1, x=6., y=8., width=2., length=2.),
+              Object_State(name="o2", timestamp=2, x=4., y=8., width=2., length=2.),
+              Object_State(name="o2", timestamp=3, x=2., y=8., width=2., length=2.)]
+    
+        o3 = [Object_State(name="o3", timestamp=0, x=3., y=3., width=2., length=2.),
+              Object_State(name="o3", timestamp=1, x=4., y=3., width=2., length=2.),
+              Object_State(name="o3", timestamp=2, x=6., y=3., width=2., length=2.)]
+              
+        o4 = [Object_State(name="o4", timestamp=0, x=4., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=1, x=6., y=11., width=7., length=9.),
+              Object_State(name="o4", timestamp=2, x=8., y=11., width=7., length=9.)]
+
+        world_trace.add_object_state_series(o1)
+        world_trace.add_object_state_series(o2)
+        world_trace.add_object_state_series(o3)
+        world_trace.add_object_state_series(o4)
 
     elif which_qsr == options["qtcb"]:
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
