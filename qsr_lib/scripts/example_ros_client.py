@@ -25,7 +25,8 @@ import csv
 
 
 if __name__ == "__main__":
-    options = {"rcc3": "rcc3_rectangle_bounding_boxes_2d",
+    options = {"rcc2": "rcc2_rectangle_bounding_boxes_2d",
+               "rcc3": "rcc3_rectangle_bounding_boxes_2d",
                "rcc8": "rcc8_rectangle_bounding_boxes_2d",
                "cone_direction": "cone_direction_bounding_boxes_centroid_2d",
                "qtcb": "qtc_b_simplified",
@@ -60,7 +61,7 @@ if __name__ == "__main__":
 
     qsr_relations_and_values = {}
 
-    if which_qsr_argv == "rcc3":
+    if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
