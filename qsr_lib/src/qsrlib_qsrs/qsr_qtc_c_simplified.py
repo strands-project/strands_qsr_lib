@@ -14,8 +14,6 @@
 
 from __future__ import print_function, division
 from qsrlib_qsrs.qsr_qtc_simplified_abstractclass import QSR_QTC_Simplified_Abstractclass
-import math
-import sys
 
 
 class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
@@ -24,15 +22,15 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
         super(QSR_QTC_C_Simplified, self).__init__()
         self.qtc_type = "c"
         self.qsr_type = "qtc_c_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.all_possible_relations = self.return_all_possible_state_combinations()[1]
+        self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
     def qtc_to_string(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.
         Example for QTCB: return qtc[0:2]
-        
+
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
-        
+
         :return: q1,q2,q4,q5 converted to a comma separated string
         """
-        return qtc
+        return super(QSR_QTC_C_Simplified, self).qtc_to_string(qtc)
