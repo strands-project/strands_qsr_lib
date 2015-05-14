@@ -84,7 +84,9 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             pass
         # print(self.qsr_relations_and_values)  # dbg
         if not self.qsr_relations_and_values:
-            raise ValueError("qsr_relations_and_values is uninitialized")
+            raise ValueError("qsr_relations_and_values is uninitialized,"
+                             "use dynamic_args={'qsr_relations_and_values': <your dictionary of relations and values>"
+                             "in the QSRlib_Request_Message")
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
