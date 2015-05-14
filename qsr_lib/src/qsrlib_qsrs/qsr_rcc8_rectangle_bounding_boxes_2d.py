@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-"""
+"""RCC8, based upon RCC3
+
 :Author: Peter Lightbody <plightbody@lincoln.ac.uk>
+:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
 :Organization: University of Lincoln
 :Date: 12 May 2015
 :Version: 0.1
@@ -18,6 +20,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         self.qsr_type = "rcc8_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
+        self.qsr_keys = "rcc8"
 #         'dc'     bb1 is disconnected from bb2
 #         'ec'     bb1 is externally connected with bb2
 #         'po'     bb1 partially overlaps bb2
@@ -27,6 +30,9 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
 #         'tppi'   bb2 is a tangential proper part of bb1
 #         'ntppi'  bb2 is a non-tangential proper part of bb1
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
+
+    def custom_set_from_ini(self, parser):
+        pass
 
     def custom_help(self):
         """Write your own help message function"""
@@ -76,7 +82,8 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     between = str(p[0]) + "," + str(p[1])
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                    qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(bb1, bb2))
+                    qsr = QSR(timestamp=timestamp, between=between,
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:

@@ -21,7 +21,11 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         self.qsr_type = "rcc3_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
+        self.qsr_keys = "rcc3"
         self.all_possible_relations = ["dc", "po", "o"]
+
+    def custom_set_from_ini(self, parser):
+        pass
 
     def custom_help(self):
         """Write your own help message function"""
@@ -71,7 +75,8 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     between = str(p[0]) + "," + str(p[1])
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                    qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(bb1, bb2))
+                    qsr = QSR(timestamp=timestamp, between=between,
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
