@@ -63,7 +63,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         except AttributeError as e:
             raise QTCException("Please define a qtc type using self.qtc_type.")
             return None, None
-        return ret_str, ret_int
+        return [s.replace('-1','-').replace('1','+') for s in ret_str], ret_int
 
     def _validate_qtc_sequence(self, qtc):
         """Removes illegal state transition by inserting necessary intermediate states
@@ -428,4 +428,4 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :return: The part of the tuple you would to have as a result
         """
-        return ""
+        return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')
