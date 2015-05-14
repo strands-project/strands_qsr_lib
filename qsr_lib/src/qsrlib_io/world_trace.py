@@ -63,6 +63,28 @@ class World_Trace(object):
             ret = [str(i) for i in ret]
         return ret
 
+    def add_object_track_from_list(self, obj_name, track, t0=0):
+        """Add the objects data to the world_trace from a list of values
+
+        :param obj_name: name of object
+        :param track: list/tuple of values as [[x1, y1, w1, l1], [x2, y2, w2, l2], ...] or [[x1, y1], [x2, y2], ...]
+        :param t0: time offset
+        """
+        object_state_series = []
+        for t in range(len(track)):
+            x = track[t][0]
+            y = track[t][1]
+            try:
+                width = track[t][2]
+            except IndexError:
+                width = float('nan')
+            try:
+                length = track[t][3]
+            except IndexError:
+                length = float('nan')
+            object_state_series.append(Object_State(name=obj_name, timestamp=t+t0, x=x, y=y, width=width, length=length))
+        self.add_object_state_series(object_state_series)
+
     def add_object_state_to_trace(self, object_state, timestamp=None):
         if not timestamp:
             timestamp = object_state.timestamp
