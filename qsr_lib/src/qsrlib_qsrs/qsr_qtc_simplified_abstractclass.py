@@ -5,12 +5,11 @@ Created on Mon Jan 19 11:22:16 2015
 
 @author: cdondrup
 """
-from abc import abstractmethod, ABCMeta, abstractproperty
+from abc import abstractmethod, ABCMeta
 from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 from exceptions import Exception, AttributeError
 import numpy as np
-import copy
 
 
 class QTCException(Exception):
@@ -60,7 +59,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                             for l in xrange(1, 4):
                                 ret_int.append([i-2, j-2, k-2, l-2])
                                 ret_str.append(str(i-2) + "," + str(j-2) + "," + str(k-2) + "," + str(l-2))
-        except AttributeError as e:
+        except AttributeError:
             raise QTCException("Please define a qtc type using self.qtc_type.")
             return None, None
         return [s.replace('-1','-').replace('1','+') for s in ret_str], ret_int
@@ -167,8 +166,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         # Creating double cross, RL_ext being the connecting line, trans_RL_k
         # and l being the orthogonal lines going through k and l respectively.
-        RL = np.append(pos_k[-2], pos_l[-2]).reshape(-1,2)
-        #print "RL", RL
         RL_ext = np.append(
             self._translate(pos_k[-2], (pos_k[-2]-pos_l[-2])/2),
             self._translate(pos_l[-2], (pos_l[-2]-pos_k[-2])/2)
@@ -234,7 +231,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :return: The translated points
         """
-        res = []
         point_array = np.array(point)
         point_array = point_array + np.array(trans_vec)
         return point_array
@@ -356,6 +352,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         :param error_found: if an error was found in the qsrs_for that violates the QSR rules
         :return: qsrs_for, error_found
         """
+        for p in list(qsrs_for):
+            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
+                qsrs_for.remove(p)
+                error_found = True
         return qsrs_for, error_found
 
 
@@ -370,52 +370,71 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         input_data = kwargs["input_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
         timestamps = input_data.get_sorted_timestamps()
-        objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
-        o1_name = objects_names[0]
-        o2_name = objects_names[1]
-        between = o1_name + "," + o2_name
-        quantisation_factor = \
-            input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-            if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-            else 0.
-        qtc_sequence = np.array([], dtype=int)
-        for t0, t1 in zip(timestamps, timestamps[1:]):
-            timestamp = t1
-            try:
-                k = [input_data.trace[t0].objects[o1_name].x,
-                     input_data.trace[t0].objects[o1_name].y,
-                     input_data.trace[t1].objects[o1_name].x,
-                     input_data.trace[t1].objects[o1_name].y]
-                l = [input_data.trace[t0].objects[o2_name].x,
-                     input_data.trace[t0].objects[o2_name].y,
-                     input_data.trace[t1].objects[o2_name].x,
-                     input_data.trace[t1].objects[o2_name].y]
-                qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
-                    k,
-                    l,
-                    quantisation_factor
-                )).reshape(-1,4)
 
-            except KeyError:
-                ret.add_empty_world_qsr_state(timestamp)
+        if kwargs["qsrs_for"]:
+            qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
+            if error_found:
+                raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
+        else:
+            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
 
-        if not type(input_data.trace[0].objects[o1_name].kwargs["no_collapse"]) is bool \
-            or not type(input_data.trace[0].objects[o1_name].kwargs["validate"]) is bool:
-            raise Exception("'no_collapse' and 'validate' have to be boolean values.")
+        if qsrs_for:
+            for p in qsrs_for:
+                between = str(p[0]) + "," + str(p[1])
+                o1_name = p[0]
+                o2_name = p[1]
+                quantisation_factor = \
+                    input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+                    else 0.
+                qtc_sequence = np.array([], dtype=int)
+                for t0, t1 in zip(timestamps, timestamps[1:]):
+                    timestamp = t1
+                    try:
+                        k = [input_data.trace[t0].objects[o1_name].x,
+                             input_data.trace[t0].objects[o1_name].y,
+                             input_data.trace[t1].objects[o1_name].x,
+                             input_data.trace[t1].objects[o1_name].y]
+                        l = [input_data.trace[t0].objects[o2_name].x,
+                             input_data.trace[t0].objects[o2_name].y,
+                             input_data.trace[t1].objects[o2_name].x,
+                             input_data.trace[t1].objects[o2_name].y]
+                        qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
+                            k,
+                            l,
+                            quantisation_factor
+                        )).reshape(-1,4)
 
-        if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
-            qtc_sequence = self._collapse_similar_states(qtc_sequence)
-        if input_data.trace[0].objects[o1_name].kwargs["validate"]:
-            qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
-        for idx, qtc in enumerate(qtc_sequence):
-            qtc_str = self.qtc_to_string((qtc))
-            qsr = QSR(
-                timestamp=idx+1,
-                between=between,
-                qsr=qtc_str
-            )
-            ret.add_qsr(qsr, idx+1)
+                    except KeyError:
+                        ret.add_empty_world_qsr_state(timestamp)
 
+                if not type(input_data.trace[0].objects[o1_name].kwargs["no_collapse"]) is bool \
+                    or not type(input_data.trace[0].objects[o1_name].kwargs["validate"]) is bool:
+                    raise Exception("'no_collapse' and 'validate' have to be boolean values.")
+
+                if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                    qtc_sequence = self._collapse_similar_states(qtc_sequence)
+                if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                    qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
+                for idx, qtc in enumerate(qtc_sequence):
+                    qtc_str = self.qtc_to_string((qtc))
+                    qsr = QSR(
+                        timestamp=idx+1,
+                        between=between,
+                        qsr=qtc_str
+                    )
+                    ret.add_qsr(qsr, idx+1)
+
+        return ret
+
+    def _return_all_possible_combinations(self, objects_names):
+        if len(objects_names) < 2:
+            return []
+        ret = []
+        for i in objects_names:
+            for j in objects_names:
+                if i != j:
+                    ret.append((i, j))
         return ret
 
     @abstractmethod
