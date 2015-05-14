@@ -376,7 +376,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
             if error_found:
                 raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
         else:
-            qsrs_for = self.__return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
+            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
 
         if qsrs_for:
             for p in qsrs_for:
@@ -427,7 +427,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         return ret
 
-    def __return_all_possible_combinations(self, objects_names):
+    def _return_all_possible_combinations(self, objects_names):
         if len(objects_names) < 2:
             return []
         ret = []

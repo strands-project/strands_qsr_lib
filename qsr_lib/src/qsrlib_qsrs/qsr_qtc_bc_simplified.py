@@ -37,59 +37,68 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         input_data = kwargs["input_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
         timestamps = input_data.get_sorted_timestamps()
-        objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
-        o1_name = objects_names[0]
-        o2_name = objects_names[1]
-        between = o1_name + "," + o2_name
-        quantisation_factor = \
-            input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-            if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-            else 0.
-        distance_threshold = input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]
-        distances = np.array([])
-        qtc_sequence = np.array([], dtype=int)
-        for t0, t1 in zip(timestamps, timestamps[1:]):
-            timestamp = t1
-            try:
-                k = [input_data.trace[t0].objects[o1_name].x,
-                     input_data.trace[t0].objects[o1_name].y,
-                     input_data.trace[t1].objects[o1_name].x,
-                     input_data.trace[t1].objects[o1_name].y]
-                l = [input_data.trace[t0].objects[o2_name].x,
-                     input_data.trace[t0].objects[o2_name].y,
-                     input_data.trace[t1].objects[o2_name].x,
-                     input_data.trace[t1].objects[o2_name].y]
-                qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
-                    k,
-                    l,
-                    quantisation_factor
-                )).reshape(-1,4)
-                distances = np.append(
-                    distances,
-                    self._get_euclidean_distance(
-                        (input_data.trace[timestamp].objects[o1_name].x,
-                             input_data.trace[timestamp].objects[o1_name].y),
-                        (input_data.trace[timestamp].objects[o2_name].x,
-                             input_data.trace[timestamp].objects[o2_name].y)
+
+        if kwargs["qsrs_for"]:
+            qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
+            if error_found:
+                raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
+        else:
+            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
+
+        if qsrs_for:
+            for p in qsrs_for:
+                between = str(p[0]) + "," + str(p[1])
+                o1_name = p[0]
+                o2_name = p[1]
+                quantisation_factor = \
+                    input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
+                    else 0.
+                distance_threshold = input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]
+                distances = np.array([])
+                qtc_sequence = np.array([], dtype=int)
+                for t0, t1 in zip(timestamps, timestamps[1:]):
+                    timestamp = t1
+                    try:
+                        k = [input_data.trace[t0].objects[o1_name].x,
+                             input_data.trace[t0].objects[o1_name].y,
+                             input_data.trace[t1].objects[o1_name].x,
+                             input_data.trace[t1].objects[o1_name].y]
+                        l = [input_data.trace[t0].objects[o2_name].x,
+                             input_data.trace[t0].objects[o2_name].y,
+                             input_data.trace[t1].objects[o2_name].x,
+                             input_data.trace[t1].objects[o2_name].y]
+                        qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
+                            k,
+                            l,
+                            quantisation_factor
+                        )).reshape(-1,4)
+                        distances = np.append(
+                            distances,
+                            self._get_euclidean_distance(
+                                (input_data.trace[timestamp].objects[o1_name].x,
+                                     input_data.trace[timestamp].objects[o1_name].y),
+                                (input_data.trace[timestamp].objects[o2_name].x,
+                                     input_data.trace[timestamp].objects[o2_name].y)
+                            )
+                        )
+
+                    except KeyError:
+                        ret.add_empty_world_qsr_state(timestamp)
+
+                qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
+                if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                    qtc_sequence = self._collapse_similar_states(qtc_sequence)
+                if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                    qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
+                for idx, qtc in enumerate(qtc_sequence):
+                    qtc_str = self.qtc_to_string((qtc))
+                    qsr = QSR(
+                        timestamp=idx+1,
+                        between=between,
+                        qsr=qtc_str
                     )
-                )
-
-            except KeyError:
-                ret.add_empty_world_qsr_state(timestamp)
-
-        qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
-        if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
-            qtc_sequence = self._collapse_similar_states(qtc_sequence)
-        if input_data.trace[0].objects[o1_name].kwargs["validate"]:
-            qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
-        for idx, qtc in enumerate(qtc_sequence):
-            qtc_str = self.qtc_to_string((qtc))
-            qsr = QSR(
-                timestamp=idx+1,
-                between=between,
-                qsr=qtc_str
-            )
-            ret.add_qsr(qsr, idx+1)
+                    ret.add_qsr(qsr, idx+1)
 
         return ret
 
