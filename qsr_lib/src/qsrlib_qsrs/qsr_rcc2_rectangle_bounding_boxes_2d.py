@@ -101,45 +101,4 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         :param bb2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
         :return: an RCC2 relation from the following: 'dc':disconnected, 'c': connected
         """
-
-        bboxes_intercept_v, _, _, _, _ = self.__bboxes_intercept(bb1, bb2)
-        if bboxes_intercept_v:
-            return "c"
-        else:
-            return "dc"
-
-
-    def __bboxes_intercept(self, bb1, bb2):
-        """
-        https://rbrundritt.wordpress.com/2009/10/03/determining-if-two-bounding-boxes-overlap/
-
-        :param bb1: diagonal points coordinates of first bounding box (x1, y1, x2, y2)
-        :param bb2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
-        :return:
-        """
-
-        # First bounding box, top left corner, bottom right corner
-        ATLx = bb1[0]
-        ATLy = bb1[3]
-        ABRx = bb1[2]
-        ABRy = bb1[1]
-
-        # Second bounding box, top left corner, bottom right corner
-        BTLx = bb2[0]
-        BTLy = bb2[3]
-        BBRx = bb2[2]
-        BBRy = bb2[1]
-
-        rabx = abs(ATLx + ABRx - BTLx - BBRx)
-        raby = abs(ATLy + ABRy - BTLy - BBRy)
-
-        # rAx + rBx
-        raxPrbx = ABRx - ATLx + BBRx - BTLx
-
-        # rAy + rBy
-        rayPrby = ATLy - ABRy + BTLy - BBRy
-
-        if(rabx <= raxPrbx) and (raby <= rayPrby):
-            return True, rabx, raxPrbx, raby, rayPrby
-        else:
-            return False, rabx, raxPrbx, raby, rayPrby
+        return "dc" if (bb1[0] > bb2[2]) or (bb1[2] < bb2[0]) or (bb1[1] > bb2[3]) or (bb1[3] < bb2[1]) else "c"
