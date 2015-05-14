@@ -63,12 +63,27 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         :return: World_QSR_Trace
         """
         # optional set from ini
-        if kwargs["ini"]:
-            self.set_from_ini(kwargs["ini"])
+        try:
+            if kwargs["ini"]:
+                self.set_from_ini(kwargs["ini"])
+        except:
+            pass
+        # optional direct set, deprecated way
+        try:
+            if kwargs["qsr_relations_and_values"]:
+                print("Warning: This feature is deprecated, use dynamic_args on your request message instead")
+                self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["qsr_relations_and_values"])
+        except:
+            pass
         # optional direct set
-        if kwargs["qsr_relations_and_values"]:
-            self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["qsr_relations_and_values"])
-        if self.qsr_relations_and_values is None:
+        try:
+            if kwargs["dynamic_args"]["qsr_relations_and_values"]:
+                # print(">> dynamic args")  # dbg
+                self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"]["qsr_relations_and_values"])
+        except:
+            pass
+        # print(self.qsr_relations_and_values)  # dbg
+        if not self.qsr_relations_and_values:
             raise ValueError("qsr_relations_and_values is uninitialized")
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
