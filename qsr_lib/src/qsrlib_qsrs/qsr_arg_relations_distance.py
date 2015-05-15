@@ -15,12 +15,14 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
     def __init__(self, ini=None):
         super(QSR_Arg_Relations_Distance, self).__init__()
         self.qsr_type = "arg_relations_distance"
-        self.set_from_ini(ini=ini)
+        self.qsr_keys = "argd"
+        if ini:
+            self.set_from_ini(ini=ini)
 
     def custom_set_from_ini(self, parser):
         try:
             relations_and_values = parser.get(self.qsr_type, "relations_and_values")
-        except ConfigParser.NoOptionError:
+        except ConfigParser.NoSectionError, ConfigParser.NoOptionError:
             raise
         try:
             relations_and_values = eval(relations_and_values)
