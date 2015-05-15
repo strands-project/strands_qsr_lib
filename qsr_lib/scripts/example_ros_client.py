@@ -287,11 +287,14 @@ if __name__ == "__main__":
 
     # uncomment this to test qsrs_for (and comment out the next line)
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 qsr_relations_and_values=qsr_relations_and_values, qsrs_for=[("o1", "o3"), ("o2", "o3")])
+    #                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
+    #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 qsr_relations_and_values=qsr_relations_and_values, future=args.future)
+    #                                                 future=args.future, ini=args.ini)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    future=args.future, ini=args.ini)
+                                                    dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
+                                                    future=args.future)
+
 
     cln = QSRlib_ROS_Client()
     req = cln.make_ros_request_message(qsrlib_request_message)
