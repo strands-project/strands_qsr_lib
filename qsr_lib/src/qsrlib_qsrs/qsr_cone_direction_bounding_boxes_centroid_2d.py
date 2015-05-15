@@ -21,7 +21,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
         self.qsr_type = "cone_direction_bounding_boxes_centroid_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west", "same", "unknown"]
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         pass
 
     def custom_help(self):

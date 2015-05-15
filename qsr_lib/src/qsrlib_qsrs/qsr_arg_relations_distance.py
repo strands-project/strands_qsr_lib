@@ -7,27 +7,27 @@
 
 from __future__ import print_function, division
 import numpy as np
-import ConfigParser
 from qsr_arg_relations_abstractclass import QSR_Arg_Relations_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
-    def __init__(self, ini=None):
+    def __init__(self, config=None):
         super(QSR_Arg_Relations_Distance, self).__init__()
         self.qsr_type = "arg_relations_distance"
         self.qsr_keys = "argd"
-        if ini:
-            self.set_from_ini(ini=ini)
+        if config:
+            self.set_from_config_file(config)
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         try:
-            relations_and_values = parser.get(self.qsr_type, "relations_and_values")
-        except ConfigParser.NoSectionError, ConfigParser.NoOptionError:
-            raise
-        try:
-            relations_and_values = eval(relations_and_values)
+            relations_and_values = document["arg_relations_distance"]["relations_and_values"]
         except:
-            raise ValueError
+            print("ERROR (qsr_arg_relations_distance.py/custom_set_from_config_file):"
+                  "'arg_relations_distance' or 'relations_and_values' not found in config file")
+            self.qsr_relations_and_values = None
+            self.all_possible_relations = None
+            self.all_possible_values = None
+            raise LookupError
         self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
 
     def custom_help(self):
@@ -66,8 +66,8 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         """
         # optional set from ini
         try:
-            if kwargs["ini"]:
-                self.set_from_ini(kwargs["ini"])
+            if kwargs["config"]:
+                self.set_from_config_file(kwargs["config"])
         except:
             pass
         # optional direct set, deprecated way
@@ -80,13 +80,12 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         # optional direct set
         try:
             if kwargs["dynamic_args"]["qsr_relations_and_values"]:
-                # print(">> dynamic args")  # dbg
                 self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"]["qsr_relations_and_values"])
         except:
             pass
         # print(self.qsr_relations_and_values)  # dbg
         if not self.qsr_relations_and_values:
-            raise ValueError("qsr_relations_and_values is uninitialized,"
+            raise ValueError("qsr_relations_and_values is uninitialized,\n"
                              "use dynamic_args={'qsr_relations_and_values': <your dictionary of relations and values>"
                              "in the QSRlib_Request_Message")
         input_data = kwargs["input_data"]

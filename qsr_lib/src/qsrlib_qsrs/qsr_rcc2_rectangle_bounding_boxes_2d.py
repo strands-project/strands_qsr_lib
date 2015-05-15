@@ -24,7 +24,7 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         self.qsr_keys = "rcc2"
         self.all_possible_relations = ["dc", "c"]
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         pass
 
     def custom_help(self):

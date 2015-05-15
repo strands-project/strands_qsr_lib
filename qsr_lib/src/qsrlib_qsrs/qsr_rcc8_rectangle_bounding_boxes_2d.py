@@ -31,7 +31,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
 #         'ntppi'  bb2 is a non-tangential proper part of bb1
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         pass
 
     def custom_help(self):

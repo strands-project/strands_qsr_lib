@@ -43,7 +43,7 @@ if __name__ == "__main__":
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     parser.add_argument("--future", help="QSRs as dict", action="store_true")
-    parser.add_argument("--ini", help="ini file", type=str)
+    parser.add_argument("-c", "--config", help="config file", type=str)
     args = parser.parse_args()
 
     client_node = rospy.init_node("qsr_lib_ros_client_example")
@@ -290,7 +290,7 @@ if __name__ == "__main__":
     #                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
     #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 future=args.future, ini=args.ini)
+    #                                                 future=args.future, config=args.config)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
                                                     dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
                                                     future=args.future)
