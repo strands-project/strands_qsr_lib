@@ -2,6 +2,45 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* args_distance no longer read default ini and being init to an empty dict
+* more informative error message
+* Changed args_distance to use dynamic_args
+  - deprecating relations_and_values, for now still works and gives warning
+  - changed defaults of args_distance to start uninitialized
+* simplified dc computation
+* Merge branch 'master' into rcc2
+* added abstract method custom_set_ini to cone qsr
+* Merge branch 'master' of github.com:strands-project/strands_qsr_lib into 49
+* Copy and paste qsrs_for logic from base abstract class and painfully finding out that two leading underscores means really private.
+* Merge branch 'master' into qsrs_for
+  Conflicts:
+  qsr_lib/src/qsrlib_qsrs/qsr_qtc_simplified_abstractclass.py
+* Merge pull request `#37 <https://github.com/strands-project/strands_qsr_lib/issues/37>`_ from cdondrup/strings
+  QTC now returns real qtc symbol strings: +,-,0
+* added RCC2
+* removed dbg print statement
+* added support for reading from ini file at start and at runtime
+  - also fixed a bug in
+  qsr_arg_relations_abstractclass/__check_validity_of_qsr_relations_and_values
+* added support to represent qsr fields as dictionaries
+* changed reference object
+* dbg cone directions
+* cone_direction QSR added
+* Amended Comments
+* added some test/debug tools for regional QSRs
+* Added RCC8 to qsr_lib
+* fixed bug
+* removed misleading comments
+* removed misleading comments
+* fixed incorrect computation of symmetrical RCC3 relations, closes `#40 <https://github.com/strands-project/strands_qsr_lib/issues/40>`_
+* Checking if boolean values are really boolean.
+* Calculating qtc relations between all given objects and using qsrs_for
+* Using new string results for all possible combinations function as well.
+* QTC now returns real qtc symbol strings: +,-,0
+* Contributors: Christian Dondrup, Peter Lightbody, Yiannis Gatsoulis
+
 0.0.7 (2015-04-22)
 ------------------
 * changed in qsrs/arg_distance the qsrs_for_default to not include mirrors and be alphabetically sorted
