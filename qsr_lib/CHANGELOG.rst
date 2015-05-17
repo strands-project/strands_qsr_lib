@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.0.8 (2015-05-17)
+------------------
 * args_distance no longer read default ini and being init to an empty dict
 * more informative error message
 * Changed args_distance to use dynamic_args
