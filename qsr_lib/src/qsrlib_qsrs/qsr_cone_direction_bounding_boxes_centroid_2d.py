@@ -28,6 +28,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
             # 'e'      east
             # 'se'     south-east
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
+        self.qsr_keys = "coneDir"
 
     def custom_set_from_ini(self, parser):
         pass
@@ -80,7 +81,8 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
                     between = str(p[0]) + "," + str(p[1])
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                    qsr = QSR(timestamp=timestamp, between=between, qsr=self.__compute_qsr(bb1, bb2))
+                    qsr = QSR(timestamp=timestamp, between=between,
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
