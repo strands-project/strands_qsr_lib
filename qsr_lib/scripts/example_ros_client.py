@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
         qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
 
-    elif which_qsr_argv == "conDir":
+    elif which_qsr_argv == "coneDir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]
