@@ -117,10 +117,5 @@ class QSR_Abstractclass(object):
     def custom_set_from_ini(self, parser):
         return
 
-    def handle_future(self, future, v, k=None):
-        if future:
-            if k is None:
-                raise ValueError("None qsr key")
-            return {k: v}
-        else:
-            return v
+    def handle_future(self, future, v, k):
+        return {k: v} if future else v
