@@ -11,7 +11,7 @@
 
 from __future__ import print_function, division
 import abc
-import ConfigParser
+import yaml
 import rospkg
 import os
 
@@ -105,16 +105,20 @@ class QSR_Abstractclass(object):
         """
         return
 
-    def set_from_ini(self, ini):
-        if ini is None:
-            ini = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.ini")
-        parser = ConfigParser.SafeConfigParser()
-        if len(parser.read(ini)) == 0:
-            raise IOError
-        self.custom_set_from_ini(parser)
+    def set_from_config_file(self, path):
+        if path is None:
+            path = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.yml")
+        else:
+            path_ext = os.path.splitext(path)[1]
+            if path_ext != ".yml" and path_ext != ".yaml":
+                print("ERROR (qsr_abstractclass.py/set_from_config_file): Only yaml files are supported")
+                raise ValueError
+        with open(path, "r") as f:
+            document = yaml.load(f)
+        self.custom_set_from_config_file(document)
 
     @abc.abstractmethod
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         return
 
     def handle_future(self, future, v, k=None):

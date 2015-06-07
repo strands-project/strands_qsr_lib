@@ -29,7 +29,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
             # 'se'     south-east
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         pass
 
     def custom_help(self):

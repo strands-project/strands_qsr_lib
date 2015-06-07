@@ -23,7 +23,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     def __init__(self):
         self.qtc_type = ""
 
-    def custom_set_from_ini(self, parser):
+    def custom_set_from_config_file(self, document):
         pass
 
     def return_all_possible_state_combinations(self):
