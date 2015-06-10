@@ -25,6 +25,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         self.qtc_type = "bc"
         self.qsr_type = "qtc_bc_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
+        self.qsr_keys = "qtcbcs"
 
     def make(self, *args, **kwargs):
         """Make the QSRs
@@ -92,11 +93,10 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                 if input_data.trace[0].objects[o1_name].kwargs["validate"]:
                     qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
                 for idx, qtc in enumerate(qtc_sequence):
-                    qtc_str = self.qtc_to_string((qtc))
                     qsr = QSR(
                         timestamp=idx+1,
                         between=between,
-                        qsr=qtc_str
+                        qsr=self.qtc_to_output_format((qtc), kwargs["future"])
                     )
                     ret.add_qsr(qsr, idx+1)
 
@@ -112,16 +112,17 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         return ret.reshape(-1,4)
 
 
-    def qtc_to_string(self, qtc):
+    def qtc_to_output_format(self, qtc, future=False):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.
         Example for QTCB: return qtc[0:2]
 
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
 
-        :return: q1,q2,q4,q5
+        :return: "q1,q2,q4,q5" or {"qtcbcs": "q1,q2,q4,q5"} if future is True
         """
-        return super(QSR_QTC_BC_Simplified, self).qtc_to_string(qtc) if not np.isnan(qtc[2]) else super(QSR_QTC_BC_Simplified, self).qtc_to_string(qtc[0:2])
+        s = super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc) if not np.isnan(qtc[2]) else super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc[0:2])
+        return self.handle_future(future, s, self.qsr_keys)
 
     def _get_euclidean_distance(self, p, q):
         """Calculate the Euclidean distance between points p and q

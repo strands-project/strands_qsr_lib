@@ -22,6 +22,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
     def __init__(self):
         self.qtc_type = ""
+        self.qsr_keys = "qtcs"
 
     def custom_set_from_config_file(self, document):
         pass
@@ -420,11 +421,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 if input_data.trace[0].objects[o1_name].kwargs["validate"]:
                     qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
                 for idx, qtc in enumerate(qtc_sequence):
-                    qtc_str = self.qtc_to_string((qtc))
                     qsr = QSR(
                         timestamp=idx+1,
                         between=between,
-                        qsr=qtc_str
+                        qsr=self.qtc_to_output_format((qtc), kwargs["future"])
                     )
                     ret.add_qsr(qsr, idx+1)
 
@@ -440,8 +440,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     ret.append((i, j))
         return ret
 
+
     @abstractmethod
-    def qtc_to_string(self, qtc):
+    def qtc_to_output_format(self, qtc, future=False):
         """Overwrite this for the different QTC variants to select only the parts
         from the QTCC tuple that you would like to return.
         Example for QTCB: return qtc[0:2]
@@ -450,4 +451,5 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :return: The part of the tuple you would to have as a result
         """
+        # TODO bit weird that instantiation of this calls the parent abstract just for string replacement, better to be done in another method
         return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')
