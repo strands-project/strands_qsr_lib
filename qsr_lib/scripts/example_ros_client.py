@@ -28,7 +28,7 @@ if __name__ == "__main__":
     options = {"rcc2": "rcc2_rectangle_bounding_boxes_2d",
                "rcc3": "rcc3_rectangle_bounding_boxes_2d",
                "rcc8": "rcc8_rectangle_bounding_boxes_2d",
-               "cone_direction": "cone_direction_bounding_boxes_centroid_2d",
+               "coneDir": "cone_direction_bounding_boxes_centroid_2d",
                "qtcb": "qtc_b_simplified",
                "qtcc": "qtc_c_simplified",
                "qtcbc": "qtc_bc_simplified",
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
         qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
 
-    elif which_qsr_argv == "cone_direction":
+    elif which_qsr_argv == "coneDir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]
