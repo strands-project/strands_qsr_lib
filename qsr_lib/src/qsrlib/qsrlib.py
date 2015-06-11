@@ -22,6 +22,8 @@ from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
 from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
 from qsrlib_qsrs.qsr_qtc_bc_simplified import QSR_QTC_BC_Simplified
 from qsrlib_qsrs.qsr_arg_relations_distance import QSR_Arg_Relations_Distance
+from qsrlib_qsrs.qsr_moving_or_stationary import QSR_Moving_or_Stationary
+
 
 class QSRlib_Response_Message(object):
     def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
@@ -91,7 +93,8 @@ class QSRlib(object):
                                        "qtc_b_simplified": QSR_QTC_B_Simplified,
                                        "qtc_c_simplified": QSR_QTC_C_Simplified,
                                        "qtc_bc_simplified": QSR_QTC_BC_Simplified,
-                                       "arg_relations_distance": QSR_Arg_Relations_Distance}
+                                       "arg_relations_distance": QSR_Arg_Relations_Distance,
+                                       "moving_or_stationary": QSR_Moving_or_Stationary}
         self.__qsrs_active = {}
         self.__set_qsrs_active(qsrs_active)
         if help:
