@@ -33,13 +33,14 @@ if __name__ == "__main__":
                "qtcc": "qtc_c_simplified",
                "qtcbc": "qtc_bc_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d",
-               "arg_distance": "arg_relations_distance"}
+               "arg_distance": "arg_relations_distance",
+                "mos": "moving_or_stationary"}
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
     parser.add_argument("-i", "--input", help="file from which to read object states", type=str)
     parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
-    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states. Only QTC", type=float)
+    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float)
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     parser.add_argument("--future", help="QSRs as dict", action="store_true")
@@ -99,8 +100,23 @@ if __name__ == "__main__":
               
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
-        world.add_object_state_series(o3)        
+        world.add_object_state_series(o3)
         world.add_object_state_series(o4)
+
+    elif which_qsr_argv == "mos":
+        q = args.quantisation_factor
+
+        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=2., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=2, x=3., y=1., width=5., length=8.)]
+
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=10., width=5., length=8.),
+              Object_State(name="o2", timestamp=2, x=11., y=20., width=5., length=8.),
+              Object_State(name="o2", timestamp=3, x=11., y=30., width=5., length=8.)]
+
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
 
     elif which_qsr_argv == "arg_distance":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -291,9 +307,13 @@ if __name__ == "__main__":
     #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
     #                                                 future=args.future, config=args.config)
+    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+    #                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
+    #                                                 future=args.future)
+
+    # mos test
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
-                                                    future=args.future)
+                                                    future=args.future, dynamic_args={"quantisation_factor": q})
 
 
     cln = QSRlib_ROS_Client()
