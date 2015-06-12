@@ -12,7 +12,7 @@
         http://matplotlib.1069221.n5.nabble.com/How-to-properly-use-path-Path-contains-point-td40718.html
 """
 
-from __future__ import print_function, division
+from __future__ import division
 from qsrlib_qsrs.qsr_qtc_simplified_abstractclass import QSR_QTC_Simplified_Abstractclass
 import numpy as np
 from qsrlib_io.world_qsr_trace import *
@@ -39,6 +39,20 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
         timestamps = input_data.get_sorted_timestamps()
 
+        parameters = {
+            "distance_threshold": 1.0,
+            "quantisation_factor": 0.0,
+            "validate": True,
+            "no_collapse": False
+        }
+
+        try:
+            if kwargs["dynamic_args"]["parameters"]:
+                for k, v in kwargs["dynamic_args"]["parameters"].items():
+                    parameters[k] = v
+        except:
+            print "No parameters found, will use default parameters: ", parameters
+
         if kwargs["qsrs_for"]:
             qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
             if error_found:
@@ -51,11 +65,20 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                 between = str(p[0]) + "," + str(p[1])
                 o1_name = p[0]
                 o2_name = p[1]
-                quantisation_factor = \
-                    input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-                    else 0.
-                distance_threshold = input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]
+                quantisation_factor = parameters["quantisation_factor"]
+                try:
+                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]:
+                        print "Definition of quantisation_factor in object is depricated. Please use parameters field in dynamic_args in service call."
+                        quantisation_factor = input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]
+                except:
+                    pass
+                distance_threshold = parameters["distance_threshold"]
+                try:
+                    if input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]:
+                        print "Definition of distance_threshold in object is depricated. Please use parameters field in dynamic_args in service call."
+                        quantisation_factor = input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]
+                except:
+                    pass
                 distances = np.array([])
                 qtc_sequence = np.array([], dtype=int)
                 for t0, t1 in zip(timestamps, timestamps[1:]):
@@ -87,10 +110,28 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                     except KeyError:
                         ret.add_empty_world_qsr_state(timestamp)
 
+                no_collapse = parameters["no_collapse"]
+                try:
+                    if input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                        print "Definition of no_collapse in object is depricated. Please use parameters field in dynamic_args in service call."
+                        no_collapse = input_data.trace[0].objects[o1_name].kwargs["no_collapse"]
+                except:
+                    pass
+                try:
+                    validate = parameters["validate"]
+                    if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                        print "Definition of validate in object is depricated. Please use parameters field in dynamic_args in service call."
+                        validate = input_data.trace[0].objects[o1_name].kwargs["validate"]
+                except:
+                    pass
+
+                if not type(no_collapse) is bool or not type(validate) is bool:
+                    raise Exception("'no_collapse' and 'validate' have to be boolean values.")
+
                 qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
-                if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                if no_collapse:
                     qtc_sequence = self._collapse_similar_states(qtc_sequence)
-                if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                if validate:
                     qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
                 for idx, qtc in enumerate(qtc_sequence):
                     qsr = QSR(
