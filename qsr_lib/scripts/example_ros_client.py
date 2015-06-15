@@ -59,8 +59,6 @@ if __name__ == "__main__":
 
     world = World_Trace()
 
-
-    qsr_relations_and_values = {}
     dynamic_args = {}
 
     if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
@@ -105,7 +103,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o4)
 
     elif which_qsr_argv == "mos":
-        q = args.quantisation_factor
+        dynamic_args = {"quantisation_factor": args.quantisation_factor}
 
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=2., y=1., width=5., length=8.),
@@ -291,18 +289,13 @@ if __name__ == "__main__":
 
     # uncomment this to test qsrs_for (and comment out the next line)
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
+    #                                                 dynamic_args=dynamic_args,
     #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 future=args.future, config=args.config)
+    #                                                 dynamic_args=dynamic_args, future=args.future, config=args.config)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
                                                     dynamic_args=dynamic_args,
                                                     future=args.future)
-
-    # mos test
-    #qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                future=args.future, dynamic_args={"quantisation_factor": q})
-
 
     cln = QSRlib_ROS_Client()
     req = cln.make_ros_request_message(qsrlib_request_message)
