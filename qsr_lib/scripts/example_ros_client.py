@@ -307,13 +307,13 @@ if __name__ == "__main__":
     #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
     #                                                 future=args.future, config=args.config)
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
-    #                                                 future=args.future)
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
+                                                 future=args.future)
 
     # mos test
-    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    future=args.future, dynamic_args={"quantisation_factor": q})
+    #qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+    #                                                future=args.future, dynamic_args={"quantisation_factor": q})
 
 
     cln = QSRlib_ROS_Client()
