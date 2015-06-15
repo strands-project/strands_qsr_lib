@@ -302,8 +302,8 @@ if __name__ == "__main__":
                                                     future=args.future)
 
     # mos test
-#    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-#                                                    future=args.future, dynamic_args={"quantisation_factor": q})
+    #qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
+    #                                                future=args.future, dynamic_args={"quantisation_factor": q})
 
 
     cln = QSRlib_ROS_Client()
