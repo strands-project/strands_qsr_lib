@@ -334,19 +334,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 if np.isnan(input_data.trace[t].objects[o].x) \
                     or np.isnan(input_data.trace[t].objects[o].y):
                         return 52, "Coordinates x: %f, y: %f are not defined correctly for timestep %f." % (x, y, t)
-                try :
-                    input_data.trace[t].objects[o].kwargs["quantisation_factor"]
-                except KeyError:
-                        return 53, "One or several of the objects are missing the quantisation_factor argument."
-                try :
-                    input_data.trace[t].objects[o].kwargs["validate"]
-                except KeyError:
-                        return 54, "One or several of the objects are missing the validate argument."
-                try :
-                    input_data.trace[t].objects[o].kwargs["distance_threshold"]
-                except KeyError:
-                    if self.qtc_type == "bc":
-                        return 55, "A distance_threshold has to be definde to determine when to transiction from QTCB to QTCC and vice-versa."
         return 0, ""
 
     def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
@@ -382,15 +369,31 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         else:
             qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
 
+        parameters = {
+            "quantisation_factor": 0.0,
+            "validate": True,
+            "no_collapse": False
+        }
+
+        try:
+            if kwargs["dynamic_args"]:
+                for k, v in kwargs["dynamic_args"].items():
+                    parameters[k] = v
+        except:
+            print "No parameters found, will use default parameters: ", parameters
+
         if qsrs_for:
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
                 o1_name = p[0]
                 o2_name = p[1]
-                quantisation_factor = \
-                    input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"] \
-                    else 0.
+                quantisation_factor = parameters["quantisation_factor"]
+                try:
+                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]:
+                        print "Definition of quantisation_factor in object is depricated. Please use parameters field in dynamic_args in service call."
+                        quantisation_factor = input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]
+                except:
+                    pass
                 qtc_sequence = np.array([], dtype=int)
                 for t0, t1 in zip(timestamps, timestamps[1:]):
                     timestamp = t1
@@ -412,13 +415,27 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     except KeyError:
                         ret.add_empty_world_qsr_state(timestamp)
 
-                if not type(input_data.trace[0].objects[o1_name].kwargs["no_collapse"]) is bool \
-                    or not type(input_data.trace[0].objects[o1_name].kwargs["validate"]) is bool:
+                no_collapse = parameters["no_collapse"]
+                try:
+                    if input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                        print "Definition of no_collapse in object is depricated. Please use parameters field in dynamic_args in service call."
+                        no_collapse = input_data.trace[0].objects[o1_name].kwargs["no_collapse"]
+                except:
+                    pass
+                try:
+                    validate = parameters["validate"]
+                    if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                        print "Definition of validate in object is depricated. Please use parameters field in dynamic_args in service call."
+                        validate = input_data.trace[0].objects[o1_name].kwargs["validate"]
+                except:
+                    pass
+
+                if not type(no_collapse) is bool or not type(validate) is bool:
                     raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
-                if not input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                if not no_collapse:
                     qtc_sequence = self._collapse_similar_states(qtc_sequence)
-                if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                if validate:
                     qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
                 for idx, qtc in enumerate(qtc_sequence):
                     qsr = QSR(

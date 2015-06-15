@@ -61,6 +61,7 @@ if __name__ == "__main__":
 
 
     qsr_relations_and_values = {}
+    dynamic_args = {}
 
     if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -79,25 +80,25 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
-        
+
     elif which_qsr_argv == "rcc8":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
-    
+
         o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
               Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
               Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
               Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
-    
+
         o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
               Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
-              
+
         o4 = [Object_State(name="o4", timestamp=0, x=1., y=11., width=7., length=9.),
               Object_State(name="o4", timestamp=1, x=2., y=11., width=7., length=9.),
               Object_State(name="o4", timestamp=2, x=3., y=11., width=7., length=9.)]
-              
+
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
@@ -136,21 +137,22 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
 
         qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
+        dynamic_args = {"qsr_relations_and_values": qsr_relations_and_values}
 
     elif which_qsr_argv == "coneDir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]
-    
+
         o2 = [Object_State(name="o2", timestamp=0, x=8., y=8., width=2., length=2.),
               Object_State(name="o2", timestamp=1, x=6., y=8., width=2., length=2.),
               Object_State(name="o2", timestamp=2, x=4., y=8., width=2., length=2.),
               Object_State(name="o2", timestamp=3, x=2., y=8., width=2., length=2.)]
-    
+
         o3 = [Object_State(name="o3", timestamp=0, x=3., y=3., width=2., length=2.),
               Object_State(name="o3", timestamp=1, x=4., y=3., width=2., length=2.),
               Object_State(name="o3", timestamp=2, x=6., y=3., width=2., length=2.)]
-              
+
         o4 = [Object_State(name="o4", timestamp=0, x=4., y=11., width=7., length=9.),
               Object_State(name="o4", timestamp=1, x=6., y=11., width=7., length=9.),
               Object_State(name="o4", timestamp=2, x=8., y=11., width=7., length=9.)]
@@ -170,9 +172,11 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        q = args.quantisation_factor
-        v = args.validate
-        n = args.no_collapse
+        dynamic_args = {
+            "quantisation_factor": args.quantisation_factor,
+            "validate": args.validate,
+            "no_collapse": args.no_collapse
+        }
 
         if args.input:
             ob = []
@@ -184,38 +188,34 @@ if __name__ == "__main__":
                         name=row['agent1'],
                         timestamp=idx,
                         x=float(row['x1']),
-                        y=float(row['y1']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n
+                        y=float(row['y1'])
                     ))
                     ob.append(Object_State(
                         name=row['agent2'],
                         timestamp=idx,
                         x=float(row['x2']),
-                        y=float(row['y2']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n
+                        y=float(row['y2'])
                     ))
 
             world.add_object_state_series(ob)
         else:
-            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o1", timestamp=1, x=2., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o1", timestamp=2, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
+                  Object_State(name="o1", timestamp=1, x=2., y=1.),
+                  Object_State(name="o1", timestamp=2, x=1., y=1.)]
 
-            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
+                  Object_State(name="o2", timestamp=1, x=4., y=1.),
+                  Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
-        q = args.quantisation_factor
-        v = args.validate
-        n = args.no_collapse
+        dynamic_args = {
+            "quantisation_factor": args.quantisation_factor,
+            "validate": args.validate,
+            "no_collapse": args.no_collapse
+        }
 
         if args.input:
             ob = []
@@ -227,39 +227,35 @@ if __name__ == "__main__":
                         name=row['agent1'],
                         timestamp=idx,
                         x=float(row['x1']),
-                        y=float(row['y1']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n
+                        y=float(row['y1'])
                     ))
                     ob.append(Object_State(
                         name=row['agent2'],
                         timestamp=idx,
                         x=float(row['x2']),
-                        y=float(row['y2']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n
+                        y=float(row['y2'])
                     ))
 
             world.add_object_state_series(ob)
         else:
-            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v, no_collapse=n)]
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
+                  Object_State(name="o1", timestamp=1, x=2., y=2.),
+                  Object_State(name="o1", timestamp=2, x=1., y=2.)]
 
-            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n),
-                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n)]
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
+                  Object_State(name="o2", timestamp=1, x=4., y=1.),
+                  Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcbc":
-        q = args.quantisation_factor
-        v = args.validate
-        n = args.no_collapse
-        d = args.distance_threshold
+        dynamic_args = {
+            "quantisation_factor": args.quantisation_factor,
+            "distance_threshold": args.distance_threshold,
+            "validate": args.validate,
+            "no_collapse": args.no_collapse
+        }
 
         if args.input:
             ob = []
@@ -271,32 +267,24 @@ if __name__ == "__main__":
                         name=row['agent1'],
                         timestamp=idx,
                         x=float(row['x1']),
-                        y=float(row['y1']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n,
-                        distance_threshold=d
+                        y=float(row['y1'])
                     ))
                     ob.append(Object_State(
                         name=row['agent2'],
                         timestamp=idx,
                         x=float(row['x2']),
-                        y=float(row['y2']),
-                        quantisation_factor=q,
-                        validate=v,
-                        no_collapse=n,
-                        distance_threshold=d
+                        y=float(row['y2'])
                     ))
 
             world.add_object_state_series(ob)
         else:
-            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
-                  Object_State(name="o1", timestamp=1, x=2., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
-                  Object_State(name="o1", timestamp=2, x=1., y=2., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
+            o1 = [Object_State(name="o1", timestamp=0, x=1., y=1.),
+                  Object_State(name="o1", timestamp=1, x=2., y=2.),
+                  Object_State(name="o1", timestamp=2, x=1., y=2.)]
 
-            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
-                  Object_State(name="o2", timestamp=1, x=4., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d),
-                  Object_State(name="o2", timestamp=2, x=5., y=1., quantisation_factor=q, validate=v, no_collapse=n, distance_threshold=d)]
+            o2 = [Object_State(name="o2", timestamp=0, x=4., y=1.),
+                  Object_State(name="o2", timestamp=1, x=4., y=1.),
+                  Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
@@ -308,8 +296,8 @@ if __name__ == "__main__":
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
     #                                                 future=args.future, config=args.config)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                 dynamic_args={"qsr_relations_and_values": qsr_relations_and_values},
-                                                 future=args.future)
+                                                    dynamic_args=dynamic_args,
+                                                    future=args.future)
 
     # mos test
     #qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
