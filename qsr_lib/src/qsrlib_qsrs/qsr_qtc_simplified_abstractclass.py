@@ -376,8 +376,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         }
 
         try:
-            if kwargs["dynamic_args"]["parameters"]:
-                for k, v in kwargs["dynamic_args"]["parameters"].items():
+            if kwargs["dynamic_args"]:
+                for k, v in kwargs["dynamic_args"].items():
                     parameters[k] = v
         except:
             print "No parameters found, will use default parameters: ", parameters

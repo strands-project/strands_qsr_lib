@@ -61,7 +61,7 @@ if __name__ == "__main__":
 
 
     qsr_relations_and_values = {}
-    parameters = {}
+    dynamic_args = {}
 
     if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
@@ -137,6 +137,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
 
         qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
+        dynamic_args = {"qsr_relations_and_values": qsr_relations_and_values}
 
     elif which_qsr_argv == "coneDir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
@@ -171,7 +172,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcb":
-        parameters = {
+        dynamic_args = {
             "quantisation_factor": args.quantisation_factor,
             "validate": args.validate,
             "no_collapse": args.no_collapse
@@ -210,7 +211,7 @@ if __name__ == "__main__":
             world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcc":
-        parameters = {
+        dynamic_args = {
             "quantisation_factor": args.quantisation_factor,
             "validate": args.validate,
             "no_collapse": args.no_collapse
@@ -249,7 +250,7 @@ if __name__ == "__main__":
             world.add_object_state_series(o2)
 
     elif which_qsr_argv == "qtcbc":
-        parameters = {
+        dynamic_args = {
             "quantisation_factor": args.quantisation_factor,
             "distance_threshold": args.distance_threshold,
             "validate": args.validate,
@@ -295,10 +296,7 @@ if __name__ == "__main__":
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
     #                                                 future=args.future, config=args.config)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    dynamic_args={
-                                                        "qsr_relations_and_values": qsr_relations_and_values,
-                                                        "parameters": parameters
-                                                    },
+                                                    dynamic_args=dynamic_args,
                                                     future=args.future)
 
     # mos test
