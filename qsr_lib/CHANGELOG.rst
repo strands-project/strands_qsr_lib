@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2015-06-16)
+------------------
 * fix mos in example
 * Getting rid of parameters namespace inside of dynamic_args.
 * Merge branch 'master' into qtc_params
