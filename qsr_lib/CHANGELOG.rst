@@ -2,6 +2,37 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix mos in example
+* Getting rid of parameters namespace inside of dynamic_args.
+* Merge branch 'master' into qtc_params
+  Conflicts:
+  qsr_lib/scripts/example_ros_client.py
+* Moved qtc parameters to service call
+  Using dynamic_args and the newly created field 'parameters'.
+  Should be fully backwards compatible with the option of removing this later on.
+* Example client bug fix
+  The mos test broke all the other QSR which don't define `q`.
+  Commented it and using the more generic service call now.
+* qsr MOS (moving or stationary)
+* Merge pull request `#59 <https://github.com/strands-project/strands_qsr_lib/issues/59>`_ from yianni/58
+  cone_direction now complies with --future (closes `#58 <https://github.com/strands-project/strands_qsr_lib/issues/58>`_)
+* Merge pull request `#60 <https://github.com/strands-project/strands_qsr_lib/issues/60>`_ from yianni/qtc-future
+  qtc compliant with future, closes `#50 <https://github.com/strands-project/strands_qsr_lib/issues/50>`_
+* Merge pull request `#56 <https://github.com/strands-project/strands_qsr_lib/issues/56>`_ from yianni/change-ini
+  changed config files from ini format to yaml
+* qtc compliant with future, closes `#50 <https://github.com/strands-project/strands_qsr_lib/issues/50>`_
+* --amend
+* updated shortcut for coneDir
+* cone_direction now complies with --future (closes `#58 <https://github.com/strands-project/strands_qsr_lib/issues/58>`_)
+* shortened return string
+* providing example of config format for arg_relations_distance
+* changed config files from ini format to yaml
+* add_object_track_from_list propagates **kwargs to Object_State
+* added funtionality to add an object's track from a list of values
+* Contributors: Christian Dondrup, Peter Lightbody, Yiannis Gatsoulis
+
 0.0.8 (2015-05-17)
 ------------------
 * args_distance no longer read default ini and being init to an empty dict
