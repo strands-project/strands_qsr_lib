@@ -27,11 +27,11 @@ class TestQTC(unittest.TestCase):
         "no_collapse": False,
         "distance_threshold": 1.2
     }
-    future = True
 
     correct = {
         "qtcb": [{'qtcbs': '-,-'}, {'qtcbs': '-,0'}, {'qtcbs': '0,0'}, {'qtcbs': '0,+'}, {'qtcbs': '+,+'}],
-        "qtcc": [{'qtccs': '-,-,0,0'}, {'qtccs': '-,-,+,0'}, {'qtccs': '-,0,+,0'}, {'qtccs': '-,0,+,+'}, {'qtccs': '0,0,+,+'}, {'qtccs': '0,0,+,0'}, {'qtccs': '0,+,+,0'}, {'qtccs': '+,+,+,0'}, {'qtccs': '+,+,0,0'}]
+        "qtcc": [{'qtccs': '-,-,0,0'}, {'qtccs': '-,-,+,0'}, {'qtccs': '-,0,+,0'}, {'qtccs': '-,0,+,+'}, {'qtccs': '0,0,+,+'}, {'qtccs': '0,0,+,0'}, {'qtccs': '0,+,+,0'}, {'qtccs': '+,+,+,0'}, {'qtccs': '+,+,0,0'}],
+        "qtcbc": [{'qtcbcs': '-,-'}, {'qtcbcs': '-,0'}, {'qtcbcs': '-,0,+,0'}, {'qtcbcs': '-,0,+,+'}, {'qtcbcs': '0,0,+,+'}, {'qtcbcs': '0,0,+,0'}, {'qtcbcs': '0,+,+,0'}, {'qtcbcs': '+,+,+,0'}, {'qtcbcs': '+,+'}]
     }
 
 
@@ -75,24 +75,43 @@ class TestQTC(unittest.TestCase):
 
         return foo
 
-    def _create_qsr(self, qsr):
+    def _create_qsr(self, qsr, future=False):
         qsrlib_request_message = QSRlib_Request_Message(
             which_qsr=self.options[qsr],
             input_data=self.world,
             include_missing_data=True,
             dynamic_args=self.dynamic_args,
-            future=self.future,
+            future=future,
             qsrs_for=[("human", "robot")]
         )
         return self._request(qsrlib_request_message)
 
+    def _to_strings(self, array):
+        return [x.values()[0] for x in array]
+
     def test_qtcb(self):
         res = self._create_qsr("qtcb")
+        self.assertEqual(res, self._to_strings(self.correct["qtcb"]))
+
+    def test_qtcb_future(self):
+        res = self._create_qsr("qtcb", future=True)
         self.assertEqual(res, self.correct["qtcb"])
 
     def test_qtcc(self):
         res = self._create_qsr("qtcc")
+        self.assertEqual(res, self._to_strings(self.correct["qtcc"]))
+
+    def test_qtcc_future(self):
+        res = self._create_qsr("qtcc", future=True)
         self.assertEqual(res, self.correct["qtcc"])
+
+    def test_qtcbc(self):
+        res = self._create_qsr("qtcbc")
+        self.assertEqual(res, self._to_strings(self.correct["qtcbc"]))
+
+    def test_qtcbc_future(self):
+        res = self._create_qsr("qtcbc", future=True)
+        self.assertEqual(res, self.correct["qtcbc"])
 
 
 
