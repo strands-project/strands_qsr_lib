@@ -129,7 +129,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                     raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
                 qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
-                if no_collapse:
+                if not no_collapse:
                     qtc_sequence = self._collapse_similar_states(qtc_sequence)
                 if validate:
                     qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
