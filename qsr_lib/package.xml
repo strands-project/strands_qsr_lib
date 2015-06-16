@@ -22,6 +22,8 @@
   <run_depend>std_msgs</run_depend>
   <run_depend>rostest</run_depend>
   <run_depend>roslib</run_depend>
+  
+  <test_depend>rosunit</test_depend>
 
   <export/>
 </package>
