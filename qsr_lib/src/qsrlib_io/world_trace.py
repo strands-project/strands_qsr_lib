@@ -10,6 +10,7 @@
 """
 
 from __future__ import print_function, division
+from numpy import isnan
 import copy
 
 class Object_State(object):
@@ -32,11 +33,10 @@ class Object_State(object):
         self.args = args
         self.kwargs = kwargs
 
-    def return_bounding_box_2d(self):
-        if self.width <= 0 or self.length <= 0:
-            print("ERROR: can't compute bounding box, width or height has no positive value")
-            return []
-        return [self.x-self.width/2, self.y-self.length/2, self.x+self.width/2, self.y+self.length/2]
+    def return_bounding_box_2d(self, minimal_width=2, minimal_length=2):
+        width = minimal_width if (isnan(self.width) or self.width == 0) else self.width
+        length = minimal_length if (isnan(self.length) or self.length == 0) else self.length
+        return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
 
 
 class World_State(object):
