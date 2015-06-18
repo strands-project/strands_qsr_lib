@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="qsr_lib" pkg="qsr_lib" type="qsrlib_ros_server.py" />
+
+  <test test-name="qtc_tester" pkg="qsr_lib" type="qtc_tester.py" />
+
+</launch>
