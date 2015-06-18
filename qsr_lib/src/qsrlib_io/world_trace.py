@@ -33,9 +33,9 @@ class Object_State(object):
         self.args = args
         self.kwargs = kwargs
 
-    def return_bounding_box_2d(self, minimal_width=2, minimal_length=2):
-        width = minimal_width if (isnan(self.width) or self.width == 0) else self.width
-        length = minimal_length if (isnan(self.length) or self.length == 0) else self.length
+    def return_bounding_box_2d(self, minimal_width=0, minimal_length=0):
+        width = minimal_width if isnan(self.width) else self.width
+        length = minimal_length if isnan(self.length) else self.length
         return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
 
 
