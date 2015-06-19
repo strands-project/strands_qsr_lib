@@ -2,6 +2,14 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Adding test depends
+* Fixing qtcbc collapse bug
+* Adding qtcbc and currently used string representation test.
+* Adding unit tests for qtcb and qtcc
+* Contributors: Christian Dondrup
+
 0.1.0 (2015-06-16)
 ------------------
 * fix mos in example
