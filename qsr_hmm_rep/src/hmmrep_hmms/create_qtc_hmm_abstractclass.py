@@ -1,50 +1,20 @@
 #!/usr/bin/env python
 
+from abc import ABCMeta
 import numpy as np
 from hmmrep_hmms.create_hmm_abstractclass import CreateHMMAbstractclass
 
 
-class QtcException(Exception):
-    def __init__(self, message):
-
-        # Call the base class constructor with the parameters it
-        # needs
-        Exception.__init__(self, "QTC Exception: " + message)
-
-
-class CreateQTCHMM(CreateHMMAbstractclass):
+class CreateQTCHMMAbstractclass(CreateHMMAbstractclass):
+    __metaclass__ = ABCMeta
 
     def __init__(self):
-        super(CreateQTCHMM, self).__init__()
+        super(CreateQTCHMMAbstractclass, self).__init__()
 
-    def create_transisition_and_emission_matrices(self, size, **kwargs):
+    def create_transition_matrix(self, size, **kwargs):
         """Creates a Conditional Neighbourhood Diagram as a basis for the HMM"""
 
-        qtc = []
-
-        if kwargs["qtc_type"] == 'qtcb':
-            for i in xrange(1, 4):
-                for j in xrange(1, 4):
-                    qtc.append([i-2, j-2])
-        elif kwargs["qtc_type"] == 'qtcc':
-            for i in xrange(1, 4):
-                for j in xrange(1, 4):
-                    for k in xrange(1, 4):
-                        for l in xrange(1, 4):
-                            qtc.append([i-2, j-2, k-2, l-2])
-        elif kwargs["qtc_type"] == 'qtcbc':
-            for i in xrange(1, 4):
-                for j in xrange(1, 4):
-                    qtc.append([i-2, j-2, np.NaN, np.NaN])
-            for i in xrange(1, 4):
-                for j in xrange(1, 4):
-                    for k in xrange(1, 4):
-                        for l in xrange(1, 4):
-                            qtc.append([i-2, j-2, k-2, l-2])
-        else:
-            raise(QtcException("createCNDTransEmiProb: Unknow qtc type: {!r}".format(kwargs["qtc_type"])))
-
-        qtc = np.array(qtc)
+        qtc = np.array(kwargs["qtc"])
         #np.savetxt('/home/cdondrup/qtc.csv', qtc, delimiter=',', fmt='%1f')
 
         trans = np.zeros((size, size))
@@ -78,10 +48,13 @@ class CreateQTCHMM(CreateHMMAbstractclass):
         trans = trans / trans.sum(axis=1).reshape(-1, 1)
         #np.savetxt('/home/cdondrup/trans.csv', trans, delimiter=',')
 
+        return trans
+
+    def create_emission_matrix(self, size, **kwargs):
         emi = np.eye(size)
         emi[emi == 0] = 0.0001
 
-        return trans, emi
+        return emi
 
 
     def qsr_to_state(self, qsr_data):
@@ -102,24 +75,3 @@ class CreateQTCHMM(CreateHMMAbstractclass):
             state_rep.append(state_num.tolist())
 
         return state_rep
-
-#    def create(self, qsr_seq, num_possible_states, *args, **kwargs):
-#        """Create and trains a HMM to represent the given qtc sequences"""
-#
-#        super(CreateQTCHMM, self).create(
-#            qsr_seq=qsr_seq,
-#            num_possible_states=num_possible_states,
-#            args=args,
-#            kwargs=kwargs
-#        )
-
-
-#    def createTestSequence(self, seq_path, qtc_type='qtcc'):
-#        if qtc_type is 'qtcb':
-#            return createSequenceSet(qtc2state(readQtcFiles(seq_path)), generateAlphabet(11))
-#        elif qtc_type is 'qtcc':
-#            return createSequenceSet(qtc2state(readQtcFiles(seq_path)), generateAlphabet(83))
-#        elif qtc_type is 'qtcbc':
-#            return createSequenceSet(qtc2state(readQtcFiles(seq_path)), generateAlphabet(92))
-#        else:
-#            raise(QtcException("Unknow qtc type: {!r}".format(qtc_type)))
