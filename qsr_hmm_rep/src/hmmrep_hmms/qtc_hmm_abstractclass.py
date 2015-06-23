@@ -2,16 +2,16 @@
 
 from abc import ABCMeta
 import numpy as np
-from hmmrep_hmms.create_hmm_abstractclass import CreateHMMAbstractclass
+from hmmrep_hmms.hmm_abstractclass import HMMAbstractclass
 
 
-class CreateQTCHMMAbstractclass(CreateHMMAbstractclass):
+class QTCHMMAbstractclass(HMMAbstractclass):
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        super(CreateQTCHMMAbstractclass, self).__init__()
+        super(QTCHMMAbstractclass, self).__init__()
 
-    def create_transition_matrix(self, size, **kwargs):
+    def _create_transition_matrix(self, size, **kwargs):
         """Creates a Conditional Neighbourhood Diagram as a basis for the HMM"""
 
         qtc = np.array(kwargs["qtc"])
@@ -50,18 +50,19 @@ class CreateQTCHMMAbstractclass(CreateHMMAbstractclass):
 
         return trans
 
-    def create_emission_matrix(self, size, **kwargs):
+    def _create_emission_matrix(self, size, **kwargs):
         emi = np.eye(size)
         emi[emi == 0] = 0.0001
 
         return emi
 
 
-    def qsr_to_state(self, qsr_data):
+    def _qsr_to_symbol(self, qsr_data):
         """Transforms a qtc state to a number"""
-
+        qsr_data = np.array(qsr_data)
         state_rep = []
         for idx, element in enumerate(qsr_data):
+            element = np.array(element)
             d = element.shape[1]
             mult = 3**np.arange(d-1, -1, -1)
             state_num = np.append(
@@ -75,3 +76,17 @@ class CreateQTCHMMAbstractclass(CreateHMMAbstractclass):
             state_rep.append(state_num.tolist())
 
         return state_rep
+
+    def _qtc_num_to_str(self, qtc_num_list):
+        qtc_str = []
+        for elem in qtc_num_list:
+            s = ''
+            for num in elem:
+                if num == 0:
+                    s +='0'
+                elif num == 1:
+                    s +='+'
+                elif num == -1:
+                    s +='-'
+            qtc_str.append(s)
+        return qtc_str

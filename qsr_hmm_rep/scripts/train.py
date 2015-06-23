@@ -8,7 +8,8 @@ Created on Fri Jan 30 15:28:58 2015
 
 import rospy
 import argparse
-from hmmrep_lib.hmmrep_lib import HMMRepLib, HMMRepRequestCreate
+from hmmrep_lib.hmmrep_lib import HMMRepLib
+from hmmrep_lib.hmmrep_requests import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
 import json
 import os
 import numpy as np
@@ -18,19 +19,15 @@ class Train(object):
     """trains hmm from qtc data files"""
 
     __hmm_types_available = {
-        "qtcc": "create_qtcc_hmm",
-        "qtcb": "create_qtcb_hmm",
-        "qtcbc": "create_qtcbc_hmm"
+        "qtcc": "qtcc_hmm",
+        "qtcb": "qtcb_hmm",
+        "qtcbc": "qtcbc_hmm"
     }
 
     def __init__(self, name, args):
         """Creates a new instance of the train class
         """
         rospy.loginfo("Starting %s", name)
-#        self.q = args.quantisation_factor
-#        self.v = True # Has to be validated
-#        self.n = args.no_collapse
-#        self.d = args.distance_threshold
         self.i = args.input
         self.qsr = args.qsr
 
@@ -50,23 +47,28 @@ class Train(object):
         rospy.loginfo("Reading file: '%s'" % self.i)
         qtc = self._load_files(path)
         req = HMMRepRequestCreate(qsr_seq=qtc, qsr_type=self.__hmm_types_available[self.qsr])
-        xml, hmm = self.hmm_lib.request(req)
-        #_ ,hmm = self.hmm_lib.create_hmm(qsr_seq=qtc, qsr_type=self.__hmm_types_available[self.qsr])
-        return hmm, qtc
+        xml = self.hmm_lib.request(req).get_xml()
+        return xml, qtc
+
+    def sample(self, hmm):
+        req = HMMRepRequestSample(qsr_type=self.__hmm_types_available[self.qsr], xml=hmm, max_length=10, num_samples=5)
+        return self.hmm_lib.request(req).get_sample()
+
+    def log_likelihood(self, hmm, samples):
+        req = HMMRepRequestLogLikelihood(qsr_type=self.__hmm_types_available[self.qsr], xml=hmm, qsr_seq=samples)
+        return self.hmm_lib.request(req).get_log_likelihood()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: qtcc|qtcc|qtcbc", type=str)
     parser.add_argument("-i", "--input", help="path under which to read csv files", type=str)
-#    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states.", type=float)
-#    parser.add_argument("--no_collapse", help="does not collapse similar adjacent states.", action="store_true")
-#    parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     args = parser.parse_args()
 
     rospy.init_node("train")
     t = Train(rospy.get_name(), args)
     hmm, qtc = t.train(args.input)
-    hmm.write('/home/cdondrup/test.xml')
-    print qtc
-    print hmm
+    s = t.sample(hmm=hmm)
+    print "SAMPLES", s
+    l = t.log_likelihood(hmm=hmm, samples=s)
+    print "LOGLIKELIHOOD", l

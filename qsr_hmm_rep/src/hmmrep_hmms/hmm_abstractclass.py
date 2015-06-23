@@ -5,18 +5,30 @@ import numpy as np
 import ghmm as gh
 
 
-class CreateHMMAbstractclass():
+class HMMAbstractclass():
     """Abstract class for HMM generation"""
     __metaclass__ = ABCMeta
 
     def __init__(self):
         self.num_possible_states = None # This has to be set by the specific imprelementation
 
-    def get(self, **kwargs):
+    def get_hmm(self, **kwargs):
         # TODO: Some error checking
 
         # If no errors, create HMM
-        return self.create(**kwargs)
+        return self._create(**kwargs)
+
+    def get_samples(self, **kwargs):
+        # TODO: Some error checking
+
+        # If no errors, create HMM
+        return self._sample(**kwargs)
+
+    def get_log_likelihood(self, **kwargs):
+        # TODO: Some error checking
+
+        # If no errors, create HMM
+        return self._log_likelihood(**kwargs)
 
     def get_num_possible_states(self):
         return self.num_possible_states
@@ -31,7 +43,7 @@ class CreateHMMAbstractclass():
         """
         return gh.SequenceSet(symbols, qsr_seq)
 
-    def create_transition_matrix(self, size, **kwargs):
+    def _create_transition_matrix(self, size, **kwargs):
         """Method for the creation of the transition probability matrix. Creates
         a uniformly distributed matrix. Please override if special behaviour
         is necessary.
@@ -42,7 +54,7 @@ class CreateHMMAbstractclass():
         trans = np.ones([size,size])
         return trans/trans.sum(axis=1)
 
-    def create_emission_matrix(self, size, **kwargs):
+    def _create_emission_matrix(self, size, **kwargs):
         """Method for the creation of the emission probability matrix. Creates
         a uniformly distributed matrix. Please override if special behaviour
         is necessary.
@@ -54,12 +66,22 @@ class CreateHMMAbstractclass():
         return emi/emi.sum(axis=1)
 
     @abstractmethod
-    def qsr_to_state(self, qsr_data):
+    def _qsr_to_symbol(self, qsr_data):
         """Transforms a list of qsr state chains to a list of lists of numbers according to the alphabet.
         Needs to be overridden by the specific QSR to handle the correct symbols.
 
         :return: List of lists containing the qsr input data as symbols from the alphabet
             E.g.: [[1,4,2,7],[0,5,3,8,5,1,3]]
+        """
+        return
+
+    @abstractmethod
+    def _symbol_to_qsr(self, symbols):
+        """Transforms a list of symbols to the corresponding qsr state chains.
+        Needs to be overridden by the specific QSR to handle the correct symbols.
+
+        :return: List of lists of qsr state chains
+            E.g.: [['dc','po','o'],['dc','po']]
         """
         return
 
@@ -100,24 +122,42 @@ class CreateHMMAbstractclass():
         return hmm
 
 
-    def create(self, **kwargs):
+    def _create(self, **kwargs):
         """Creates and trains (using '_train') a HMM to represent the given qtc sequences.
         Main function to create and train the hmm. Please override with special
-        behaviour is necessary.
+        behaviour if necessary.
 
         This function is called by the library to create the hmm.
 
         :param **kwargs:
-            - qsr_seq: the sequence of QSRs. This should be a list of state
-        chains, i.e. a list of lists
+            - qsr_seq: the sequence of QSRs. This should be a list of state chains, i.e. a list of lists
 
         :return: The trained HMM
 
         """
 
-        state_seq = self.qsr_to_state(kwargs["qsr_seq"])
-        trans = self.create_transition_matrix(size=self.get_num_possible_states(), **kwargs)
-        emi = self.create_emission_matrix(size=self.get_num_possible_states(), **kwargs)
+        state_seq = self._qsr_to_symbol(kwargs["qsr_seq"])
+        trans = self._create_transition_matrix(size=self.get_num_possible_states(), **kwargs)
+        emi = self._create_emission_matrix(size=self.get_num_possible_states(), **kwargs)
         hmm = self._train(state_seq, trans, emi, self.get_num_possible_states())
         print '...done'
         return hmm
+
+    def _sample(self, **kwargs):
+        hmm = kwargs["hmm"]
+        ret = []
+        for i in range(kwargs["num_samples"]):
+            ret.append(
+                map(
+                    self._generate_alphabet(num_symbols=self.num_possible_states).external,
+                    hmm.sampleSingle(kwargs["max_length"])
+                )
+            )
+        return self._symbol_to_qsr(ret)
+
+
+    def _log_likelihood(self, **kwargs):
+        return kwargs["hmm"].loglikelihood(self._create_sequence_set(
+            qsr_seq=self._qsr_to_symbol(kwargs["qsr_seq"]),
+            symbols=self._generate_alphabet(num_symbols=self.num_possible_states)
+        ))
