@@ -15,7 +15,6 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         """Creates a Conditional Neighbourhood Diagram as a basis for the HMM"""
 
         qtc = np.array(kwargs["qtc"])
-        #np.savetxt('/home/cdondrup/qtc.csv', qtc, delimiter=',', fmt='%1f')
 
         trans = np.zeros((size, size))
         for i1 in xrange(qtc.shape[0]):
@@ -35,7 +34,6 @@ class QTCHMMAbstractclass(HMMAbstractclass):
                 trans[i2+1, i1+1] = trans[i1+1, i2+1]
 
         trans[trans != 1] = 0
-        #np.savetxt('/home/cdondrup/trans.csv', np.rint(trans).astype(int), delimiter=',', fmt='%i')
         trans[trans == 0] = 0.00001
         trans[0] = 1
         trans[:, 0] = 0
@@ -46,7 +44,6 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         trans[0, 0] = 0
 
         trans = trans / trans.sum(axis=1).reshape(-1, 1)
-        #np.savetxt('/home/cdondrup/trans.csv', trans, delimiter=',')
 
         return trans
 
@@ -54,7 +51,7 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         emi = np.eye(size)
         emi[emi == 0] = 0.0001
 
-        return emi
+        return emi/emi.sum(axis=1).reshape(-1, 1)
 
 
     def _qsr_to_symbol(self, qsr_data):
@@ -62,6 +59,8 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         qsr_data = np.array(qsr_data)
         state_rep = []
         for idx, element in enumerate(qsr_data):
+            if all(isinstance(x, str) or isinstance(x, unicode) for x in element):
+                element = self._qtc_str_to_num(element) # check if content is string instead of numbers and convert
             element = np.array(element)
             d = element.shape[1]
             mult = 3**np.arange(d-1, -1, -1)
@@ -90,3 +89,17 @@ class QTCHMMAbstractclass(HMMAbstractclass):
                     s +='-'
             qtc_str.append(s)
         return qtc_str
+
+    def _qtc_str_to_num(self, qtc_str_list):
+        qtc_num = []
+        for elem in qtc_str_list:
+            n = []
+            for s in elem:
+                if s == '0':
+                    n.append(0.0)
+                elif s == '+':
+                    n.append(1.0)
+                elif s == '-':
+                    n.append(-1.0)
+            qtc_num.append(n)
+        return qtc_num

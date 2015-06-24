@@ -9,7 +9,7 @@ Created on Fri Jan 30 15:28:58 2015
 import rospy
 import argparse
 from hmmrep_lib.hmmrep_lib import HMMRepLib
-from hmmrep_lib.hmmrep_requests import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
+from hmmrep_lib.hmmrep_io import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
 import json
 import os
 import numpy as np
@@ -17,12 +17,6 @@ import numpy as np
 
 class Train(object):
     """trains hmm from qtc data files"""
-
-    __hmm_types_available = {
-        "qtcc": "qtcc_hmm",
-        "qtcb": "qtcb_hmm",
-        "qtcbc": "qtcbc_hmm"
-    }
 
     def __init__(self, name, args):
         """Creates a new instance of the train class
@@ -46,17 +40,17 @@ class Train(object):
     def train(self, path):
         rospy.loginfo("Reading file: '%s'" % self.i)
         qtc = self._load_files(path)
-        req = HMMRepRequestCreate(qsr_seq=qtc, qsr_type=self.__hmm_types_available[self.qsr])
-        xml = self.hmm_lib.request(req).get_xml()
+        req = HMMRepRequestCreate(qsr_seq=qtc, qsr_type=self.qsr)
+        xml = self.hmm_lib.request(req).get()
         return xml, qtc
 
     def sample(self, hmm):
-        req = HMMRepRequestSample(qsr_type=self.__hmm_types_available[self.qsr], xml=hmm, max_length=10, num_samples=5)
-        return self.hmm_lib.request(req).get_sample()
+        req = HMMRepRequestSample(qsr_type=self.qsr, xml=hmm, max_length=10, num_samples=5)
+        return self.hmm_lib.request(req).get()
 
     def log_likelihood(self, hmm, samples):
-        req = HMMRepRequestLogLikelihood(qsr_type=self.__hmm_types_available[self.qsr], xml=hmm, qsr_seq=samples)
-        return self.hmm_lib.request(req).get_log_likelihood()
+        req = HMMRepRequestLogLikelihood(qsr_type=self.qsr, xml=hmm, qsr_seq=samples)
+        return self.hmm_lib.request(req).get()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABCMeta, abstractmethod
+import json
+
 
 class HMMRepRequestAbstractclass(object):
     __metaclass__ = ABCMeta
@@ -15,6 +17,20 @@ class HMMRepRequestAbstractclass(object):
         return self._const_function_pointer(inst, **self.kwargs)
 
 
+class HMMReqResponseBaseclass(object):
+    __metaclass__ = ABCMeta
+
+    def __init__(self, qsr_type, data):
+        self.qsr_type = qsr_type
+        self.data = data
+
+    def get_type(self):
+        return self.qsr_type
+
+    def get(self):
+        return self.data
+
+
 class HMMRepRequestCreate(HMMRepRequestAbstractclass):
 
     _const_function_pointer = lambda *args, **kwargs: args[1]._create_hmm(**kwargs)
@@ -25,6 +41,12 @@ class HMMRepRequestCreate(HMMRepRequestAbstractclass):
             "qsr_seq": qsr_seq,
             "store": store
         }
+
+
+class HMMReqResponseCreate(HMMReqResponseBaseclass):
+
+    def get(self):
+        return str(super(self.__class__, self).get())
 
 
 class HMMRepRequestSample(HMMRepRequestAbstractclass):
@@ -39,6 +61,13 @@ class HMMRepRequestSample(HMMRepRequestAbstractclass):
             "num_samples": num_samples
         }
 
+
+class HMMReqResponseSample(HMMReqResponseBaseclass):
+
+    def get(self):
+        return json.loads(super(self.__class__, self).get())
+
+
 class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
 
     _const_function_pointer = lambda *args, **kwargs: args[1]._get_log_likelihood(**kwargs)
@@ -49,3 +78,16 @@ class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
             "xml": xml,
             "qsr_seq": qsr_seq
         }
+
+
+class HMMReqResponseLogLikelihood(HMMReqResponseBaseclass):
+
+    def get(self):
+        return json.loads(super(self.__class__, self).get())
+
+
+available_services = {
+    "create": [HMMRepRequestCreate, HMMReqResponseCreate],
+    "sample": [HMMRepRequestSample, HMMReqResponseSample],
+    "log_likelihood": [HMMRepRequestLogLikelihood, HMMReqResponseLogLikelihood]
+}

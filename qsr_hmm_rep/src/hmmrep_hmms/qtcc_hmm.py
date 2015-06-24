@@ -42,6 +42,6 @@ class QTCCHMM(QTCHMMAbstractclass):
                 f -= 1
                 qtc.append(f.tolist())
 
-            ret.append(qtc)
+            ret.append(self._qtc_num_to_str(qtc))
 
         return ret
