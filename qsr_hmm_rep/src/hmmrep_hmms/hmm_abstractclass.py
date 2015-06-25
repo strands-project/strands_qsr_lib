@@ -146,11 +146,11 @@ class HMMAbstractclass():
     def _sample(self, **kwargs):
         hmm = kwargs["hmm"]
         ret = []
-        for i in range(kwargs["num_samples"]):
+        for i in range(int(kwargs["num_samples"])):
             ret.append(
                 map(
                     self._generate_alphabet(num_symbols=self.num_possible_states).external,
-                    hmm.sampleSingle(kwargs["max_length"])
+                    hmm.sampleSingle(int(kwargs["max_length"]))
                 )
             )
         return self._symbol_to_qsr(ret)

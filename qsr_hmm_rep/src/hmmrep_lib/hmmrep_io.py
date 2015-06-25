@@ -65,14 +65,14 @@ class HMMRepRequestSample(HMMRepRequestAbstractclass):
 class HMMReqResponseSample(HMMReqResponseBaseclass):
 
     def get(self):
-        return json.loads(super(self.__class__, self).get())
+        return super(self.__class__, self).get()
 
 
 class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
 
     _const_function_pointer = lambda *args, **kwargs: args[1]._get_log_likelihood(**kwargs)
 
-    def __init__(self, qsr_type, xml, qsr_seq, num_samples=1):
+    def __init__(self, qsr_type, xml, qsr_seq):
         self.kwargs = {
             "qsr_type": qsr_type,
             "xml": xml,
@@ -83,11 +83,15 @@ class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
 class HMMReqResponseLogLikelihood(HMMReqResponseBaseclass):
 
     def get(self):
-        return json.loads(super(self.__class__, self).get())
+        return super(self.__class__, self).get()
 
 
+###############################################################################
+# Define available services here:
+###############################################################################
 available_services = {
     "create": [HMMRepRequestCreate, HMMReqResponseCreate],
     "sample": [HMMRepRequestSample, HMMReqResponseSample],
     "log_likelihood": [HMMRepRequestLogLikelihood, HMMReqResponseLogLikelihood]
 }
+###############################################################################

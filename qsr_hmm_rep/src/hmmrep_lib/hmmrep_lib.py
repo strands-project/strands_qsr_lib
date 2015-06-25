@@ -38,7 +38,7 @@ class HMMRepLib(object):
         l = sorted(self.hmm_types_available)
         print("Types of HMMs that have been included so far are:")
         for i in l:
-            print("-", i)
+            print "-", i
 
     def _create_hmm(self, **kwargs):
         hmm = self.__hmm_types_active[kwargs["qsr_type"]].get_hmm(
