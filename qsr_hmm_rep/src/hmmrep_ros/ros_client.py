@@ -10,7 +10,6 @@ class ROSClient(object):
         self.services = {}
         for k, v in available_services.items():
             self.services[v[0]] = server_name + "/" + k
-#            exec("self." + k + "=" + v[0].__name__)
 
     def call_service(self, req):
         assert(issubclass(req.__class__, HMMRepRequestAbstractclass))

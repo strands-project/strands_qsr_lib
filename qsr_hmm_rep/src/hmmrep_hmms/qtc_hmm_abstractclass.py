@@ -12,10 +12,17 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         super(QTCHMMAbstractclass, self).__init__()
 
     def _create_transition_matrix(self, size, **kwargs):
-        """Creates a Conditional Neighbourhood Diagram as a basis for the HMM"""
+        """Creates a Conditional Neighbourhood Diagram as a basis for the HMM.
+
+        :param kwargs:
+            * qtc: list of lists containing all possible qtc states. Different for all 3 qtc versions.
+
+        :return: The transition matrix only allowing transitions according to the CND
+        """
 
         qtc = np.array(kwargs["qtc"])
 
+        # TODO insert matlab documentation on how this works here
         trans = np.zeros((size, size))
         for i1 in xrange(qtc.shape[0]):
             for i2 in xrange(i1+1, qtc.shape[0]):
@@ -33,6 +40,7 @@ class QTCHMMAbstractclass(HMMAbstractclass):
                             break
                 trans[i2+1, i1+1] = trans[i1+1, i2+1]
 
+        # Setting start and end transition probs and pseudo probs
         trans[trans != 1] = 0
         trans[trans == 0] = 0.00001
         trans[0] = 1
@@ -43,11 +51,17 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         trans += np.dot(np.eye(size), 0.00001)
         trans[0, 0] = 0
 
-        trans = trans / trans.sum(axis=1).reshape(-1, 1)
-
-        return trans
+        return trans / trans.sum(axis=1).reshape(-1, 1)
 
     def _create_emission_matrix(self, size, **kwargs):
+        """Creating an emission matrix with the highest prob along the diagonal
+        and a "pseudo" prob for all other states.
+
+        :param kwargs: empty
+
+        :return: The emission probability matrix
+
+        """
         emi = np.eye(size)
         emi[emi == 0] = 0.0001
 
@@ -55,7 +69,13 @@ class QTCHMMAbstractclass(HMMAbstractclass):
 
 
     def _qsr_to_symbol(self, qsr_data):
-        """Transforms a qtc state to a number"""
+        """Transforms a qtc state chain to a list of numbers
+
+        :param qsr_data: The list of lists of qtc strings or numpy array states
+            E.g.: [['++++','+++0','+++-,]] or [[[1,1,1,1],[1,1,1,0],[1,1,1,-1]]]
+
+        :return: A lists of lists of alphabet symbols corresponding to the given state chains
+        """
         qsr_data = np.array(qsr_data)
         state_rep = []
         for idx, element in enumerate(qsr_data):
@@ -65,10 +85,10 @@ class QTCHMMAbstractclass(HMMAbstractclass):
             d = element.shape[1]
             mult = 3**np.arange(d-1, -1, -1)
             state_num = np.append(
-                0,
+                0, # Start symbol
                 ((element + 1)*np.tile(mult, (element.shape[0], 1))).sum(axis=1) + 1
             )
-            state_num = np.append(state_num, 82)
+            state_num = np.append(state_num, 82) # End symbol
             state_char = ''
             for n in state_num:
                 state_char += chr(int(n)+32)
@@ -77,6 +97,14 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         return state_rep
 
     def _qtc_num_to_str(self, qtc_num_list):
+        """Transforms qtc array representation to string
+
+        :param qtc_num_list: A list of lists of arrays
+            E.g.: [[1,1,1,1],[1,1,1,0]]
+
+        :return: The corresponding string representation
+            E.g. ['++++','+++0']
+        """
         qtc_str = []
         for elem in qtc_num_list:
             s = ''
@@ -91,6 +119,14 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         return qtc_str
 
     def _qtc_str_to_num(self, qtc_str_list):
+        """Transforms qtc string representation to an array
+
+        :param qtc_num_list: A list of strings
+            E.g.: ['++++','+++0']
+
+        :return: The corresponding array representation
+            E.g. [[1,1,1,1],[1,1,1,0]]
+        """
         qtc_num = []
         for elem in qtc_str_list:
             n = []
