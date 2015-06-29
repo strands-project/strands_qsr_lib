@@ -10,7 +10,14 @@ from qsr_hmm_rep.srv import QSRHMMRepResponse, QSRHMMRep
 
 
 class HMMRepROSServer(object):
+    """This class provides a service for all requests specified in
+    'hmmrep_lib.hmmrep_io.available_services'. The service name will be the key
+    of the entry."""
+
     def __init__(self, name):
+        """
+        :param name: The name of the node
+        """
         rospy.loginfo("Starting %s" % name)
         self._hmm_lib = HMMRepLib()
         self._hmm_lib.print_hmms_available()
@@ -24,7 +31,6 @@ class HMMRepROSServer(object):
             self.services[k] = rospy.Service("~"+k, QSRHMMRep, (lambda b: lambda x: self.callback(x, b))(k))
 
     def callback(self, req, srv_type):
-        print "SERVICCE", type(req.data)
         r = available_services[srv_type][0](qsr_type=req.qsr_type, **json.loads(req.data))
         return QSRHMMRepResponse(qsr_type=req.qsr_type, data=self._hmm_lib.request(r).get())
 
