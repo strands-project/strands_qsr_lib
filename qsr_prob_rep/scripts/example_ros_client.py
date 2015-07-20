@@ -14,8 +14,8 @@ def load_files(path):
     for f in os.listdir(path):
         if f.endswith(".qsr"):
             filename = path + '/' + f
-            with open(filename, 'r') as qtc:
-                ret.append(json.load(qtc))
+            with open(filename, 'r') as qsr:
+                ret.append(json.load(qsr))
 
     return ret
 

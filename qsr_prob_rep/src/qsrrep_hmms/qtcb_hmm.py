@@ -9,6 +9,7 @@ class QTCBHMM(QTCHMMAbstractclass):
     def __init__(self):
         super(QTCBHMM, self).__init__()
         self.num_possible_states = 11 # Setting number of possible states: QTCB + start and end
+        self.multiplier = 3**np.array(range(1,-1,-1))
 
     def _create_transition_matrix(self, size, **kwargs):
         """Creates a Conditional Neighbourhood Diagram for QTCB as a basis for the HMM.
@@ -39,20 +40,19 @@ class QTCBHMM(QTCHMMAbstractclass):
         ret = []
         for s in symbols:
             qtc = []
-            q = 3**np.array(range(1,-1,-1))
             for c in s[1:-1]:
+                qtc.append(self.symbol_to_qsr(c))
 
-                rc = np.array([c-1])
-                f = np.array([np.floor(rc[0]/q[0])])
-                r = np.fmod(rc[0],q[0])
-
-                for i in range(1, len(q)):
-                    rc = np.append(rc, rc[i-1] - f[i-1] * q[i-1])
-                    f = np.append(f, np.floor(rc[i]/q[i]))
-                    r = np.append(r, np.fmod(rc[i],q[i]))
-
-                qtc.append(f-1)
-
-            ret.append(qtc)
+            ret.append(self._qtc_num_to_str(qtc))
 
         return ret
+
+    def symbol_to_qsr(self, symbol):
+        rc = np.array([symbol-1])
+        f = np.array([np.floor(rc[0]/self.multiplier[0])])
+
+        for i in range(1, len(self.multiplier)):
+            rc = np.append(rc, rc[i-1] - f[i-1] * self.multiplier[i-1])
+            f = np.append(f, np.floor(rc[i]/self.multiplier[i]))
+
+        return f-1

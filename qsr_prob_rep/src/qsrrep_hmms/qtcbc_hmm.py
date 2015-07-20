@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from qsrrep_hmms.qtc_hmm_abstractclass import QTCHMMAbstractclass
+from qsrrep_hmms.qtcb_hmm import QTCBHMM
+from qsrrep_hmms.qtcc_hmm import QTCCHMM
 import numpy as np
 
 
@@ -9,6 +11,8 @@ class QTCBCHMM(QTCHMMAbstractclass):
     def __init__(self):
         super(QTCBCHMM, self).__init__()
         self.num_possible_states = 92 # Setting number of possible states: QTCBC + start and end
+        self.qtcb = QTCBHMM()
+        self.qtcc = QTCCHMM()
 
     def _create_transition_matrix(self, size, **kwargs):
         """Creates a Conditional Neighbourhood Diagram for QTCBC as a basis for the HMM.
@@ -41,29 +45,52 @@ class QTCBCHMM(QTCHMMAbstractclass):
         :return: The list of corresponding qtc symbols
         """
 
-        #TODO: Needs to be tested and altered to work with qtcb and qtcc
-        multi = 2
-        qtc = []
-        q = 3**np.array(range(multi-1,-1,-1))
-        for c in symbols:
+        ret = []
+        for s in symbols:
+            qtc = []
+            for c in s[1:-1]:
+                if c <= 9: # QTCB
+                    qtc.append(self.qtcb.symbol_to_qsr(c))
+                else:
+                    qtc.append(self.qtcc.symbol_to_qsr(c-9))
 
-            rc = np.array([c-1])
-            print "rc", rc
+            ret.append(self._qtc_num_to_str(qtc))
 
-            f = np.array([np.floor(rc[0]/q[0])])
-            print "f", f
-            r = np.fmod(rc[0],q[0])
-            print "r", r
+        return ret
 
-            for i in range(1, len(q)):
-                print "i", i
-                rc = np.append(rc, rc[i-1] - f[i-1] * q[i-1])
-                print "rc", rc
-                f = np.append(f, np.floor(rc[i]/q[i]))
-                print "f", f
-                r = np.append(r, np.fmod(rc[i],q[i]))
-                print "r", r
+    def _qsr_to_symbol(self, qsr_data):
+        """Transforms a qtc state chain to a list of numbers
 
-            qtc.append(f-1)
+        :param qsr_data: The list of lists of qtc strings or numpy array states
+            E.g.: [['++++','+++0','+++-,]] or [[[1,1,1,1],[1,1,1,0],[1,1,1,-1]]]
 
-        return self._qtc_num_to_str(qtc)
+        :return: A lists of lists of alphabet symbols corresponding to the given state chains
+        """
+        qsr_data = np.array(qsr_data)
+        state_rep = []
+        for idx, element in enumerate(qsr_data):
+            if all(isinstance(x, str) or isinstance(x, unicode) for x in element):
+                element = self._qtc_str_to_num(element) # check if content is string instead of numbers and convert
+            element = np.array(element)
+            try:
+                d = element.shape[1]
+            except IndexError: # Not a list of lists of lists
+                return self._qsr_to_symbol([qsr_data])
+            state_num = np.array([0]) # Start symbol
+            #Not ellegant at all but necessary due to the nan values and the different multipliers for qtcb and qtcc
+            for x in element:
+                x = x[~np.isnan(x)]
+                d = x.shape[0]
+                mult = 3**np.arange(d-1, -1, -1)
+                num = ((x + 1)*mult).sum() + 1
+                state_num = np.append(
+                    state_num,
+                    num if d == 2 else num + 9 # Adding a 9 when the state is qtcc
+                )
+            state_num = np.append(state_num, self.num_possible_states-1) # End symbol
+            state_char = ''
+            for n in state_num:
+                state_char += chr(int(n)+32)
+            state_rep.append(state_num.tolist())
+
+        return state_rep

@@ -45,7 +45,7 @@ class HMMAbstractclass():
 
         # TODO: Some error checking
 
-        # If no errors, create HMM
+        # If no errors, create samples
         return self._sample(**kwargs)
 
     def get_log_likelihood(self, **kwargs):
@@ -61,7 +61,7 @@ class HMMAbstractclass():
 
         # TODO: Some error checking
 
-        # If no errors, create HMM
+        # If no errors, calculate loglikelihood
         return self._log_likelihood(**kwargs)
 
     def get_num_possible_states(self):

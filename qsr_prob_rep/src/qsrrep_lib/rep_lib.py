@@ -125,18 +125,18 @@ class ProbRepLib(object):
         :return: The ghmm hmm object
         """
         try:
-            t = time.time()
+#            t = time.time()
             hmm = self.__hmm_buffer[xml]
             self.__hmm_buffer[xml] = self.__hmm_buffer.pop(xml) # Moving hmm to end of dict to prevent loosing active ones
-            elapsed = time.time() - t
-            print "TIME BUFFER", elapsed
+#            elapsed = time.time() - t
+#            print "TIME BUFFER", elapsed
             return hmm
         except KeyError:
-            t = time.time()
+#            t = time.time()
             hmm = self.__create_hmm_from_xml(xml=xml)
             self.__hmm_buffer[xml] = hmm
-            elapsed = time.time() - t
-            print "TIME LOAD", elapsed
+#            elapsed = time.time() - t
+#            print "TIME LOAD", elapsed
             return hmm
 
     def __create_xml_from_hmm(self, hmm):
