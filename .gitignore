@@ -56,3 +56,5 @@ target/
 #IDEs
 .spyder*
 .idea/
+
+*~

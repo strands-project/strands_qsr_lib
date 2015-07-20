@@ -78,11 +78,16 @@ class QTCHMMAbstractclass(HMMAbstractclass):
         """
         qsr_data = np.array(qsr_data)
         state_rep = []
+        print qsr_data
         for idx, element in enumerate(qsr_data):
             if all(isinstance(x, str) or isinstance(x, unicode) for x in element):
                 element = self._qtc_str_to_num(element) # check if content is string instead of numbers and convert
             element = np.array(element)
-            d = element.shape[1]
+            print element
+            try:
+                d = element.shape[1]
+            except IndexError: # Not a list of lists of lists
+                return self._qsr_to_symbol([qsr_data])
             mult = 3**np.arange(d-1, -1, -1)
             state_num = np.append(
                 0, # Start symbol
