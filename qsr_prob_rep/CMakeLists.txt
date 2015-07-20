@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(qsr_hmm_rep)
+project(qsr_prob_rep)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -55,7 +55,7 @@ catkin_python_setup()
 ## Generate services in the 'srv' folder
 add_service_files(
   FILES
-  QSRHMMRep.srv
+  QSRProbRep.srv
 )
 
 ## Generate actions in the 'action' folder

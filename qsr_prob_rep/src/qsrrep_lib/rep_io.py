@@ -6,10 +6,10 @@ own please follow these steps:
     * Create a request class following the naming scheme: HMMRepRequestFunctionality
     where 'Functionality' is replaced by your new functionality name.
         * Inherit from 'HMMRepRequestAbstractclass'
-        * Define the '_const_function_pointer' to use your function in hmmrep_lib.py.
+        * Define the '_const_function_pointer' to use your function in qsrrep_lib.py.
             * Make sure you implemented such a function in there
             * Make th pointer look like the one in 'HMMRepRequestAbstractclass'
-            and replace 'my_function' with the function name in hmmrep_lib.py
+            and replace 'my_function' with the function name in qsrrep_lib.py
         * Override '__init__' defiinig a custom finction header and adding the
         variables to the variable 'self.kwargs'
     * Create a response class following the naming scheme 'HMMReqResponseFunctionality'

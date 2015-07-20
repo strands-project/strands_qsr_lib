@@ -2,14 +2,14 @@
 
 import rospy
 import json
-from hmmrep_lib.hmmrep_io import available_services, HMMRepRequestAbstractclass
-from qsr_hmm_rep.srv import QSRHMMRep, QSRHMMRepRequest
+from qsrrep_lib.rep_io import available_services, HMMRepRequestAbstractclass
+from qsr_prob_rep.srv import QSRProbRep, QSRProbRepRequest
 
 class ROSClient(object):
     """This class provides a convenience method to encapsulate the ROS service
     architecture."""
 
-    def __init__(self, server_name="hmm_rep_ros_server"):
+    def __init__(self, server_name="prob_rep_ros_server"):
         """
         :param server_name: The name of the hmm_rep_ros server. Default: 'hmm_rep_ros_server'
         """
@@ -26,8 +26,8 @@ class ROSClient(object):
         :return: The qsr_type and resulting data tuple. The data is in the data type produced by the response.
         """
         assert(issubclass(req.__class__, HMMRepRequestAbstractclass))
-        s = rospy.ServiceProxy(self.services[req.__class__],QSRHMMRep)
-        res = s(QSRHMMRepRequest(qsr_type=req.kwargs.pop("qsr_type"), data=json.dumps(req.kwargs)))
+        s = rospy.ServiceProxy(self.services[req.__class__],QSRProbRep)
+        res = s(QSRProbRepRequest(qsr_type=req.kwargs.pop("qsr_type"), data=json.dumps(req.kwargs)))
         try:
             data = json.loads(res.data)
         except ValueError:

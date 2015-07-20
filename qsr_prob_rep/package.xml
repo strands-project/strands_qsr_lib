@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package>
-  <name>qsr_hmm_rep</name>
+  <name>qsr_prob_rep</name>
   <version>0.1.0</version>
   <description>The qsr_hmm_rep package</description>
 

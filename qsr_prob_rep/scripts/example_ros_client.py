@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from hmmrep_ros.ros_client import ROSClient
-from hmmrep_lib.hmmrep_io import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
-from hmmrep_lib.hmmrep_lib import HMMRepLib
+from qsrrep_ros.ros_client import ROSClient
+from qsrrep_lib.rep_io import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
+from qsrrep_lib.rep_lib import ProbRepLib
 import os
 import rospy
 import json
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(parents=[general])
     subparsers = parser.add_subparsers(dest='action')
     qtc_parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)
-    qtc_parse.add_argument('-qsr', '--qsr_type', help="choose qsr: %s" % HMMRepLib.hmm_types_available.keys(), type=str, required=True)
+    qtc_parse.add_argument('-qsr', '--qsr_type', help="choose qsr: %s" % ProbRepLib.hmm_types_available.keys(), type=str, required=True)
 
     # Parsers for create function
     create_parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)

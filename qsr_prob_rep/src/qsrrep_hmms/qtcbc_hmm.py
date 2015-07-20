@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from hmmrep_hmms.qtc_hmm_abstractclass import QTCHMMAbstractclass
+from qsrrep_hmms.qtc_hmm_abstractclass import QTCHMMAbstractclass
 import numpy as np
 
 

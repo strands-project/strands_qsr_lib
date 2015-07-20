@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
-from hmmrep_hmms.qtc_hmm_abstractclass import QTCHMMAbstractclass
+from qsrrep_hmms.qtc_hmm_abstractclass import QTCHMMAbstractclass
 import numpy as np
 
 
-class QTCCHMM(QTCHMMAbstractclass):
+class QTCBHMM(QTCHMMAbstractclass):
 
     def __init__(self):
-        super(QTCCHMM, self).__init__()
-        self.num_possible_states = 83 # Setting number of possible states: QTCC + start and end
+        super(QTCBHMM, self).__init__()
+        self.num_possible_states = 11 # Setting number of possible states: QTCB + start and end
 
     def _create_transition_matrix(self, size, **kwargs):
-        """Creates a Conditional Neighbourhood Diagram for QTCC as a basis for the HMM.
+        """Creates a Conditional Neighbourhood Diagram for QTCB as a basis for the HMM.
 
         :param kwargs:
             * qtc: list of lists containing all possible qtc states. Different for all 3 qtc versions.
@@ -23,15 +23,13 @@ class QTCCHMM(QTCHMMAbstractclass):
         # creating list of possible states
         for i in xrange(1, 4):
             for j in xrange(1, 4):
-                for k in xrange(1, 4):
-                    for l in xrange(1, 4):
-                        qtc.append([i-2, j-2, k-2, l-2])
+                qtc.append([i-2, j-2])
 
         # Calling parent to generate actual matrix
-        return super(QTCCHMM, self)._create_transition_matrix(size=size, qtc=qtc)
+        return super(QTCBHMM, self)._create_transition_matrix(size=size, qtc=qtc)
 
     def _symbol_to_qsr(self, symbols):
-        """Transforming alphabet symbols to QTCC states.
+        """Transforming alphabet symbols to QTCB states.
 
         :param symbols: A list of symbols
 
@@ -41,7 +39,7 @@ class QTCCHMM(QTCHMMAbstractclass):
         ret = []
         for s in symbols:
             qtc = []
-            q = 3**np.array(range(3,-1,-1))
+            q = 3**np.array(range(1,-1,-1))
             for c in s[1:-1]:
 
                 rc = np.array([c-1])
@@ -53,9 +51,8 @@ class QTCCHMM(QTCHMMAbstractclass):
                     f = np.append(f, np.floor(rc[i]/q[i]))
                     r = np.append(r, np.fmod(rc[i],q[i]))
 
-                f -= 1
-                qtc.append(f.tolist())
+                qtc.append(f-1)
 
-            ret.append(self._qtc_num_to_str(qtc))
+            ret.append(qtc)
 
         return ret

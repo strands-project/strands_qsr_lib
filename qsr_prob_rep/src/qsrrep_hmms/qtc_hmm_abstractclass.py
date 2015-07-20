@@ -2,7 +2,7 @@
 
 from abc import ABCMeta
 import numpy as np
-from hmmrep_hmms.hmm_abstractclass import HMMAbstractclass
+from qsrrep_hmms.hmm_abstractclass import HMMAbstractclass
 
 
 class QTCHMMAbstractclass(HMMAbstractclass):

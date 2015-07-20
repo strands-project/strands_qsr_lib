@@ -6,10 +6,10 @@ Created on Mon Jun 22 14:19:25 2015
 
 """
 
-from hmmrep_hmms.qtcc_hmm import QTCCHMM
-from hmmrep_hmms.qtcb_hmm import QTCBHMM
-from hmmrep_hmms.qtcbc_hmm import QTCBCHMM
-from hmmrep_io import HMMRepRequestAbstractclass, HMMReqResponseCreate, HMMReqResponseSample, HMMReqResponseLogLikelihood
+from qsrrep_hmms.qtcc_hmm import QTCCHMM
+from qsrrep_hmms.qtcb_hmm import QTCBHMM
+from qsrrep_hmms.qtcbc_hmm import QTCBCHMM
+from rep_io import HMMRepRequestAbstractclass, HMMReqResponseCreate, HMMReqResponseSample, HMMReqResponseLogLikelihood
 import tempfile
 import os
 import ghmm as gh
@@ -19,11 +19,11 @@ import uuid
 import time
 
 
-class HMMRepLib(object):
+class ProbRepLib(object):
     """This class provides the main functionalities of the library by calling
     the appropriate functions in the HMM implementations. None of the providing
     functions should be called directly but via the function pointer '_const_function_pointer'
-    in hmmrep_io.py in the request classes. The function 'request' in here will
+    in rep_io.py in the request classes. The function 'request' in here will
     take care of executing it.
 
     Adding a new HMM type:
@@ -41,7 +41,7 @@ class HMMRepLib(object):
 
     def __init__(self):
         self.__cnt = 0
-        self.__hmm_buffer = HMMBuffer(size_limit=50)
+        self.__hmm_buffer = RepBuffer(size_limit=50)
         for k, v in self.hmm_types_available.items():
             self.__hmm_types_active[k] = v()
 
@@ -54,7 +54,7 @@ class HMMRepLib(object):
 
     def _create_hmm(self, **kwargs):
         """Creates a new HMM by calling the get_hmm function in hmm_abstractclass.py.
-        Called by the 'HMMRepRequestCreate' request class in hmmrep_io.py.
+        Called by the 'HMMRepRequestCreate' request class in rep_io.py.
 
         :param kwargs:
             * qsr_type: The type of HMM, needs to be a key in 'hmm_types_available'
@@ -76,7 +76,7 @@ class HMMRepLib(object):
     def _sample_hmm(self, **kwargs):
         """Generates samples from the given HMM by calling the get_samples
         function in hmm_abstractclass.py.
-        Called by the 'HMMRepRequestSamples' request class in hmmrep_io.py.
+        Called by the 'HMMRepRequestSamples' request class in rep_io.py.
 
         :param kwargs:
             * qsr_type: The type of HMM, needs to be a key in 'hmm_types_available'
@@ -97,7 +97,7 @@ class HMMRepLib(object):
     def _get_log_likelihood(self, **kwargs):
         """Calculates the cummulative loglikelihood for the given state chains and the given HMM
         by calling the get_log_likelihood function in hmm_abstractclass.py.
-        Called by the 'HMMRepRequestLogLikelihood' request class in hmmrep_io.py.
+        Called by the 'HMMRepRequestLogLikelihood' request class in rep_io.py.
 
         :param kwargs:
             * qsr_type: The type of HMM, needs to be a key in 'hmm_types_available'
@@ -185,7 +185,7 @@ class HMMRepLib(object):
         """The magic function that calls the appropiate function beased on
         '_const_function_pointer' in the requestclass definition.
 
-        :param request_message: The request message object which has to be an instance of one of the request classes in hmmrep_io.py and has to inherit from 'HMMRepRequestAbstractclass'
+        :param request_message: The request message object which has to be an instance of one of the request classes in rep_io.py and has to inherit from 'HMMRepRequestAbstractclass'
 
         :return: The resulting respons message that corresponds to the request message.
         """
@@ -193,7 +193,7 @@ class HMMRepLib(object):
         return request_message.call_function(self)
 
 
-class HMMBuffer(OrderedDict):
+class RepBuffer(OrderedDict):
     """This class extends the OrderedDict to have a fixed size. This is used to
     keep the currently active HMMs in a buffer as ghmm objects instead of loading
     them using the tempfile way.

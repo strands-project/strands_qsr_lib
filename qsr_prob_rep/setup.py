@@ -6,7 +6,7 @@ from catkin_pkg.python_setup import generate_distutils_setup
 d = generate_distutils_setup(
     # #  don't do this unless you want a globally visible script
     # scripts=['bin/myscript'],
-    packages=['hmmrep_hmms', 'hmmrep_lib', 'hmmrep_ros'],
+    packages=['qsrrep_hmms', 'qsrrep_ros', 'qsrrep_lib'],
     package_dir={'': 'src'}
 )
 
