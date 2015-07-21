@@ -10,6 +10,7 @@
 """
 
 from __future__ import print_function, division
+from numpy import isnan
 import copy
 
 class Object_State(object):
@@ -23,20 +24,31 @@ class Object_State(object):
         self.x = x
         self.y = y
         self.z = z
+        # self.length = float('nan')  # y size
+        # self.width = float('nan')  # x size
+        # self.height = float('nan')  # z size
+        self.set_length_width_height(length=length, width=width, height=height)
         self.roll = roll
         self.pitch = pitch
         self.yaw = yaw
-        self.length = length # y size
-        self.width = width # x size
-        self.height = height # z size
+
         self.args = args
         self.kwargs = kwargs
 
-    def return_bounding_box_2d(self):
-        if self.width <= 0 or self.length <= 0:
-            print("ERROR: can't compute bounding box, width or height has no positive value")
-            return []
-        return [self.x-self.width/2, self.y-self.length/2, self.x+self.width/2, self.y+self.length/2]
+    def set_length_width_height(self, length=float('nan'), width=float('nan'), height=float('nan')):
+        if length < 0 or width < 0 or height < 0:
+            raise ValueError("Object length, width and height cannot be negative; leave them to default values if unset")
+        else:
+            self.width = width  # x size
+            self.length = length  # y size
+            self.height = height  # z size
+
+    def return_bounding_box_2d(self, minimal_width=0, minimal_length=0):
+        if self.width < 0 or self.length < 0:
+            raise ValueError("Object width and length cannot be negative")
+        width = minimal_width if isnan(self.width) else self.width
+        length = minimal_length if isnan(self.length) else self.length
+        return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
 
 
 class World_State(object):
