@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<package>
+  <name>qsr_prob_rep</name>
+  <version>0.1.1</version>
+  <description>The qsr_prob_rep package</description>
+
+  <maintainer email="cdondrup@lincoln.ac.uk">Christian Dondrup</maintainer>
+
+  <license>GPLv2</license>
+
+  <url type="github">https://github.com/strands-project/strands_qsr_lib</url>
+
+  <author email="cdondrup@lincoln.ac.uk">Christian Dondrup</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>message_generation</build_depend>
+  <build_depend>roslib</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>rostest</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>std_srvs</build_depend>
+
+  <run_depend>ghmm</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>roslib</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>rostest</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>std_srvs</run_depend>
+
+  <test_depend>rosunit</test_depend>
+
+  <export/>
+</package>
