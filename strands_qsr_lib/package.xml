@@ -9,12 +9,13 @@
 
   <license>MIT</license>
 
-  <url type="website">https://github.com/strands-project/strands_qsr_lib</url> 
+  <url type="website">https://github.com/strands-project/strands_qsr_lib</url>
 
   <buildtool_depend>catkin</buildtool_depend>
   <run_depend>qsr_lib</run_depend>
+  <run_depend>qsr_prob_rep</run_depend>
 
   <export>
-    <metapackage/> 
+    <metapackage/>
   </export>
 </package>

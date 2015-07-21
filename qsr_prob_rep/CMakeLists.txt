@@ -2,11 +2,9 @@ cmake_minimum_required(VERSION 2.8.3)
 project(qsr_prob_rep)
 
 find_package(catkin REQUIRED COMPONENTS
-  #ghmm
   message_generation
   rospy
   std_msgs
-  std_srvs
 )
 
 catkin_python_setup()
