@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="prob_rep_ros_server" pkg="qsr_prob_rep" type="qsr_prob_rep_ros_server.py" />
+
+  <test test-name="hmm_tester" pkg="qsr_prob_rep" type="hmm_tester.py" />
+
+</launch>
