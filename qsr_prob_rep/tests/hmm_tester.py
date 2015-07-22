@@ -19,9 +19,11 @@ class TestHMM(unittest.TestCase):
     QTCB_PASSBY_LEFT_HMM  = find_resource(PKG, 'qtcb_passby_left.hmm')[0]
     QTCC_PASSBY_LEFT_HMM  = find_resource(PKG, 'qtcc_passby_left.hmm')[0]
     QTCBC_PASSBY_LEFT_HMM = find_resource(PKG, 'qtcbc_passby_left.hmm')[0]
+    RCC3_TEST_HMM         = find_resource(PKG, 'rcc3_test.hmm')[0]
     QTCB_QSR              = find_resource(PKG, 'qtcb.qsr')[0]
     QTCC_QSR              = find_resource(PKG, 'qtcc.qsr')[0]
     QTCBC_QSR             = find_resource(PKG, 'qtcbc.qsr')[0]
+    RCC3_QSR              = find_resource(PKG, 'rcc3.qsr')[0]
 
     correct_samples = {
         "qtcb": [[u'--', u'0-', u'+-', u'+0', u'++']],
@@ -32,13 +34,15 @@ class TestHMM(unittest.TestCase):
     correct_hashsum = {
         "qtcb": "3fb65b50d0f7631a300132e8bca9ca13",
         "qtcc": "dbf1529cb0b0c90aaebbe7eafe0e9b05",
-        "qtcbc": "0a3acf7b48c4c1155931442c86317ce4"
+        "qtcbc": "0a3acf7b48c4c1155931442c86317ce4",
+        "rcc3": "6d5bcc6c44d9b1120c738efa1994a40a"
     }
 
     correct_loglikelihoods ={
         "qtcb": -2.16887,
         "qtcc": -6.07188,
-        "qtcbc": -2.23475
+        "qtcbc": -2.23475,
+        "rcc3": -4.15914
     }
 
 
@@ -121,6 +125,18 @@ class TestHMM(unittest.TestCase):
     def test_qtcbc_loglikelihood(self):
         res = self._calculate_loglikelihood(self.QTCBC_PASSBY_LEFT_HMM, self.QTCBC_QSR, 'qtcbc')
         self.assertEqual(res, self.correct_loglikelihoods["qtcbc"])
+
+    def test_rcc3_create(self):
+        res = self._create_hmm(self.RCC3_QSR, 'rcc3')
+        self.assertEqual(hashlib.md5(res).hexdigest(), self.correct_hashsum["rcc3"])
+
+    def test_rcc3_sample(self):
+        res = self._create_sample(self.RCC3_TEST_HMM, 'rcc3')
+        self.assertTrue(type(res) == list and len(res) > 0)
+
+    def test_rcc3_loglikelihood(self):
+        res = self._calculate_loglikelihood(self.RCC3_TEST_HMM, self.RCC3_QSR, 'rcc3')
+        self.assertEqual(res, self.correct_loglikelihoods["rcc3"])
 
 
 if __name__ == '__main__':

@@ -19,12 +19,36 @@ For a python usage exmple, please see the example_ros_client.py in scripts. Try 
 * _QTCB_: The basic variant of the Qtalitative Trajectory Calculus. For more information on the implementation see [1]
 * _QTCC_: The double-cross variant of the Qtalitative Trajectory Calculus. For more information on the implementation see [1]
 * _QTCBC_: The mixture representation of the basic and double-cross variant of the Qtalitative Trajectory Calculus. For more information on the implementation see [1]
+* _RCC3_: A very simple rcc3 representation using uniform transition and emission matrices.
 
 ## For Developers
 
 ### Adding a new QSR
 
-TODO: Implement arg_distance as an easy example
+Adding a new QSR based on the simple RCC3 example:
+
+* Create a new file in `src/qsrrep_hmms` or copy the `rcc3_hmm.py`
+* Import: `from qsrrep_hmms.hmm_abstractclass import HMMAbstractclass`
+* Create a new class that inherits from `HMMAbstractclass`
+* In the `__init__(self)` function:
+ * Call the super calss constructor: `super(self.__class__, self).__init__()`
+ * Set `self.num_possible_states` to the number of possible states your QSR has
+* Overwrite the two functions `_qsr_to_symbol` and `_symbol_to_qsr`. See rcc3 example for inspiration.
+* Add your new QSR to `src/qsrrep_lib/rep_lib.py`:
+ * Import your new file from `qsrrep_hmms`
+ * Add your new QSR to the dictionary of available QSRs `hmm_types_available` following the examples given
+* Enjoy your new QSR HMM!
+
+The example client is agnostic of the QSR implemented, a simple restart of the eserver and allows to use your QSR with the example client immediately.
+
+### Adding a more specialised QSR
+
+Sometimes a uniformly distributed transition and emission matrix (as they are used in above example by default) is just not precise enough like in the case of QTC. Please have a look at `src/qsrrep_hmms/qtc_hmm_abstractclass.py` on how to deal with that.
+
+Basic instructions:
+
+* Follow above instructions to create a new QSR
+* Overwrite the `_create_transition_matrix` and `_create_emission_matrix`
 
 ### Adding a new functionality
 
