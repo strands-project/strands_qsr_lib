@@ -12,7 +12,7 @@
 from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
-from qsrlib_io.world_qsr_trace import World_QSR_Trace
+from qsrlib_utils.utils import merge_world_qsr_traces
 
 # Import implemented makers
 from qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d import QSR_RCC2_Rectangle_Bounding_Boxes_2D
@@ -137,28 +137,6 @@ class QSRlib(object):
                 except KeyError:
                     raise KeyError("(QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
-    def __merge_world_qsr_traces(self, world_qsr_traces, qsr_type=""):
-        """
-        Merge a list of traces into one world_qsr_trace. It offers no protection versus overwriting previously
-        existing relation.
-        :param world_qsr_traces: list of World_QSR_Trace objects
-            :type world_qsr_traces: list or tuple
-        :param qsr_type: the qsr_type of the returned merged World_QSR_Trace object
-            :type qsr_type: str
-        :return: a World_QSR_Trace that is the merge of all World_QSR_Trace objects in traces
-            :rtype: World_QSR_Trace
-        """
-        ret_world_qsr_trace = World_QSR_Trace(qsr_type=qsr_type)
-        for world_qsr_trace in world_qsr_traces:
-            for t, s in world_qsr_trace.trace.items():
-                for k, qsr_obj in s.qsrs.items():
-                    for qsr_k, qsr_v in qsr_obj.qsr.items():
-                        try:
-                            ret_world_qsr_trace.trace[t].qsrs[k].qsr[qsr_k] = qsr_v
-                        except KeyError:
-                            ret_world_qsr_trace.add_qsr(qsr_obj, t)
-        return ret_world_qsr_trace
-
     def request_qsrs(self, request_message, reset=True):
         """
 
@@ -193,7 +171,7 @@ class QSRlib(object):
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
             if request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
-                world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
+                world_qsr_trace = merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
             elif len(world_qsr_traces) == 1:  # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
             else:
