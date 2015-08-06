@@ -60,6 +60,7 @@ class QSRlib_Request_Message(object):
         self.dynamic_args = None
 
     def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
+        # todo this function needs updating, still should work but has redundant code (e.g. "reusing previous input data" should never occur
         error = False
         if input_data is None:
             input_data = World_Trace()
@@ -134,7 +135,7 @@ class QSRlib(object):
                 try:
                     self.__qsrs_active[qsr_type] = self.__const_qsrs_available[qsr_type]()
                 except KeyError:
-                    print("ERROR (QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
+                    raise KeyError("(QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
     def __merge_world_qsr_traces(self, world_qsr_traces, qsr_type=""):
         """
@@ -171,12 +172,11 @@ class QSRlib(object):
         # Checking if future is True when a list of QSRs is given.
         # If not, print error as the string results do not support multiple
         # QSRs at the same time
-        if not request_message.future and (isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple)):
-            print("ERROR (QSR_Lib.request_qsrs): Using a", type(request_message.which_qsr), "of qsrs:", request_message.which_qsr, "is only supported when using future: future = True")
-            world_qsr_traces = False
+        if not request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
+            raise RuntimeError("(QSR_Lib.request_qsrs): Using a", type(request_message.which_qsr), "of qsrs:", request_message.which_qsr, "is only supported when using future: future = True")
         else:
             # which_qsrs should always be iterable, even it is only a string, to enable the loop
-            which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple) else [request_message.which_qsr]
+            which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
             for which_qsr in which_qsrs:
                 try:
                     world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=request_message.input_data,
@@ -188,15 +188,16 @@ class QSRlib(object):
                                                                               config=request_message.config,
                                                                               dynamic_args=request_message.dynamic_args))
                 except KeyError:
-                    print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + request_message.which_qsr + ") is not implemented yet or has not been activated")
-                    world_qsr_traces = False
+                    raise KeyError("(QSR_Lib.request_qsrs): it seems that the QSR you requested (" + request_message.which_qsr + ") is not implemented yet or has not been activated")
 
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
-            if request_message.future and (isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple)):
+            if request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
                 world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
-            else: # Just take the first because the list will only contain that one element
+            elif len(world_qsr_traces) == 1:  # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
+            else:
+                raise RuntimeError("(QSR_Lib.request_qsrs): this should never have occured; file an issue for the developers to fix")
         else:
             # If something went wrong, world_qsr_traces will be False.
             # Setting world_qsr_trace to the same value to preserve previous behaviour.
