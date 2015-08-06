@@ -12,6 +12,7 @@
 from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
+from qsrlib_io.world_qsr_trace import World_QSR_Trace
 
 # Import implemented makers
 from qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d import QSR_RCC2_Rectangle_Bounding_Boxes_2D
@@ -137,6 +138,28 @@ class QSRlib(object):
                 except KeyError:
                     print("ERROR (QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
 
+    def __merge_world_qsr_traces(self, world_qsr_traces, qsr_type=""):
+        """
+        Merge a list of traces into one world_qsr_trace. It offers no protection versus overwriting previously
+        existing relation.
+        :param world_qsr_traces: list of World_QSR_Trace objects
+            :type world_qsr_traces: list or tuple
+        :param qsr_type: the qsr_type of the returned merged World_QSR_Trace object
+            :type qsr_type: str
+        :return: a World_QSR_Trace that is the merge of all World_QSR_Trace objects in traces
+            :rtype: World_QSR_Trace
+        """
+        ret_world_qsr_trace = World_QSR_Trace(qsr_type=qsr_type)
+        for world_qsr_trace in world_qsr_traces:
+            for t, s in world_qsr_trace.trace.items():
+                for k, qsr_obj in s.qsrs.items():
+                    for qsr_k, qsr_v in qsr_obj.qsr.items():
+                        try:
+                            ret_world_qsr_trace.trace[t].qsrs[k].qsr[qsr_k] = qsr_v
+                        except KeyError:
+                            ret_world_qsr_trace.add_qsr(qsr_obj, t)
+        return ret_world_qsr_trace
+
     def request_qsrs(self, request_message, reset=True):
         """
 
@@ -144,25 +167,50 @@ class QSRlib(object):
         :param reset: Boolean, if to reset the self.request_message, default=True
         :return: QSRlib_Response_Message
         """
+        world_qsr_traces = []
         self.timestamp_request_received = datetime.now()
         self.request_message = request_message
-        try:
-            world_qsr_trace = self.__qsrs_active[self.request_message.which_qsr].get(input_data=self.request_message.input_data,
-                                                                                     include_missing_data=self.request_message.include_missing_data,
-                                                                                     timestamp_request_received=self.timestamp_request_received,
-                                                                                     qsrs_for=self.request_message.qsrs_for,
-                                                                                     qsr_relations_and_values=self.request_message.qsr_relations_and_values,
-                                                                                     future=self.request_message.future,
-                                                                                     config=self.request_message.config,
-                                                                                     dynamic_args=self.request_message.dynamic_args)
-        except KeyError:
-            print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
-            world_qsr_trace = False
+
+        # Checking if future is True when a list of QSRs is given.
+        # If not, print error as the string results do not support multiple
+        # QSRs at the same time
+        if not self.request_message.future and (type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple):
+            print("ERROR (QSR_Lib.request_qsrs): Using a", type(self.request_message.which_qsr), "of qsrs:", self.request_message.which_qsr, "is only supported when using future: future = True")
+            world_qsr_traces = False
+        else:
+            # which_qsrs should always be iterable even it is only a string to enable the loop
+            which_qsrs = self.request_message.which_qsr if type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple else [self.request_message.which_qsr]
+            for which_qsr in which_qsrs:
+                try:
+                    world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=self.request_message.input_data,
+                                                                              include_missing_data=self.request_message.include_missing_data,
+                                                                              timestamp_request_received=self.timestamp_request_received,
+                                                                              qsrs_for=self.request_message.qsrs_for,
+                                                                              qsr_relations_and_values=self.request_message.qsr_relations_and_values,
+                                                                              future=self.request_message.future,
+                                                                              config=self.request_message.config,
+                                                                              dynamic_args=self.request_message.dynamic_args))
+                except KeyError:
+                    print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
+                    world_qsr_traces = False
+
+        if world_qsr_traces:
+            # If the input was a list of QSRs, merge the results
+            if self.request_message.future and (type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple):
+                world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(self.request_message.which_qsr))
+            else: # Just take the first because the list will only contain that one element
+                world_qsr_trace = world_qsr_traces[0]
+        else:
+            # If something went wrong, world_qsr_traces will be False.
+            # Setting world_qsr_trace to the same value to
+            world_qsr_trace = world_qsr_traces
+
         if reset:
             self.timestamp_request_received = None
             self.request_message = None
         else:
             if self.__out: print("QSRlib data not resetted, working with previous held data. Pass the data as this feature is planned to be deprecated.")
+
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
                                                   timestamp_request_made=request_message.timestamp_request_made,
                                                   timestamp_request_received=self.timestamp_request_received,

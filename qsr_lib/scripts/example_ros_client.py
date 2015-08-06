@@ -34,7 +34,8 @@ if __name__ == "__main__":
                "qtcbc": "qtc_bc_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d",
                "arg_distance": "arg_relations_distance",
-                "mos": "moving_or_stationary"}
+                "mos": "moving_or_stationary",
+                "multiple": ("cone_direction_bounding_boxes_centroid_2d", "rcc3_rectangle_bounding_boxes_2d", "moving_or_stationary", "qtc_b_simplified")}
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
@@ -286,6 +287,17 @@ if __name__ == "__main__":
 
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+
+    elif which_qsr_argv == "multiple":
+        traj = [Object_State(name="traj", timestamp=0, x=1., y=1., width=5., length=8.),
+            Object_State(name="traj", timestamp=1, x=1., y=2., width=5., length=8.)]
+        o1 = [Object_State(name="o1", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o1", timestamp=1, x=11., y=2., width=5., length=8.)]
+        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
+              Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.)]
+
+        world.add_object_state_series(traj)
+        world.add_object_state_series(o1)
 
     # uncomment this to test qsrs_for (and comment out the next line)
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
