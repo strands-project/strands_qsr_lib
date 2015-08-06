@@ -171,12 +171,12 @@ class QSRlib(object):
         # Checking if future is True when a list of QSRs is given.
         # If not, print error as the string results do not support multiple
         # QSRs at the same time
-        if not request_message.future and (type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple):
+        if not request_message.future and (isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple)):
             print("ERROR (QSR_Lib.request_qsrs): Using a", type(request_message.which_qsr), "of qsrs:", request_message.which_qsr, "is only supported when using future: future = True")
             world_qsr_traces = False
         else:
             # which_qsrs should always be iterable, even it is only a string, to enable the loop
-            which_qsrs = request_message.which_qsr if type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple else [request_message.which_qsr]
+            which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple) else [request_message.which_qsr]
             for which_qsr in which_qsrs:
                 try:
                     world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=request_message.input_data,
@@ -193,7 +193,7 @@ class QSRlib(object):
 
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
-            if request_message.future and (type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple):
+            if request_message.future and (isinstance(request_message.which_qsr, list) or isinstance(request_message.which_qsr, tuple)):
                 world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
             else: # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
