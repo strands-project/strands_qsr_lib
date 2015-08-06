@@ -100,8 +100,6 @@ class QSRlib(object):
         self.__set_qsrs_active(qsrs_active)
         if help:
             self.help()
-        self.request_message = request_message
-        self.timestamp_request_received = None
 
         # these are the droids you are not looking for
         self.__out = print_messages
@@ -168,52 +166,45 @@ class QSRlib(object):
         :return: QSRlib_Response_Message
         """
         world_qsr_traces = []
-        self.timestamp_request_received = datetime.now()
-        self.request_message = request_message
+        timestamp_request_received = datetime.now()
 
         # Checking if future is True when a list of QSRs is given.
         # If not, print error as the string results do not support multiple
         # QSRs at the same time
-        if not self.request_message.future and (type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple):
-            print("ERROR (QSR_Lib.request_qsrs): Using a", type(self.request_message.which_qsr), "of qsrs:", self.request_message.which_qsr, "is only supported when using future: future = True")
+        if not request_message.future and (type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple):
+            print("ERROR (QSR_Lib.request_qsrs): Using a", type(request_message.which_qsr), "of qsrs:", request_message.which_qsr, "is only supported when using future: future = True")
             world_qsr_traces = False
         else:
-            # which_qsrs should always be iterable even it is only a string to enable the loop
-            which_qsrs = self.request_message.which_qsr if type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple else [self.request_message.which_qsr]
+            # which_qsrs should always be iterable, even it is only a string, to enable the loop
+            which_qsrs = request_message.which_qsr if type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple else [request_message.which_qsr]
             for which_qsr in which_qsrs:
                 try:
-                    world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=self.request_message.input_data,
-                                                                              include_missing_data=self.request_message.include_missing_data,
-                                                                              timestamp_request_received=self.timestamp_request_received,
-                                                                              qsrs_for=self.request_message.qsrs_for,
-                                                                              qsr_relations_and_values=self.request_message.qsr_relations_and_values,
-                                                                              future=self.request_message.future,
-                                                                              config=self.request_message.config,
-                                                                              dynamic_args=self.request_message.dynamic_args))
+                    world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=request_message.input_data,
+                                                                              include_missing_data=request_message.include_missing_data,
+                                                                              timestamp_request_received=timestamp_request_received,
+                                                                              qsrs_for=request_message.qsrs_for,
+                                                                              qsr_relations_and_values=request_message.qsr_relations_and_values,
+                                                                              future=request_message.future,
+                                                                              config=request_message.config,
+                                                                              dynamic_args=request_message.dynamic_args))
                 except KeyError:
-                    print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + self.request_message.which_qsr + ") is not implemented yet or has not been activated")
+                    print("ERROR (QSR_Lib.request_qsrs): it seems that the QSR you requested (" + request_message.which_qsr + ") is not implemented yet or has not been activated")
                     world_qsr_traces = False
 
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
-            if self.request_message.future and (type(self.request_message.which_qsr) == list or type(self.request_message.which_qsr) == tuple):
-                world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(self.request_message.which_qsr))
+            if request_message.future and (type(request_message.which_qsr) == list or type(request_message.which_qsr) == tuple):
+                world_qsr_trace = self.__merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
             else: # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
         else:
             # If something went wrong, world_qsr_traces will be False.
-            # Setting world_qsr_trace to the same value to
+            # Setting world_qsr_trace to the same value to preserve previous behaviour.
             world_qsr_trace = world_qsr_traces
-
-        if reset:
-            self.timestamp_request_received = None
-            self.request_message = None
-        else:
-            if self.__out: print("QSRlib data not resetted, working with previous held data. Pass the data as this feature is planned to be deprecated.")
 
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
                                                   timestamp_request_made=request_message.timestamp_request_made,
-                                                  timestamp_request_received=self.timestamp_request_received,
+                                                  timestamp_request_received=timestamp_request_received,
                                                   timestamp_qsrs_computed=datetime.now())
 
         return qsrlib_response
