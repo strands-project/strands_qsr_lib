@@ -141,6 +141,9 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                     )
                     ret.add_qsr(qsr, idx+1)
 
+        if no_collapse and not validate:
+            self._rectify_timestamps(input_data, ret)
+
         return ret
 
     def _create_bc_chain(self, qtc, distances, distance_threshold):

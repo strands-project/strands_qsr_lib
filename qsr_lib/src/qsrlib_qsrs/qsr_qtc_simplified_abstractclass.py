@@ -445,6 +445,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     )
                     ret.add_qsr(qsr, idx+1)
 
+        if no_collapse and not validate:
+            self._rectify_timestamps(input_data, ret)
+
         return ret
 
     def _return_all_possible_combinations(self, objects_names):
@@ -457,6 +460,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     ret.append((i, j))
         return ret
 
+    def _rectify_timestamps(self, world_trace, world_qsr_trace):
+        for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:], world_qsr_trace.get_sorted_timestamps()):
+            world_qsr_trace.trace[t] = world_qsr_trace.trace.pop(tqtc)
 
     @abstractmethod
     def qtc_to_output_format(self, qtc, future=False):
