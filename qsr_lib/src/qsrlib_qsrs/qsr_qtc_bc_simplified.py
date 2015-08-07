@@ -46,12 +46,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
             "no_collapse": False
         }
 
-        try:
-            if kwargs["dynamic_args"]:
-                for k, v in kwargs["dynamic_args"].items():
-                    parameters[k] = v
-        except:
-            print "No parameters found, will use default parameters: ", parameters
+        parameters = self._get_parameters(parameters, **kwargs)
 
         if kwargs["qsrs_for"]:
             qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])

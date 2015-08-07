@@ -20,9 +20,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     """Abstract class for the QSR makers"""
     __metaclass__ = ABCMeta
 
+    __qsr_keys = "qtcs"
+
     def __init__(self):
         self.qtc_type = ""
-        self.qsr_keys = "qtcs"
+        self.qsr_keys = ""
 
     def custom_set_from_config_file(self, document):
         pass
@@ -349,6 +351,30 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                 error_found = True
         return qsrs_for, error_found
 
+    def _get_parameters(self, default, **kwargs):
+        try: # Depricated
+            if kwargs["dynamic_args"]:
+                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+                for k, v in kwargs["dynamic_args"][self.__qsr_keys].items():
+                    default[k] = v
+        except:
+            pass
+
+        try: # General case
+            if kwargs["dynamic_args"][self.__qsr_keys]:
+                for k, v in kwargs["dynamic_args"][self.__qsr_keys].items():
+                    default[k] = v
+        except:
+            pass
+
+        try: # Parameters for a specific variant
+            if kwargs["dynamic_args"][self.qsr_keys]:
+                for k, v in kwargs["dynamic_args"][self.qsr_keys].items():
+                    default[k] = v
+        except:
+            pass
+
+        return default
 
     def make(self, *args, **kwargs):
         """Make the QSRs
@@ -375,12 +401,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
             "no_collapse": False
         }
 
-        try:
-            if kwargs["dynamic_args"]:
-                for k, v in kwargs["dynamic_args"].items():
-                    parameters[k] = v
-        except:
-            print "No parameters found, will use default parameters: ", parameters
+        parameters = self._get_parameters(parameters, **kwargs)
 
         if qsrs_for:
             for p in qsrs_for:
