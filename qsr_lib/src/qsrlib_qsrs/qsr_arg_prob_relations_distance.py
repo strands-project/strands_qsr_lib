@@ -17,7 +17,7 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         self.qsr_type = "arg_prob_relations_distance"
         self.qsr_keys = "argprobd"
         self.allowed_value_types = (tuple,list)
-        self.value_sort_key = lambda x: x[0] # Sort by mean
+        self.value_sort_key = lambda x: x[1][0] # Sort by first element in value tuple, i.e. mean
         if config:
             self.set_from_config_file(config)
 

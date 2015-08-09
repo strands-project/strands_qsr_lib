@@ -25,7 +25,6 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
     def __populate_possible_relations_and_values(self):
         ret_relations = []
         ret_values = []
-
         sorted_by_v = sorted(self.qsr_relations_and_values.items(), key=self.value_sort_key)
         for i in sorted_by_v:
             ret_relations.append(i[0])
