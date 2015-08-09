@@ -21,18 +21,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         if config:
             self.set_from_config_file(config)
 
-    def custom_set_from_config_file(self, document):
-        try:
-            relations_and_values = document["arg_relations_distance"]["relations_and_values"]
-        except:
-            print("ERROR (qsr_arg_relations_distance.py/custom_set_from_config_file):"
-                  "'arg_relations_distance' or 'relations_and_values' not found in config file")
-            self.qsr_relations_and_values = None
-            self.all_possible_relations = None
-            self.all_possible_values = None
-            raise LookupError
-        self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
-
     def custom_help(self):
         """Write your own help message function"""
         print("")
