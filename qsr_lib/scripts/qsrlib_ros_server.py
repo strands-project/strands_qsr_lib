@@ -36,7 +36,6 @@ class QSRlib_ROS_Server(object):
         res = RequestQSRsResponse()
         res.header.stamp = rospy.get_rostime()
         res.data = pickle.dumps(qsrs_response_message)
-        print()
         return res
 
 
