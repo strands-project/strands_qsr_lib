@@ -354,24 +354,28 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     def _get_parameters(self, default, **kwargs):
         try: # Depricated
             if kwargs["dynamic_args"]:
-                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
-                for k, v in kwargs["dynamic_args"][self.__qsr_keys].items():
-                    default[k] = v
-        except:
+                suc = False
+                for k, v in kwargs["dynamic_args"].items():
+                    if k in default.keys():
+                        default[k] = v # This will always work so we have to check if name is default keys first
+                        suc = True
+                if suc:
+                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+        except KeyError:
             pass
 
         try: # General case
             if kwargs["dynamic_args"][self.__qsr_keys]:
                 for k, v in kwargs["dynamic_args"][self.__qsr_keys].items():
                     default[k] = v
-        except:
+        except KeyError:
             pass
 
         try: # Parameters for a specific variant
             if kwargs["dynamic_args"][self.qsr_keys]:
                 for k, v in kwargs["dynamic_args"][self.qsr_keys].items():
                     default[k] = v
-        except:
+        except KeyError:
             pass
 
         return default
@@ -398,7 +402,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         parameters = {
             "quantisation_factor": 0.0,
             "validate": True,
-            "no_collapse": False
+            "no_collapse": False,
+            "distance_threshold": 1.22
         }
 
         parameters = self._get_parameters(parameters, **kwargs)
