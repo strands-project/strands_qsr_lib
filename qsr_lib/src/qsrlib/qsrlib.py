@@ -87,61 +87,41 @@ class QSRlib_Request_Message(object):
 class QSRlib(object):
     """The LIB
     """
-    def __init__(self, qsrs_active=None, print_messages=True, help=True, request_message=None):
-        self.__const_qsrs_available = {"rcc2_rectangle_bounding_boxes_2d": QSR_RCC2_Rectangle_Bounding_Boxes_2D,
-                                       "rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D,
-                                       "rcc8_rectangle_bounding_boxes_2d": QSR_RCC8_Rectangle_Bounding_Boxes_2D,
-                                       "cone_direction_bounding_boxes_centroid_2d": QSR_Cone_Direction_Bounding_Boxes_Centroid_2D,
-                                       "qtc_b_simplified": QSR_QTC_B_Simplified,
-                                       "qtc_c_simplified": QSR_QTC_C_Simplified,
-                                       "qtc_bc_simplified": QSR_QTC_BC_Simplified,
-                                       "arg_relations_distance": QSR_Arg_Relations_Distance,
-                                       "moving_or_stationary": QSR_Moving_or_Stationary}
-        self.__qsrs_active = {}
-        self.__set_qsrs_active(qsrs_active)
+    def __init__(self, help=True):
+        self.__qsrs = {"rcc2_rectangle_bounding_boxes_2d": QSR_RCC2_Rectangle_Bounding_Boxes_2D(),
+                       "rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D(),
+                       "rcc8_rectangle_bounding_boxes_2d": QSR_RCC8_Rectangle_Bounding_Boxes_2D(),
+                       "cone_direction_bounding_boxes_centroid_2d": QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(),
+                       "qtc_b_simplified": QSR_QTC_B_Simplified(),
+                       "qtc_c_simplified": QSR_QTC_C_Simplified(),
+                       "qtc_bc_simplified": QSR_QTC_BC_Simplified(),
+                       "arg_relations_distance": QSR_Arg_Relations_Distance(),
+                       "moving_or_stationary": QSR_Moving_or_Stationary()}
+
         if help:
             self.help()
 
-        # these are the droids you are not looking for
-        self.__out = print_messages
+        # register short names
+        for k, v in self.__qsrs.items():
+            if v.qsr_keys not in self.__qsrs:
+                self.__qsrs[v.qsr_keys] = self.__qsrs[k]
+            else:
+                raise KeyError("Non-unique shortname <%s> found for <%s> while registered to <%s>. Shortnames must also be unique keys."
+                               % (v.qsr_keys, v.qsr_type, self.__qsrs[v.qsr_keys].qsr_type))
 
     def help(self):
         self.print_qsrs_available()
-        print()
-        self.print_qsrs_active()
-        print()
-
-    def set_out(self, b):
-        self.__out = b
 
     def print_qsrs_available(self):
-        l = sorted(self.__const_qsrs_available)
+        l = sorted(self.__qsrs)
         print("Types of QSRs that have been included so far in the lib are the following:")
         for i in l:
-            print("-", i)
+            print("-", i, "("+self.__qsrs[i].qsr_keys+")")
 
-    def print_qsrs_active(self):
-        l = sorted(self.__qsrs_active)
-        print("Types of QSRs that you enabled are:")
-        for i in l:
-            print("-", i)
-
-    def __set_qsrs_active(self, qsrs_active):
-        if qsrs_active is None:
-            for qsr_type, class_name in zip(self.__const_qsrs_available.keys(), self.__const_qsrs_available.values()):
-                self.__qsrs_active[qsr_type] = class_name()
-        else:
-            for qsr_type in qsrs_active:
-                try:
-                    self.__qsrs_active[qsr_type] = self.__const_qsrs_available[qsr_type]()
-                except KeyError:
-                    raise KeyError("(QSR_Lib.__set_qsrs_active): it seems that this QSR type '" + qsr_type + "' has not been implemented yet; or maybe a typo?")
-
-    def request_qsrs(self, request_message, reset=True):
+    def request_qsrs(self, request_message):
         """
 
         :param request_message: QSRlib_Request_Message, default=None
-        :param reset: Boolean, if to reset the self.request_message, default=True
         :return: QSRlib_Response_Message
         """
         world_qsr_traces = []
@@ -157,14 +137,14 @@ class QSRlib(object):
             which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
             for which_qsr in which_qsrs:
                 try:
-                    world_qsr_traces.append(self.__qsrs_active[which_qsr].get(input_data=request_message.input_data,
-                                                                              include_missing_data=request_message.include_missing_data,
-                                                                              timestamp_request_received=timestamp_request_received,
-                                                                              qsrs_for=request_message.qsrs_for,
-                                                                              qsr_relations_and_values=request_message.qsr_relations_and_values,
-                                                                              future=request_message.future,
-                                                                              config=request_message.config,
-                                                                              dynamic_args=request_message.dynamic_args))
+                    world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
+                                                                       include_missing_data=request_message.include_missing_data,
+                                                                       timestamp_request_received=timestamp_request_received,
+                                                                       qsrs_for=request_message.qsrs_for,
+                                                                       qsr_relations_and_values=request_message.qsr_relations_and_values,
+                                                                       future=request_message.future,
+                                                                       config=request_message.config,
+                                                                       dynamic_args=request_message.dynamic_args))
                 except KeyError:
                     raise KeyError("(QSR_Lib.request_qsrs): it seems that the QSR you requested (" + request_message.which_qsr + ") is not implemented yet or has not been activated")
 
