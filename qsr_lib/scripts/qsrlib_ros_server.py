@@ -21,8 +21,8 @@ except:
 
 
 class QSRlib_ROS_Server(object):
-    def __init__(self, node_name="qsr_lib", active_qsrs=None):
-        self.qsrlib = QSRlib(active_qsrs)
+    def __init__(self, node_name="qsr_lib"):
+        self.qsrlib = QSRlib()
         self.node_name = node_name
         self.node = rospy.init_node(self.node_name)
         self.service_topic_names = {"request": self.node_name+"/request"}
