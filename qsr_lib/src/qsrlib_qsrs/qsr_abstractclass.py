@@ -12,7 +12,6 @@
 from __future__ import print_function, division
 import abc
 import yaml
-import rospkg
 import os
 
 
@@ -106,6 +105,10 @@ class QSR_Abstractclass(object):
         return
 
     def set_from_config_file(self, path):
+        try:
+            import rospkg
+        except ImportError:
+            raise ImportError("Module rospkg not found; setting from config file works for now only within the ROS eco-system")
         if path is None:
             path = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.yml")
         else:
