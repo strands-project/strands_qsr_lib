@@ -19,16 +19,15 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        self.qsr_type = "rcc8_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.qsr_keys = "rcc8"
-#         'dc'     bb1 is disconnected from bb2
-#         'ec'     bb1 is externally connected with bb2
-#         'po'     bb1 partially overlaps bb2
-#         'eq'     bb1 equals bb2
-#         'tpp'    bb1 is a tangential proper part of bb2
-#         'ntpp'   bb1 is a non-tangential proper part of bb2
-#         'tppi'   bb2 is a tangential proper part of bb1
-#         'ntppi'  bb2 is a non-tangential proper part of bb1
+        self.unique_id = "rcc8"
+        # 'dc'     bb1 is disconnected from bb2
+        # 'ec'     bb1 is externally connected with bb2
+        # 'po'     bb1 partially overlaps bb2
+        # 'eq'     bb1 equals bb2
+        # 'tpp'    bb1 is a tangential proper part of bb2
+        # 'ntpp'   bb1 is a non-tangential proper part of bb2
+        # 'tppi'   bb2 is a tangential proper part of bb1
+        # 'ntppi'  bb2 is a non-tangential proper part of bb1
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
     def custom_set_from_config_file(self, document):
@@ -69,7 +68,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self.unique_id)
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
@@ -83,7 +82,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:

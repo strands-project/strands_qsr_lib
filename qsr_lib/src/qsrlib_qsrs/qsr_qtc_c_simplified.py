@@ -20,10 +20,9 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         super(QSR_QTC_C_Simplified, self).__init__()
+        self.unique_id = "qtccs"
         self.qtc_type = "c"
-        self.qsr_type = "qtc_c_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
-        self.qsr_keys = "qtccs"
 
     def qtc_to_output_format(self, qtc, future=False):
         """Overwrite this for the different QTC veriants to select only the parts
@@ -35,4 +34,4 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
         :return: "q1,q2,q4,q5" or {"qtccs": "q1,q2,q4,q5"} if future is True
         """
         s = super(QSR_QTC_C_Simplified, self).qtc_to_output_format(qtc)
-        return self.handle_future(future, s, self.qsr_keys)
+        return self.handle_future(future, s, self.unique_id)

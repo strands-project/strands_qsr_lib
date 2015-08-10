@@ -20,8 +20,7 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        self.qsr_type = "rcc2_rectangle_bounding_boxes_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.qsr_keys = "rcc2"
+        self.unique_id = "rcc2"
         self.all_possible_relations = ["dc", "c"]
 
     def custom_set_from_config_file(self, document):
@@ -62,13 +61,13 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self.unique_id)
         try:
-            quantisation_factor = float(kwargs["dynamic_args"][self.qsr_keys]["quantisation_factor"])
+            quantisation_factor = float(kwargs["dynamic_args"][self.unique_id]["quantisation_factor"])
         except KeyError:
             try:
                 quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
-                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.unique_id)
             except (KeyError, TypeError):
                 quantisation_factor = 0.0
         except TypeError:
@@ -87,7 +86,7 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2, quantisation_factor), self.qsr_keys))
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2, quantisation_factor), self.unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:

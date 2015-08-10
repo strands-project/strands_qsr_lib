@@ -18,17 +18,16 @@ import math
 class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        self.qsr_type = "cone_direction_bounding_boxes_centroid_2d"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-            # 's'      south
-            # 'sw'     south-west
-            # 'w'      west
-            # 'nw'     north-west
-            # 'n'      north
-            # 'ne'     north-east
-            # 'e'      east
-            # 'se'     south-east
+        self.unique_id = "coneDir"
+        # 's'      south
+        # 'sw'     south-west
+        # 'w'      west
+        # 'nw'     north-west
+        # 'n'      north
+        # 'ne'     north-east
+        # 'e'      east
+        # 'se'     south-east
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
-        self.qsr_keys = "coneDir"
 
     def custom_set_from_config_file(self, document):
         pass
@@ -68,7 +67,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self.unique_id)
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
@@ -82,7 +81,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:

@@ -17,13 +17,11 @@ from qsrlib_io.world_qsr_trace import *
 
 class QSR_Moving_or_Stationary(QSR_Abstractclass):
     def __init__(self):
-        self.qsr_type = "moving_or_stationary"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
-        self.qsr_keys = "mos"
+        self.unique_id = "mos"
         self.all_possible_relations = ["m", "s"]
 
     def custom_set_from_config_file(self, document):
         pass
-
 
     def custom_help(self):
         """Write your own help message function"""
@@ -63,16 +61,16 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
         quantisation_factor = 0.0
         try:
             quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
-            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.unique_id)
         except:
             pass
 
         try:
-            quantisation_factor = float(kwargs["dynamic_args"][self.qsr_keys]["quantisation_factor"])
+            quantisation_factor = float(kwargs["dynamic_args"][self.unique_id]["quantisation_factor"])
         except:
             pass
 
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self.unique_id)
         ts = input_data.get_sorted_timestamps()
         for t, tp in zip(ts[1:], ts):
             world_state_now = input_data.trace[t]
@@ -88,7 +86,7 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
                     qsr = QSR(timestamp=t, between=between,
                               qsr=self.handle_future(kwargs["future"],
                                                      self.__compute_qsr(point_now, point_previous, quantisation_factor),
-                                                     self.qsr_keys))
+                                                     self.unique_id))
                     ret.add_qsr(qsr, t)
             else:
                 if include_missing_data:
