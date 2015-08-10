@@ -63,6 +63,15 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        try:
+            quantisation_factor = float(kwargs["dynamic_args"][self.qsr_keys]["quantisation_factor"])
+        except KeyError:
+            try:
+                quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
+                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+            except:
+                quantisation_factor = 0.0
+
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
@@ -76,7 +85,7 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.qsr_keys))
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2, quantisation_factor), self.qsr_keys))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
@@ -94,11 +103,11 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
                     ret.append((i, j))
         return ret
 
-    def __compute_qsr(self, bb1, bb2):
+    def __compute_qsr(self, bb1, bb2, q=0.0):
         """Return RCC2 relation
 
         :param bb1: diagonal points coordinates of first bounding box (x1, y1, x2, y2)
         :param bb2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
         :return: an RCC2 relation from the following: 'dc':disconnected, 'c': connected
         """
-        return "dc" if (bb1[0] > bb2[2]) or (bb1[2] < bb2[0]) or (bb1[1] > bb2[3]) or (bb1[3] < bb2[1]) else "c"
+        return "dc" if (bb1[0] > bb2[2]+q) or (bb1[2] < bb2[0]-q) or (bb1[1] > bb2[3]+q) or (bb1[3] < bb2[1]-q) else "c"
