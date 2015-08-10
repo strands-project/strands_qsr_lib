@@ -23,8 +23,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     __qsr_keys = "qtcs"
 
     def __init__(self):
+        self._unique_id = ""
         self.qtc_type = ""
-        self.unique_id = ""
 
     def custom_set_from_config_file(self, document):
         pass
@@ -360,7 +360,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                         default[k] = v # This will always work so we have to check if name is default keys first
                         suc = True
                 if suc:
-                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.unique_id)
+                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
         except KeyError:
             pass
 
@@ -372,8 +372,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
             pass
 
         try: # Parameters for a specific variant
-            if kwargs["dynamic_args"][self.unique_id]:
-                for k, v in kwargs["dynamic_args"][self.unique_id].items():
+            if kwargs["dynamic_args"][self._unique_id]:
+                for k, v in kwargs["dynamic_args"][self._unique_id].items():
                     default[k] = v
         except KeyError:
             pass
@@ -389,7 +389,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         :return: World_QSR_Trace
         """
         input_data = kwargs["input_data"]
-        ret = World_QSR_Trace(qsr_type=self.unique_id)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         timestamps = input_data.get_sorted_timestamps()
 
         if kwargs["qsrs_for"]:

@@ -17,7 +17,7 @@ from qsrlib_io.world_qsr_trace import *
 
 class QSR_Moving_or_Stationary(QSR_Abstractclass):
     def __init__(self):
-        self.unique_id = "mos"
+        self._unique_id = "mos"
         self.all_possible_relations = ["m", "s"]
 
     def custom_set_from_config_file(self, document):
@@ -61,16 +61,16 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
         quantisation_factor = 0.0
         try:
             quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
-            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.unique_id)
+            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
         except:
             pass
 
         try:
-            quantisation_factor = float(kwargs["dynamic_args"][self.unique_id]["quantisation_factor"])
+            quantisation_factor = float(kwargs["dynamic_args"][self._unique_id]["quantisation_factor"])
         except:
             pass
 
-        ret = World_QSR_Trace(qsr_type=self.unique_id)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         ts = input_data.get_sorted_timestamps()
         for t, tp in zip(ts[1:], ts):
             world_state_now = input_data.trace[t]
@@ -86,7 +86,7 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
                     qsr = QSR(timestamp=t, between=between,
                               qsr=self.handle_future(kwargs["future"],
                                                      self.__compute_qsr(point_now, point_previous, quantisation_factor),
-                                                     self.unique_id))
+                                                     self._unique_id))
                     ret.add_qsr(qsr, t)
             else:
                 if include_missing_data:

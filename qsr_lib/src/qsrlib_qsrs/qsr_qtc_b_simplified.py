@@ -20,7 +20,7 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         super(QSR_QTC_B_Simplified, self).__init__()
-        self.unique_id = "qtcbs"
+        self._unique_id = "qtcbs"
         self.qtc_type = "b"
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
@@ -34,4 +34,4 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
         :return: "q1,q2" of {"qtcbs": "q1,q2"} if future is True
         """
         s = super(QSR_QTC_B_Simplified, self).qtc_to_output_format(qtc[0:2])
-        return self.handle_future(future, s, self.unique_id)
+        return self.handle_future(future, s, self._unique_id)

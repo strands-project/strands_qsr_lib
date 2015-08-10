@@ -21,7 +21,7 @@ class QSR_Abstractclass(object):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
-        self.unique_id = ""  # must be the same that goes in the QSR_Lib.__registry
+        self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
 
     def help(self):

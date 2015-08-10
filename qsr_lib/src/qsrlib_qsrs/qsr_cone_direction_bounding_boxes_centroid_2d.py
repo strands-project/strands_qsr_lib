@@ -18,7 +18,7 @@ import math
 class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
-        self.unique_id = "coneDir"
+        self._unique_id = "coneDir"
         # 's'      south
         # 'sw'     south-west
         # 'w'      west
@@ -67,7 +67,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
-        ret = World_QSR_Trace(qsr_type=self.unique_id)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
@@ -81,7 +81,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self.unique_id))
+                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self._unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
