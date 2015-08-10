@@ -166,7 +166,7 @@ class QSRlib(object):
                                                                               config=request_message.config,
                                                                               dynamic_args=request_message.dynamic_args))
                 except KeyError:
-                    raise KeyError("(QSR_Lib.request_qsrs): it seems that the QSR you requested (" + request_message.which_qsr + ") is not implemented yet or has not been activated")
+                    raise KeyError("(QSR_Lib.request_qsrs): it seems that the QSR you requested (" + which_qsr + ") is not implemented yet or has not been activated")
 
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
