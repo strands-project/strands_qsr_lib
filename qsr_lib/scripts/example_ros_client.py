@@ -25,23 +25,11 @@ import csv
 
 
 if __name__ == "__main__":
-    options = {"rcc2": "rcc2_rectangle_bounding_boxes_2d",
-               "rcc3": "rcc3_rectangle_bounding_boxes_2d",
-               "rcc8": "rcc8_rectangle_bounding_boxes_2d",
-               "coneDir": "cone_direction_bounding_boxes_centroid_2d",
-               "qtcbs": "qtc_b_simplified",
-               "qtccs": "qtc_c_simplified",
-               "qtcbcs": "qtc_bc_simplified",
-               "rcc3a": "rcc3_rectangle_bounding_boxes_2d",
-               "argd": "arg_relations_distance",
-               "mos": "moving_or_stationary"}
-
-    # options["multiple"] = ("cone_direction_bounding_boxes_centroid_2d", "rcc3_rectangle_bounding_boxes_2d", "moving_or_stationary", "qtc_b_simplified")
-    options["multiple"] = options.values()
-    options["multiple"].pop(options["multiple"].index("arg_relations_distance"))
+    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "mos", "multiple"]
+    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
+    parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
     parser.add_argument("-i", "--input", help="file from which to read object states", type=str)
     parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
     parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float)
@@ -53,20 +41,17 @@ if __name__ == "__main__":
 
     client_node = rospy.init_node("qsr_lib_ros_client_example")
 
-    try:
-        which_qsr_argv = args.qsr
-        which_qsr = options[which_qsr_argv]
-    except KeyError:
-        print("ERROR: qsr not found")
-        print("keywords:", options.keys())
-        sys.exit(1)
+    if args.qsr in options:
+        which_qsr = args.qsr
+    else:
+        raise ValueError("qsr not found, keywords: %s" % options)
 
     world = World_Trace()
 
     dynamic_args = {}
 
-    if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
-        dynamic_args = {which_qsr_argv: {"quantisation_factor": args.quantisation_factor}}
+    if which_qsr == "rcc3" or which_qsr == "rcc2":
+        dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -84,7 +69,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
 
-    elif which_qsr_argv == "rcc8":
+    elif which_qsr == "rcc8":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -107,8 +92,8 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
         world.add_object_state_series(o4)
 
-    elif which_qsr_argv == "mos":
-        dynamic_args = {which_qsr_argv: {"quantisation_factor": args.quantisation_factor}}
+    elif which_qsr == "mos":
+        dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
 
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=2., y=1., width=5., length=8.),
@@ -122,9 +107,9 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "argd":
+    elif which_qsr == "argd":
         qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
-        dynamic_args = {which_qsr_argv: {"qsr_relations_and_values": qsr_relations_and_values}}
+        dynamic_args = {which_qsr: {"qsr_relations_and_values": qsr_relations_and_values}}
 
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
@@ -142,7 +127,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
 
-    elif which_qsr_argv == "coneDir":
+    elif which_qsr == "coneDir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]
@@ -165,7 +150,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
         world.add_object_state_series(o4)
 
-    elif which_qsr_argv == "rcc3a":
+    elif which_qsr == "rcc3a":
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.)]
 
@@ -174,8 +159,8 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "qtcbs":
-        dynamic_args = {which_qsr_argv: {
+    elif which_qsr == "qtcbs":
+        dynamic_args = {which_qsr: {
             "quantisation_factor": args.quantisation_factor,
             "validate": args.validate,
             "no_collapse": args.no_collapse
@@ -213,8 +198,8 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "qtccs":
-        dynamic_args = {which_qsr_argv: {
+    elif which_qsr == "qtccs":
+        dynamic_args = {which_qsr: {
             "quantisation_factor": args.quantisation_factor,
             "validate": args.validate,
             "no_collapse": args.no_collapse
@@ -252,8 +237,8 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "qtcbcs":
-        dynamic_args = {which_qsr_argv: {
+    elif which_qsr == "qtcbcs":
+        dynamic_args = {which_qsr: {
             "quantisation_factor": args.quantisation_factor,
             "distance_threshold": args.distance_threshold,
             "validate": args.validate,
@@ -292,7 +277,8 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "multiple":
+    elif which_qsr == "multiple":
+        which_qsr = multiple
         traj = [Object_State(name="traj", timestamp=0, x=1., y=1., width=5., length=8.),
             Object_State(name="traj", timestamp=1, x=1., y=2., width=5., length=8.)]
         o1 = [Object_State(name="o1", timestamp=0, x=11., y=1., width=5., length=8.),
@@ -317,7 +303,7 @@ if __name__ == "__main__":
     req = cln.make_ros_request_message(qsrlib_request_message)
     res = cln.request_qsrs(req)
     out = pickle.loads(res.data)
-    print(which_qsr_argv, "request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
+    print(which_qsr, "request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
     print("---")
     print("Response is:")
     for t in out.qsrs.get_sorted_timestamps():
