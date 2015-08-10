@@ -69,8 +69,10 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
             try:
                 quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
                 print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
-            except:
+            except (KeyError, TypeError):
                 quantisation_factor = 0.0
+        except TypeError:
+            quantisation_factor = 0.0
 
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]

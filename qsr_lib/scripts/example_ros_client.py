@@ -66,6 +66,7 @@ if __name__ == "__main__":
     dynamic_args = {}
 
     if which_qsr_argv == "rcc3" or which_qsr_argv == "rcc2":
+        dynamic_args = {which_qsr_argv: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
