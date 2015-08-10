@@ -19,6 +19,7 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
+        super(QSR_RCC8_Rectangle_Bounding_Boxes_2D, self).__init__()
         self._unique_id = "rcc8"
         # 'dc'     bb1 is disconnected from bb2
         # 'ec'     bb1 is externally connected with bb2

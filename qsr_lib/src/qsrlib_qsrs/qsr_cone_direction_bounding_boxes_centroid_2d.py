@@ -18,6 +18,7 @@ import math
 class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
+        super(QSR_Cone_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
         self._unique_id = "coneDir"
         # 's'      south
         # 'sw'     south-west

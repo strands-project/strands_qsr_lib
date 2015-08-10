@@ -17,6 +17,7 @@ from qsrlib_io.world_qsr_trace import *
 
 class QSR_Moving_or_Stationary(QSR_Abstractclass):
     def __init__(self):
+        super(QSR_Moving_or_Stationary, self).__init__()
         self._unique_id = "mos"
         self.all_possible_relations = ["m", "s"]
 

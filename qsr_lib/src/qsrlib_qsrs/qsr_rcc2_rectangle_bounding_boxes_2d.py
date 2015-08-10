@@ -20,6 +20,7 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
+        super(QSR_RCC2_Rectangle_Bounding_Boxes_2D, self).__init__()
         self._unique_id = "rcc2"
         self.all_possible_relations = ["dc", "c"]
 
