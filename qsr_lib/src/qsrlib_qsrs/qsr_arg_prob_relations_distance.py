@@ -9,6 +9,7 @@ from __future__ import print_function, division
 import numpy as np
 from qsr_arg_relations_distance import QSR_Arg_Relations_Distance
 from qsrlib_io.world_qsr_trace import *
+from random import uniform
 
 
 class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
@@ -49,12 +50,12 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
     def __normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
         y = (1/(np.sqrt(2*np.pi)*np.abs(sigma)))*np.exp(-u*u/2)
-        return y
+        return np.around(y, decimals=3)
 
     def _compute_qsr(self, objs):
         d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y))
         r = (None, 0.0)
         for values, relation in zip(self.all_possible_values, self.all_possible_relations):
-            prob = self.__normpdf(d, mu=values[0], sigma=values[1])
+            prob = uniform(0.0, self.__normpdf(d, mu=values[0], sigma=values[1]))
             r = (relation, prob) if prob > r[1] else r
         return r[0] if r[0] else self.all_possible_relations[-1]
