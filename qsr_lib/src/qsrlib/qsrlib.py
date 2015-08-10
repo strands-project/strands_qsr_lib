@@ -88,37 +88,42 @@ class QSRlib(object):
     """The LIB
     """
     def __init__(self, help=True):
-        # register new qsrs below in qsrs_registry
-        qsrs_registry = (("rcc2", QSR_RCC2_Rectangle_Bounding_Boxes_2D),
-                         ("rcc3", QSR_RCC3_Rectangle_Bounding_Boxes_2D),
-                         ("rcc8", QSR_RCC8_Rectangle_Bounding_Boxes_2D),
-                         ("coneDir", QSR_Cone_Direction_Bounding_Boxes_Centroid_2D),
-                         ("qtcbs", QSR_QTC_B_Simplified),
-                         ("qtccs", QSR_QTC_C_Simplified),
-                         ("qtcbcs", QSR_QTC_BC_Simplified),
-                         ("argd", QSR_Arg_Relations_Distance),
-                         ("mos", QSR_Moving_or_Stationary))
+        # register new qsrs by class name below in qsrs_registration
+        qsrs_registration = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
+                             QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                             QSR_RCC8_Rectangle_Bounding_Boxes_2D,
+                             QSR_Cone_Direction_Bounding_Boxes_Centroid_2D,
+                             QSR_QTC_B_Simplified,
+                             QSR_QTC_C_Simplified,
+                             QSR_QTC_BC_Simplified,
+                             QSR_Arg_Relations_Distance,
+                             QSR_Moving_or_Stationary)
 
-        self.__qsrs = self.check_and_activate_qsrs(qsrs_registry)
+        self.__qsrs = self.check_and_activate_qsrs(qsrs_registration)
         if help:
             self.help()
 
     @staticmethod
-    def check_and_activate_qsrs(qsrs_registry):
+    def check_and_activate_qsrs(qsrs_registration):
         """Checks for uniqueness of the QSRs unique_id and their corresponding class names and then return a dictionary
         with the unique IDs as keys and their corresponding objects.
 
-        :param qsrs_registry: The dictionary where the QSRs are registered (see constructor source).
+        :param qsrs_registration: The dictionary where the QSRs are registered (see constructor source).
+            :type qsrs_registration: tuple
         :return: A dictionary with the QSRs unique_id as keys and an object of their corresponding classes
         :rtype: dict
         """
-        foo, bar = zip(*qsrs_registry)
-        len_qsrs_registry = len(qsrs_registry)
-        if len(set(foo)) != len_qsrs_registry:
-            raise KeyError("Non unique QSR id found")
-        if len(set(bar)) != len_qsrs_registry:
-            raise KeyError("Non unique class name found")
-        return {unique_id: class_name() for unique_id, class_name in qsrs_registry}
+        if len(set(qsrs_registration)) != len(qsrs_registration):
+            raise KeyError("Repeated class name found")
+        qsrs = {}
+        for class_name in qsrs_registration:
+            o = class_name()
+            if o.unique_id in qsrs:
+                raise KeyError("Non unique QSR ID <%s> found while processing class <%s> which was mapped to class <%s>"
+                               % (o.unique_id, o.__class__.__name__, qsrs[o.unique_id].__class__.__name__))
+            else:
+                qsrs[o.unique_id] = o
+        return qsrs
 
     def help(self):
         self.print_qsrs_available()
