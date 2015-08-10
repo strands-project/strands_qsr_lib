@@ -23,6 +23,7 @@ from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
 from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
 from qsrlib_qsrs.qsr_qtc_bc_simplified import QSR_QTC_BC_Simplified
 from qsrlib_qsrs.qsr_arg_relations_distance import QSR_Arg_Relations_Distance
+from qsrlib_qsrs.qsr_arg_prob_relations_distance import QSR_Arg_Prob_Relations_Distance
 from qsrlib_qsrs.qsr_moving_or_stationary import QSR_Moving_or_Stationary
 
 
@@ -97,6 +98,7 @@ class QSRlib(object):
                                QSR_QTC_C_Simplified,
                                QSR_QTC_BC_Simplified,
                                QSR_Arg_Relations_Distance,
+                               QSR_Arg_Prob_Relations_Distance,
                                QSR_Moving_or_Stationary)
 
         self.__qsrs = self.check_and_activate_qsrs(__qsrs_registration)

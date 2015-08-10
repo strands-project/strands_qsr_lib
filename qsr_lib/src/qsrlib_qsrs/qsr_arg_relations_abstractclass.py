@@ -7,9 +7,7 @@
 
 from __future__ import print_function, division
 import abc
-import operator
 from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
-# from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
@@ -19,11 +17,13 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
         self.qsr_relations_and_values = None
         self.all_possible_relations = None
         self.all_possible_values = None
+        self.allowed_value_types = None
+        self.value_sort_key = None
 
     def __populate_possible_relations_and_values(self):
         ret_relations = []
         ret_values = []
-        sorted_by_v = sorted(self.qsr_relations_and_values.items(), key=operator.itemgetter(1))
+        sorted_by_v = sorted(self.qsr_relations_and_values.items(), key=self.value_sort_key)
         for i in sorted_by_v:
             ret_relations.append(i[0])
             ret_values.append(i[1])
@@ -33,8 +33,11 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
         if type(qsr_relations_and_values) is not dict:
             raise ValueError("qsr_relations_and_values must be a dict")
         for k, v in qsr_relations_and_values.items():
-            if (type(k) is not str) or ((type(v) is not float) and (type(v) is not int)):
-                raise ValueError("qsr_relations_and_values must be a dict of str:float|int")
+            if (type(k) is not str) or not isinstance(v, self.allowed_value_types):
+                try:
+                    raise ValueError("qsr_relations_and_values must be a dict of str:%s" % '|'.join(x.__name__ for x in self.allowed_value_types))
+                except TypeError:
+                    raise ValueError("qsr_relations_and_values must be a dict of str:%s" % self.allowed_value_types.__name__)
         return True
 
     def set_qsr_relations_and_values(self, qsr_relations_and_values):

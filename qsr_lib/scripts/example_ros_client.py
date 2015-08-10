@@ -25,8 +25,9 @@ import csv
 
 
 if __name__ == "__main__":
-    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "mos", "multiple"]
-    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd")
+
+    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
+    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
@@ -107,8 +108,8 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
-    elif which_qsr == "argd":
-        qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
+    elif which_qsr == "argd" or which_qsr == "argprobd":
+        qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.} if which_qsr == "argd" else {"0": (2.5,2.5/2), "1": (7.5,7.5/2), "2": [50,50/2]}
         dynamic_args = {which_qsr: {"qsr_relations_and_values": qsr_relations_and_values}}
 
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
