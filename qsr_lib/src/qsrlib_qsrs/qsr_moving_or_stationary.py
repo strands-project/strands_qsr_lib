@@ -60,10 +60,18 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
         """
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
+        quantisation_factor = 0.0
         try:
             quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
+            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
         except:
-            quantisation_factor = 0.0
+            pass
+
+        try:
+            quantisation_factor = float(kwargs["dynamic_args"][self.qsr_keys]["quantisation_factor"])
+        except:
+            pass
+
         ret = World_QSR_Trace(qsr_type=self.qsr_type)
         ts = input_data.get_sorted_timestamps()
         for t, tp in zip(ts[1:], ts):
