@@ -85,7 +85,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             if kwargs["dynamic_args"]["qsr_relations_and_values"]:
                 self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"]["qsr_relations_and_values"])
                 print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
-        except:
+        except KeyError:
             pass
         try:
             if kwargs["dynamic_args"][self.qsr_keys]["qsr_relations_and_values"]:
