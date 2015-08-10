@@ -34,6 +34,7 @@ if __name__ == "__main__":
                "qtcbcs": "qtc_bc_simplified",
                "rcc3a": "rcc3_rectangle_bounding_boxes_2d",
                "argd": "arg_relations_distance",
+               "argprobd": "arg_prob_relations_distance",
                "mos": "moving_or_stationary"}
 
     # options["multiple"] = ("cone_direction_bounding_boxes_centroid_2d", "rcc3_rectangle_bounding_boxes_2d", "moving_or_stationary", "qtc_b_simplified")
@@ -122,8 +123,8 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
-    elif which_qsr_argv == "argd":
-        qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.}
+    elif which_qsr_argv == "argd" or which_qsr_argv == "argprobd":
+        qsr_relations_and_values = {"0": 5., "1": 15., "2": 100.} if which_qsr_argv == "argd" else {"0": (2.5,2.5/2), "1": (7.5,7.5/2), "2": [50,50/2]}
         dynamic_args = {which_qsr_argv: {"qsr_relations_and_values": qsr_relations_and_values}}
 
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
