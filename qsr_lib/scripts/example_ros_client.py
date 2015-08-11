@@ -25,7 +25,6 @@ import csv
 
 
 if __name__ == "__main__":
-
     options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
     multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
 
