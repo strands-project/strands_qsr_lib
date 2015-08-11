@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # options["multiple"] = ("cone_direction_bounding_boxes_centroid_2d", "rcc3_rectangle_bounding_boxes_2d", "moving_or_stationary", "qtc_b_simplified")
     options["multiple"] = options.values()
     options["multiple"].pop(options["multiple"].index("arg_relations_distance"))
+    options["multiple"].pop(options["multiple"].index("arg_prob_relations_distance"))
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options.keys(), type=str)
