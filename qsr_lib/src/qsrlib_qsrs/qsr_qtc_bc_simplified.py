@@ -137,7 +137,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                     ret.add_qsr(qsr, idx+1)
 
         if no_collapse and not validate:
-            self._rectify_timestamps(input_data, ret)
+            ret = self._rectify_timestamps(input_data, ret)
 
         return ret
 
@@ -149,7 +149,6 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
             else:
                 ret = np.append(ret, state, axis=0)
         return ret.reshape(-1,4)
-
 
     def qtc_to_output_format(self, qtc, future=False):
         """Overwrite this for the different QTC veriants to select only the parts
