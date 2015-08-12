@@ -312,13 +312,6 @@ if __name__ == "__main__":
     # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
     #                                                 dynamic_args=dynamic_args, future=args.future, config=args.config)
 
-    # ************* DBG *****************
-    # testing issue #88
-    
-    # ************* eof DBG *****************
-
-
-
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
                                                     dynamic_args=dynamic_args,
                                                     future=args.future)
