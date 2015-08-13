@@ -14,6 +14,8 @@ except:
 from qsrlib.qsrlib import QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
 from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
+from copy import deepcopy
+import json
 
 
 class TestQTC(unittest.TestCase):
@@ -30,8 +32,11 @@ class TestQTC(unittest.TestCase):
 
     correct = {
         "qtcbs": [{'qtcbs': '-,-'}, {'qtcbs': '-,0'}, {'qtcbs': '0,0'}, {'qtcbs': '0,+'}, {'qtcbs': '+,+'}],
+        "qtcbs_nocollapse": lambda: json.load(open(find_resource(PKG, 'qtcbs_nocollapse.txt')[0],'r')),
         "qtccs": [{'qtccs': '-,-,0,0'}, {'qtccs': '-,-,+,0'}, {'qtccs': '-,0,+,0'}, {'qtccs': '-,0,+,+'}, {'qtccs': '0,0,+,+'}, {'qtccs': '0,0,+,0'}, {'qtccs': '0,+,+,0'}, {'qtccs': '+,+,+,0'}, {'qtccs': '+,+,0,0'}],
-        "qtcbcs": [{'qtcbcs': '-,-'}, {'qtcbcs': '-,0'}, {'qtcbcs': '-,0,+,0'}, {'qtcbcs': '-,0,+,+'}, {'qtcbcs': '0,0,+,+'}, {'qtcbcs': '0,0,+,0'}, {'qtcbcs': '0,+,+,0'}, {'qtcbcs': '+,+,+,0'}, {'qtcbcs': '+,+'}]
+        "qtccs_nocollapse": lambda: json.load(open(find_resource(PKG, 'qtccs_nocollapse.txt')[0],'r')),
+        "qtcbcs": [{'qtcbcs': '-,-'}, {'qtcbcs': '-,0'}, {'qtcbcs': '-,0,+,0'}, {'qtcbcs': '-,0,+,+'}, {'qtcbcs': '0,0,+,+'}, {'qtcbcs': '0,0,+,0'}, {'qtcbcs': '0,+,+,0'}, {'qtcbcs': '+,+,+,0'}, {'qtcbcs': '+,+'}],
+        "qtcbcs_nocollapse": lambda: json.load(open(find_resource(PKG, 'qtcbcs_nocollapse.txt')[0],'r')),
     }
 
 
@@ -50,13 +55,13 @@ class TestQTC(unittest.TestCase):
             for idx,row in enumerate(reader):
                 ob.append(Object_State(
                     name=row['agent1'],
-                    timestamp=idx,
+                    timestamp=idx+1,
                     x=float(row['x1']),
                     y=float(row['y1'])
                 ))
                 ob.append(Object_State(
                     name=row['agent2'],
-                    timestamp=idx,
+                    timestamp=idx+1,
                     x=float(row['x2']),
                     y=float(row['y2'])
                 ))
@@ -75,12 +80,14 @@ class TestQTC(unittest.TestCase):
 
         return foo
 
-    def _create_qsr(self, qsr, future=False):
+    def _create_qsr(self, qsr, future=False, dynamic_args=None):
+        dynamic_args = self.dynamic_args if not dynamic_args else dynamic_args
+        print dynamic_args
         qsrlib_request_message = QSRlib_Request_Message(
             which_qsr=self.options[qsr],
             input_data=self.world,
             include_missing_data=True,
-            dynamic_args=self.dynamic_args,
+            dynamic_args=dynamic_args,
             future=future,
             qsrs_for=[("human", "robot")]
         )
@@ -97,6 +104,13 @@ class TestQTC(unittest.TestCase):
         res = self._create_qsr("qtcbs", future=True)
         self.assertEqual(res, self.correct["qtcbs"])
 
+    def test_qtcb_nocollapse(self):
+        dynamic_args = deepcopy(self.dynamic_args)
+        dynamic_args["qtcs"]["validate"] = False
+        dynamic_args["qtcs"]["no_collapse"] = True
+        res = self._create_qsr("qtcbs", dynamic_args=dynamic_args)
+        self.assertEqual(res, self.correct["qtcbs_nocollapse"]())
+
     def test_qtcc(self):
         res = self._create_qsr("qtccs")
         self.assertEqual(res, self._to_strings(self.correct["qtccs"]))
@@ -105,6 +119,13 @@ class TestQTC(unittest.TestCase):
         res = self._create_qsr("qtccs", future=True)
         self.assertEqual(res, self.correct["qtccs"])
 
+    def test_qtcc_nocollapse(self):
+        dynamic_args = deepcopy(self.dynamic_args)
+        dynamic_args["qtcs"]["validate"] = False
+        dynamic_args["qtcs"]["no_collapse"] = True
+        res = self._create_qsr("qtccs", dynamic_args=dynamic_args)
+        self.assertEqual(res, self.correct["qtccs_nocollapse"]())
+
     def test_qtcbc(self):
         res = self._create_qsr("qtcbcs")
         self.assertEqual(res, self._to_strings(self.correct["qtcbcs"]))
@@ -112,6 +133,13 @@ class TestQTC(unittest.TestCase):
     def test_qtcbc_future(self):
         res = self._create_qsr("qtcbcs", future=True)
         self.assertEqual(res, self.correct["qtcbcs"])
+
+    def test_qtcbc_nocollapse(self):
+        dynamic_args = deepcopy(self.dynamic_args)
+        dynamic_args["qtcs"]["validate"] = False
+        dynamic_args["qtcs"]["no_collapse"] = True
+        res = self._create_qsr("qtcbcs", dynamic_args=dynamic_args)
+        self.assertEqual(res, self.correct["qtcbcs_nocollapse"]())
 
 
 
