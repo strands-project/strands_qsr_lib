@@ -2,6 +2,9 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.2 (2015-08-11)
 ------------------
 * Adding RCC3 as an easy example on how to add new QSRs to the prob rep lib.
