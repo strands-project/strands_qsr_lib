@@ -20,9 +20,6 @@ import json
 
 class TestQTC(unittest.TestCase):
     TEST_FILE = find_resource(PKG, 'qtc.csv')[0]
-    options = {"qtcbs": "qtc_b_simplified",
-               "qtccs": "qtc_c_simplified",
-               "qtcbcs": "qtc_bc_simplified"}
     dynamic_args = {"qtcs": {
         "quantisation_factor": 0.01,
         "validate": True,
@@ -84,7 +81,7 @@ class TestQTC(unittest.TestCase):
         dynamic_args = self.dynamic_args if not dynamic_args else dynamic_args
         print dynamic_args
         qsrlib_request_message = QSRlib_Request_Message(
-            which_qsr=self.options[qsr],
+            which_qsr=qsr,
             input_data=self.world,
             include_missing_data=True,
             dynamic_args=dynamic_args,

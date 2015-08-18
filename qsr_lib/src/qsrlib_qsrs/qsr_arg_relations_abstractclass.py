@@ -8,7 +8,6 @@
 from __future__ import print_function, division
 import abc
 from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
-# from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
@@ -18,7 +17,6 @@ class QSR_Arg_Relations_Abstractclass(QSR_Abstractclass):
         self.qsr_relations_and_values = None
         self.all_possible_relations = None
         self.all_possible_values = None
-        self.qsr_keys = ""
         self.allowed_value_types = None
         self.value_sort_key = None
 

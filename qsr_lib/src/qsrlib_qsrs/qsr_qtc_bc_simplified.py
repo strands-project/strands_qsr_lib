@@ -22,10 +22,9 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
     """Make default QSRs and provide an example for others"""
     def __init__(self):
         super(QSR_QTC_BC_Simplified, self).__init__()
+        self._unique_id = "qtcbcs"
         self.qtc_type = "bc"
-        self.qsr_type = "qtc_bc_simplified"  # must be the same that goes in the QSR_Lib.__const_qsrs_available
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
-        self.qsr_keys = "qtcbcs"
 
     def make(self, *args, **kwargs):
         """Make the QSRs
@@ -36,7 +35,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         :return: World_QSR_Trace
         """
         input_data = kwargs["input_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         timestamps = input_data.get_sorted_timestamps()
 
         parameters = {
@@ -160,7 +159,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         :return: "q1,q2,q4,q5" or {"qtcbcs": "q1,q2,q4,q5"} if future is True
         """
         s = super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc) if not np.isnan(qtc[2]) else super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc[0:2])
-        return self.handle_future(future, s, self.qsr_keys)
+        return self.handle_future(future, s, self._unique_id)
 
     def _get_euclidean_distance(self, p, q):
         """Calculate the Euclidean distance between points p and q
