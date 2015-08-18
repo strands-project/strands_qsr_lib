@@ -8,15 +8,13 @@
 from __future__ import print_function, division
 import numpy as np
 from qsr_arg_relations_distance import QSR_Arg_Relations_Distance
-from qsrlib_io.world_qsr_trace import *
 from random import uniform
 
 
 class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
     def __init__(self, config=None):
         super(QSR_Arg_Prob_Relations_Distance, self).__init__()
-        self.qsr_type = "arg_prob_relations_distance"
-        self.qsr_keys = "argprobd"
+        self._unique_id = "argprobd"
         self.allowed_value_types = (tuple,list)
         self.value_sort_key = lambda x: x[1][0] # Sort by first element in value tuple, i.e. mean
         if config:

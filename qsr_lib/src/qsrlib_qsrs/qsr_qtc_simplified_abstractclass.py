@@ -23,8 +23,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     __qsr_keys = "qtcs"
 
     def __init__(self):
+        self._unique_id = ""
         self.qtc_type = ""
-        self.qsr_keys = ""
 
     def custom_set_from_config_file(self, document):
         pass
@@ -360,7 +360,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                         default[k] = v # This will always work so we have to check if name is default keys first
                         suc = True
                 if suc:
-                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
         except KeyError:
             pass
 
@@ -372,8 +372,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
             pass
 
         try: # Parameters for a specific variant
-            if kwargs["dynamic_args"][self.qsr_keys]:
-                for k, v in kwargs["dynamic_args"][self.qsr_keys].items():
+            if kwargs["dynamic_args"][self._unique_id]:
+                for k, v in kwargs["dynamic_args"][self._unique_id].items():
                     default[k] = v
         except KeyError:
             pass
@@ -389,7 +389,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         :return: World_QSR_Trace
         """
         input_data = kwargs["input_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         timestamps = input_data.get_sorted_timestamps()
 
         if kwargs["qsrs_for"]:
@@ -472,7 +472,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     ret.add_qsr(qsr, idx+1)
 
         if no_collapse and not validate:
-            self._rectify_timestamps(input_data, ret)
+            ret = self._rectify_timestamps(input_data, ret)
 
         return ret
 
@@ -486,9 +486,12 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     ret.append((i, j))
         return ret
 
-    def _rectify_timestamps(self, world_trace, world_qsr_trace):
-        for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:], world_qsr_trace.get_sorted_timestamps()):
-            world_qsr_trace.trace[t] = world_qsr_trace.trace.pop(tqtc)
+    @staticmethod
+    def _rectify_timestamps(world_trace, world_qsr_trace):
+        return World_QSR_Trace(qsr_type=world_qsr_trace.qsr_type, last_updated=world_qsr_trace.last_updated,
+                               trace={t: world_qsr_trace.trace[tqtc]
+                                      for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:],
+                                                         world_qsr_trace.get_sorted_timestamps())})
 
     @abstractmethod
     def qtc_to_output_format(self, qtc, future=False):

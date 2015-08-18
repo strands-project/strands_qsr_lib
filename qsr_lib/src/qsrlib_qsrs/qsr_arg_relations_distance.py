@@ -14,19 +14,18 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
     def __init__(self, config=None):
         super(QSR_Arg_Relations_Distance, self).__init__()
-        self.qsr_type = "arg_relations_distance"
-        self.qsr_keys = "argd"
-        self.allowed_value_types = (int,float)
+        self._unique_id = "argd"
+        self.allowed_value_types = (int, float)
         self.value_sort_key = operator.itemgetter(1) # Sort by threshold
         if config:
             self.set_from_config_file(config)
 
     def custom_set_from_config_file(self, document):
         try:
-            relations_and_values = document["arg_relations_distance"]["relations_and_values"]
+            relations_and_values = document[self._unique_id]["relations_and_values"]
         except:
             print("ERROR (qsr_arg_relations_distance.py/custom_set_from_config_file):"
-                  "'arg_relations_distance' or 'relations_and_values' not found in config file")
+                  "'%s' or 'relations_and_values' not found in config file" % self._unique_id)
             self.qsr_relations_and_values = None
             self.all_possible_relations = None
             self.all_possible_values = None
@@ -84,27 +83,25 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         try:
             if kwargs["dynamic_args"]["qsr_relations_and_values"]:
                 self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"]["qsr_relations_and_values"])
-                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self.qsr_keys)
+                print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
         except KeyError:
             pass
         try:
-            if kwargs["dynamic_args"][self.qsr_keys]["qsr_relations_and_values"]:
-                self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"][self.qsr_keys]["qsr_relations_and_values"])
+            if kwargs["dynamic_args"][self._unique_id]["qsr_relations_and_values"]:
+                self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
         except KeyError:
             pass
-        # print(self.qsr_relations_and_values)  # dbg
         if not self.qsr_relations_and_values:
             raise ValueError("qsr_relations_and_values is uninitialized,\n"
                              "use dynamic_args={'qsr_relations_and_values': <your dictionary of relations and values>"
                              "in the QSRlib_Request_Message")
         input_data = kwargs["input_data"]
         include_missing_data = kwargs["include_missing_data"]
-        ret = World_QSR_Trace(qsr_type=self.qsr_type)
+        ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in input_data.get_sorted_timestamps():
             world_state = input_data.trace[t]
             timestamp = world_state.timestamp
             if kwargs["qsrs_for"]:
-                # print(kwargs["qsrs_for"])
                 qsrs_for, error_found = self.check_qsrs_for_data_exist(world_state.objects.keys(), kwargs["qsrs_for"])
             else:
                 qsrs_for = self.qsrs_for_default(world_state.objects.keys())
@@ -113,7 +110,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                     between = str(p[0]) + "," + str(p[1])
                     objs = (world_state.objects[p[0]], world_state.objects[p[1]])
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self._compute_qsr(objs), self.qsr_keys))
+                              qsr=self.handle_future(kwargs["future"], self._compute_qsr(objs), self._unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:

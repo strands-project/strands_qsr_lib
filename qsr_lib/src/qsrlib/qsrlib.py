@@ -89,36 +89,51 @@ class QSRlib(object):
     """The LIB
     """
     def __init__(self, help=True):
-        self.__qsrs = {"rcc2_rectangle_bounding_boxes_2d": QSR_RCC2_Rectangle_Bounding_Boxes_2D(),
-                       "rcc3_rectangle_bounding_boxes_2d": QSR_RCC3_Rectangle_Bounding_Boxes_2D(),
-                       "rcc8_rectangle_bounding_boxes_2d": QSR_RCC8_Rectangle_Bounding_Boxes_2D(),
-                       "cone_direction_bounding_boxes_centroid_2d": QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(),
-                       "qtc_b_simplified": QSR_QTC_B_Simplified(),
-                       "qtc_c_simplified": QSR_QTC_C_Simplified(),
-                       "qtc_bc_simplified": QSR_QTC_BC_Simplified(),
-                       "arg_relations_distance": QSR_Arg_Relations_Distance(),
-                       "arg_prob_relations_distance": QSR_Arg_Prob_Relations_Distance(),
-                       "moving_or_stationary": QSR_Moving_or_Stationary()}
+        # register new qsrs by class name below
+        __qsrs_registration = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
+                               QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                               QSR_RCC8_Rectangle_Bounding_Boxes_2D,
+                               QSR_Cone_Direction_Bounding_Boxes_Centroid_2D,
+                               QSR_QTC_B_Simplified,
+                               QSR_QTC_C_Simplified,
+                               QSR_QTC_BC_Simplified,
+                               QSR_Arg_Relations_Distance,
+                               QSR_Arg_Prob_Relations_Distance,
+                               QSR_Moving_or_Stationary)
 
+        self.__qsrs = self.check_and_activate_qsrs(__qsrs_registration)
         if help:
             self.help()
 
-        # register short names
-        for k, v in self.__qsrs.items():
-            if v.qsr_keys not in self.__qsrs:
-                self.__qsrs[v.qsr_keys] = self.__qsrs[k]
+    @staticmethod
+    def check_and_activate_qsrs(qsrs_registration):
+        """Checks for uniqueness of the QSRs _unique_id and their corresponding class names and then return a dictionary
+        with the unique IDs as keys and their corresponding objects.
+
+        :param qsrs_registration: The dictionary where the QSRs are registered (see constructor source).
+            :type qsrs_registration: tuple
+        :return: A dictionary with the QSRs _unique_id as keys and an object of their corresponding classes
+        :rtype: dict
+        """
+        if len(set(qsrs_registration)) != len(qsrs_registration):
+            raise KeyError("Repeated class name found")
+        qsrs = {}
+        for class_name in qsrs_registration:
+            o = class_name()
+            if o._unique_id in qsrs:
+                raise KeyError("Non unique QSR ID <%s> found while processing class <%s> which was mapped to class <%s>"
+                               % (o._unique_id, o.__class__.__name__, qsrs[o._unique_id].__class__.__name__))
             else:
-                raise KeyError("Non-unique shortname <%s> found for <%s> while registered to <%s>. Shortnames must also be unique keys."
-                               % (v.qsr_keys, v.qsr_type, self.__qsrs[v.qsr_keys].qsr_type))
+                qsrs[o._unique_id] = o
+        return qsrs
 
     def help(self):
         self.print_qsrs_available()
 
     def print_qsrs_available(self):
-        l = sorted(self.__qsrs)
         print("Types of QSRs that have been included so far in the lib are the following:")
-        for i in l:
-            print("-", i, "("+self.__qsrs[i].qsr_keys+")")
+        for i in sorted(self.__qsrs):
+            print("-", i)
 
     def request_qsrs(self, request_message):
         """

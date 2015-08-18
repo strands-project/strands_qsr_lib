@@ -2,6 +2,13 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.1.3 (2015-08-13)
+------------------
+* Adding test for non collapsed QTC.
+* example_ros_client cleanup
+* resolves a bug introduced in `#95 <https://github.com/strands-project/strands_qsr_lib/issues/95>`_, `#88 <https://github.com/strands-project/strands_qsr_lib/issues/88>`_
+* Contributors: Christian Dondrup, Yiannis Gatsoulis
+
 0.1.1 (2015-06-19)
 ------------------
 * Adding test depends
