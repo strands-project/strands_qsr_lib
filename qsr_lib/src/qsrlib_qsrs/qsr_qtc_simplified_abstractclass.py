@@ -21,6 +21,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     __metaclass__ = ABCMeta
 
     __qsr_keys = "qtcs"
+    __no_state__ = 9.
 
     def __init__(self):
         self._unique_id = ""
@@ -130,14 +131,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         if self.qtc_type == "b":
             qtc = qtc[:,0:2].copy()
 
-        col_qtc = np.array([qtc[0,:].copy()])
-        j = 0
-        for i in xrange(1, qtc.shape[0]):
-            if not self._nan_equal(col_qtc[j,:], qtc[i,:]):
-                col_qtc = np.append(col_qtc, [qtc[i,:]], axis=0)
-                j += 1
-
-        return col_qtc
+        # The nan handling is a bit hacky but fast and easy
+        if qtc.dtype == np.float64: qtc[np.isnan(qtc)]=self.__no_state__
+        qtc = qtc[np.concatenate(([True],np.any(qtc[1:]!=qtc[:-1],axis=1)))]
+        if qtc.dtype == np.float64: qtc[qtc==self.__no_state__] = np.nan
+        return qtc
 
     def _nan_equal(self, a, b):
         """Uses assert equal to compare if two arrays containing nan values
