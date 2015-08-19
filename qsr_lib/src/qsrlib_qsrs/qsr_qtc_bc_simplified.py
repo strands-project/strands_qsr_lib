@@ -54,9 +54,21 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         else:
             qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
 
+        combinations = {}
         if qsrs_for:
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
+                # If the opposit combination of objects has been calculated before,
+                # Just flip the numbers around and republish.
+                if str(p[1]) + "," + str(p[0]) in combinations.keys():
+                    for idx, qtc in enumerate(combinations[str(p[1]) + "," + str(p[0])]):
+                        qsr = QSR(
+                            timestamp=idx+1,
+                            between=between,
+                            qsr=self.qtc_to_output_format((qtc[[1,0,3,2]]), kwargs["future"])
+                        )
+                        ret.add_qsr(qsr, idx+1)
+                    continue
                 o1_name = p[0]
                 o2_name = p[1]
                 quantisation_factor = parameters["quantisation_factor"]
@@ -134,6 +146,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                         qsr=self.qtc_to_output_format((qtc), kwargs["future"])
                     )
                     ret.add_qsr(qsr, idx+1)
+                combinations[between] = qtc_sequence
 
         if no_collapse and not validate:
             ret = self._rectify_timestamps(input_data, ret)
