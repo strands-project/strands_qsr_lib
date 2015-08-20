@@ -108,8 +108,12 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             if qsrs_for:
                 for p in qsrs_for:
                     between = str(p[0]) + "," + str(p[1])
-                    objs = (world_state.objects[p[0]], world_state.objects[p[1]])
-                    qsr = QSR(timestamp=timestamp, between=between,
+                    try:
+                        qsr = QSR(timestamp=timestamp, between=between,
+                              qsr=ret.trace[t].qsrs[str(p[1]) + "," + str(p[0])].qsr)
+                    except KeyError:
+                        objs = (world_state.objects[p[0]], world_state.objects[p[1]])
+                        qsr = QSR(timestamp=timestamp, between=between,
                               qsr=self.handle_future(kwargs["future"], self._compute_qsr(objs), self._unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
@@ -133,7 +137,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         ret = []
         for i in sorted(objects_names):
             for j in objects_names:
-                if i != j and (j, i) not in ret:
+                if i != j:
                     ret.append((i, j))
         return ret
 
