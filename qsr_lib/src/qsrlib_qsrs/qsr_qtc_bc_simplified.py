@@ -38,6 +38,13 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         timestamps = input_data.get_sorted_timestamps()
 
+        if kwargs["qsrs_for"]:
+            qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
+            if error_found:
+                raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
+        else:
+            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
+
         parameters = {
             "distance_threshold": 1.0,
             "quantisation_factor": 0.0,
@@ -47,27 +54,46 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
 
         parameters = self._get_parameters(parameters, **kwargs)
 
-        if kwargs["qsrs_for"]:
-            qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
-            if error_found:
-                raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
-        else:
-            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
+        try:
+            no_collapse = parameters["no_collapse"]
+            if input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
+                print "Definition of no_collapse in object is depricated. Please use parameters field in dynamic_args in service call."
+                no_collapse = input_data.trace[0].objects[o1_name].kwargs["no_collapse"]
+        except:
+            pass
+        try:
+            validate = parameters["validate"]
+            if input_data.trace[0].objects[o1_name].kwargs["validate"]:
+                print "Definition of validate in object is depricated. Please use parameters field in dynamic_args in service call."
+                validate = input_data.trace[0].objects[o1_name].kwargs["validate"]
+        except:
+            pass
 
-        combinations = {}
         if qsrs_for:
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
                 # If the opposit combination of objects has been calculated before,
                 # Just flip the numbers around and republish.
-                if str(p[1]) + "," + str(p[0]) in combinations.keys():
-                    for idx, qtc in enumerate(combinations[str(p[1]) + "," + str(p[0])]):
-                        qsr = QSR(
-                            timestamp=idx+1,
-                            between=between,
-                            qsr=self.qtc_to_output_format((qtc[[1,0,3,2]]), kwargs["future"])
-                        )
-                        ret.add_qsr(qsr, idx+1)
+                q = None
+                for idx, qsr in ret.trace.items():
+                    try:
+                        try:
+                            qtc = np.array(qsr.qsrs[str(p[1]) + "," + str(p[0])].qsr.split(','))
+                        except AttributeError: # future == True
+                            qtc = np.array(qsr.qsrs[str(p[1]) + "," + str(p[0])].qsr[self._unique_id].split(','))
+                    except KeyError: # New object pair
+                        continue
+                    try:
+                        new = qtc[[1,0,3,2]]
+                    except IndexError:
+                        new = qtc[[1,0]] # QTCb
+                    q = QSR(
+                        timestamp=idx,
+                        between=between,
+                        qsr=self.handle_future(kwargs["future"], ','.join(new), self._unique_id)
+                    )
+                    ret.add_qsr(q, idx)
+                if q:
                     continue
                 o1_name = p[0]
                 o2_name = p[1]
@@ -116,21 +142,6 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                     except KeyError:
                         ret.add_empty_world_qsr_state(timestamp)
 
-                no_collapse = parameters["no_collapse"]
-                try:
-                    if input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
-                        print "Definition of no_collapse in object is depricated. Please use parameters field in dynamic_args in service call."
-                        no_collapse = input_data.trace[0].objects[o1_name].kwargs["no_collapse"]
-                except:
-                    pass
-                try:
-                    validate = parameters["validate"]
-                    if input_data.trace[0].objects[o1_name].kwargs["validate"]:
-                        print "Definition of validate in object is depricated. Please use parameters field in dynamic_args in service call."
-                        validate = input_data.trace[0].objects[o1_name].kwargs["validate"]
-                except:
-                    pass
-
                 if not type(no_collapse) is bool or not type(validate) is bool:
                     raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
@@ -146,7 +157,6 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                         qsr=self.qtc_to_output_format((qtc), kwargs["future"])
                     )
                     ret.add_qsr(qsr, idx+1)
-                combinations[between] = qtc_sequence
 
         if no_collapse and not validate:
             ret = self._rectify_timestamps(input_data, ret)
