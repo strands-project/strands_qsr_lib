@@ -69,6 +69,9 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         except:
             pass
 
+        if not type(no_collapse) is bool or not type(validate) is bool:
+            raise Exception("'no_collapse' and 'validate' have to be boolean values.")
+
         if qsrs_for:
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
@@ -141,9 +144,6 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
 
                     except KeyError:
                         ret.add_empty_world_qsr_state(timestamp)
-
-                if not type(no_collapse) is bool or not type(validate) is bool:
-                    raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
                 qtc_sequence = self._create_bc_chain(qtc_sequence, distances, distance_threshold)
                 if not no_collapse:

@@ -421,6 +421,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         except:
             pass
 
+        if not type(no_collapse) is bool or not type(validate) is bool:
+            raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
         if qsrs_for:
             for p in qsrs_for:
@@ -477,9 +479,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
                     except KeyError:
                         ret.add_empty_world_qsr_state(timestamp)
-
-                if not type(no_collapse) is bool or not type(validate) is bool:
-                    raise Exception("'no_collapse' and 'validate' have to be boolean values.")
 
                 if not no_collapse:
                     qtc_sequence = self._collapse_similar_states(qtc_sequence)
