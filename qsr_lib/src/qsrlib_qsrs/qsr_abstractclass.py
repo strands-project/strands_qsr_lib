@@ -54,22 +54,21 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for, error_found
 
-    @abstractmethod
-    def custom_checks(self, input_data):
-        """Customs checks on the input data.
-
-        :param input_data:
-        :return:
-        """
-        # todo does this have to be abstract... and needs to be refactored with a better name
-        return 0, ""
-
     def get_qsrs(self, **kwargs):
         world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)
         qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
         world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params)
         world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, kwargs, qsr_params)
         return world_qsr_trace
+
+    def custom_checks(self, input_data):
+        # todo needs to be refactored to a better name; not even sure if needed or should be integrated somewhere else
+        """Customs checks on the input data.
+
+        :param input_data:
+        :return:
+        """
+        return 0, ""
 
     # todo can be simplified a bit, also custom_checks possibly not needed anymore here
     def _set_input_world_trace(self, req_kwargs):

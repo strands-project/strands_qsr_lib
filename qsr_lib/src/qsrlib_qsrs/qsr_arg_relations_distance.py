@@ -26,14 +26,6 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             raise LookupError
         self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
 
-    def custom_checks(self, input_data):
-        """Write your own custom checks on top of the default ones
-
-
-        :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
-        """
-        return 0, ""
-
     # todo IMPORTANT: qsr_relations_and_values should not be a member, but enforced to be passed everytime
     # todo this is incompatible with how the rest of the QSRs are obtaining their parameters
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):

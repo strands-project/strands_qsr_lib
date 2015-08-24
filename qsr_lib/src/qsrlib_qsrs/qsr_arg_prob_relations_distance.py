@@ -20,14 +20,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         if config:
             self.set_from_config_file(config)
 
-    def custom_checks(self, input_data):
-        """Write your own custom checks on top of the default ones
-
-
-        :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
-        """
-        return 0, ""
-
     def __normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
         y = (1/(np.sqrt(2*np.pi)*np.abs(sigma)))*np.exp(-u*u/2)

@@ -15,12 +15,6 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         self.all_possible_relations = []
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
-    def custom_checks(self, input_data):
-        """Write your own custom checks on top of the default ones
-        :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
-        """
-        return 0, ""
-
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
         try:
