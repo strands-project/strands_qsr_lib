@@ -35,7 +35,6 @@ if __name__ == "__main__":
     parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float)
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
-    parser.add_argument("--future", help="QSRs as dict", action="store_true")
     parser.add_argument("-c", "--config", help="config file", type=str)
     args = parser.parse_args()
 
@@ -289,16 +288,7 @@ if __name__ == "__main__":
         world.add_object_state_series(traj)
         world.add_object_state_series(o1)
 
-    # uncomment this to test qsrs_for (and comment out the next line)
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args=dynamic_args,
-    #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args=dynamic_args, future=args.future, config=args.config)
-
-    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    dynamic_args=dynamic_args,
-                                                    future=args.future)
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
     cln = QSRlib_ROS_Client()
     req = cln.make_ros_request_message(qsrlib_request_message)

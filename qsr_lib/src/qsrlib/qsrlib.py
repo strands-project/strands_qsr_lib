@@ -35,30 +35,15 @@ class QSRlib_Response_Message(object):
         self.timestamp_qsrs_computed = timestamp_qsrs_computed
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr="", input_data=None, qsrs_for=[], timestamp_request_made=None,
-                 start=0, finish=-1, objects_names=[], include_missing_data=True, qsr_relations_and_values={},
-                 future=False, config=None, dynamic_args=None):
-        self.future = future
+    def __init__(self, which_qsr="", input_data=None, timestamp_request_made=None,
+                 start=0, finish=-1, objects_names=[], config=None, dynamic_args=None):
+        # todo what is this start, finish and object_names.... for flexible calling? nah, this complicates things, need to be removed
         self.which_qsr = which_qsr
         self.input_data = None
         self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
-        self.qsrs_for = qsrs_for
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
-        self.include_missing_data = include_missing_data
-        self.qsr_relations_and_values = qsr_relations_and_values # should be more dynamic
         self.config = config
         self.dynamic_args = dynamic_args
-
-    def make(self, which_qsr, input_data, qsrs_for=[], timestamp_request_made=None, future=None, ini=None,
-             dynamic_args=None):
-        if future:
-            self.future = future
-        self.which_qsr = which_qsr
-        self.input_data = self.set_input_data(input_data)
-        self.qsrs_for = qsrs_for
-        self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
-        self.ini = None
-        self.dynamic_args = None
 
     def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
         # todo this function needs updating, still should work but has redundant code (e.g. "reusing previous input data" should never occur
@@ -144,33 +129,23 @@ class QSRlib(object):
         world_qsr_traces = []
         timestamp_request_received = datetime.now()
 
-        # Checking if future is True when a list of QSRs is given.
-        # If not, print error as the string results do not support multiple
-        # QSRs at the same time
-        if not request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
-            raise RuntimeError("(QSR_Lib.request_qsrs): Using a", type(request_message.which_qsr), "of qsrs:", request_message.which_qsr, "is only supported when using future: future = True")
-        else:
-            # which_qsrs should always be iterable, even it is only a string, to enable the loop
-            which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
-            for which_qsr in which_qsrs:
-                if which_qsr not in self.__qsrs:
-                    raise ValueError(which_qsr, "does not exist")
-                world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
-                                                                   include_missing_data=request_message.include_missing_data,
-                                                                   timestamp_request_received=timestamp_request_received,
-                                                                   qsrs_for=request_message.qsrs_for,
-                                                                   qsr_relations_and_values=request_message.qsr_relations_and_values,
-                                                                   future=request_message.future,
-                                                                   config=request_message.config,
-                                                                   dynamic_args=request_message.dynamic_args))
+        # which_qsrs should always be iterable, even it is only a string, to enable the loop
+        which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
+        for which_qsr in which_qsrs:
+            if which_qsr not in self.__qsrs:
+                raise ValueError(which_qsr, "does not exist")
+            world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
+                                                               timestamp_request_received=timestamp_request_received,
+                                                               config=request_message.config,
+                                                               dynamic_args=request_message.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
-            if request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
+            if isinstance(request_message.which_qsr, (list, tuple)):
                 world_qsr_trace = merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
             elif len(world_qsr_traces) == 1:  # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
             else:
-                raise RuntimeError("(QSR_Lib.request_qsrs): this should never have occured; file an issue for the developers to fix")
+                raise RuntimeError("this should never have occured; file an issue for the developers to fix")
         else:
             # If something went wrong, world_qsr_traces will be False.
             # Setting world_qsr_trace to the same value to preserve previous behaviour.
