@@ -35,40 +35,15 @@ class QSRlib_Response_Message(object):
         self.timestamp_qsrs_computed = timestamp_qsrs_computed
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr="", input_data=None, timestamp_request_made=None,
-                 start=0, finish=-1, objects_names=[], config=None, dynamic_args=None):
-        # todo what is this start, finish and object_names.... for flexible calling? nah, this complicates things, need to be removed
+    def __init__(self, which_qsr, input_data, dynamic_args=None, timestamp_request_made=None, config=None):
         self.which_qsr = which_qsr
-        self.input_data = None
-        self.set_input_data(input_data=input_data, start=start, finish=finish, objects_names=objects_names)
+        if isinstance(input_data, World_Trace):
+            self.input_data = input_data
+        else:
+            raise TypeError("input_data must be of type 'World_Trace'")
+        self.dynamic_args = dynamic_args
         self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
         self.config = config
-        self.dynamic_args = dynamic_args
-
-    def set_input_data(self, input_data, start=0, finish=-1, objects_names=[]):
-        # todo this function needs updating, still should work but has redundant code (e.g. "reusing previous input data" should never occur
-        error = False
-        if input_data is None:
-            input_data = World_Trace()
-        if isinstance(input_data, World_Trace):
-            if len(input_data.trace) > 0:
-                self.input_data = input_data
-            else:
-                if self.input_data is not None and len(self.input_data.trace) > 0:
-                    print("Reusing previous input data")
-                else:
-                    print("Warning (QSRlib_Request_Message.set_input_data): It seems you are trying to reuse previous data, but previous data is empty")
-                    self.input_data = World_Trace(description="error")
-                    error = True
-        else:
-            print("ERROR (QSRLib_.set_input_data): input data has incorrect type, must be of type 'World_Trace'")
-            self.input_data = World_Trace(description="error")
-            error = True
-        if not error:
-            if finish >= 0:
-                self.input_data = self.input_data.get_at_timestamp_range(start=start, finish=finish)
-            if len(objects_names) > 0:
-                self.input_data = self.input_data.get_for_objects(objects_names=objects_names)
 
 class QSRlib(object):
     """The LIB
