@@ -1,16 +1,6 @@
 # -*- coding: utf-8 -*-
-"""Provides the abstract class of the QSR makers.
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
-import abc
+from abc import ABCMeta, abstractmethod
 import yaml
 import os
 
@@ -19,11 +9,61 @@ import sys
 
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
     def __init__(self):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
+
+    @abstractmethod
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+        """The main function that makes the returned World_QSR_Trace and each QSR has to implement.
+
+        :param world_trace:
+        :param timestamps:
+        :param qsr_params:
+        :param kwargs:
+        :return:
+        """
+        return
+
+    @abstractmethod
+    def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
+        """The default list of entities at each time-step (i.e. World_State.objects.keys() for which QSRs are computed for.
+
+        Usually this is provided by a parent class and there is no need for the QSRs to implement it, unless they want
+        to override the parent default method.
+
+        :param objects_names_of_world_state:
+        :param req_params:
+        :param kwargs:
+        :return:
+        """
+        return
+
+    @abstractmethod
+    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
+        """Custom checks of the qsrs_for field.
+
+        Usually this is provided by a parent class and there is no need for the QSRs to implement it, unless they want
+        to override the parent default method.
+
+        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
+        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
+        :return: qsrs_for, error_found
+        """
+        return qsrs_for, error_found
+
+    @abstractmethod
+    def custom_checks(self, input_data):
+        """Customs checks on the input data.
+
+        :param input_data:
+        :return:
+        """
+        # todo does this have to be abstract... and needs to be refactored with a better name
+        return 0, ""
+
 
     def get_qsrs(self, **kwargs):
         world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)
@@ -102,35 +142,6 @@ class QSR_Abstractclass(object):
         :return:
         """
         return world_qsr_trace
-
-    @abc.abstractmethod
-    def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
-        return
-
-    @abc.abstractmethod
-    def custom_checks(self, input_data):
-        return 0, ""
-
-    @abc.abstractmethod
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """Custom checks of the qsrs_for field.
-        Hint: If you have to iterate over the qsrs_for make sure you do it on a copy of it or there might be dragons,
-        e.g.:
-         for p in list(qsrs_for):
-            if p is not valid:
-                qsrs_for.remove(p)
-                error_found = True
-
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
-        """
-
-        return qsrs_for, error_found
-
-    @abc.abstractmethod
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
-        return
 
     def set_from_config_file(self, path):
         try:
