@@ -4,8 +4,6 @@ from abc import ABCMeta, abstractmethod
 import yaml
 import os
 
-import sys
-
 
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""
@@ -158,6 +156,13 @@ class QSR_Abstractclass(object):
         self._custom_set_from_config_file(document)
 
     def _custom_set_from_config_file(self, document):
+        """
+
+        Overwrite as needed.
+
+        :param document:
+        :return:
+        """
         raise NotImplemented(self._unique_id, "has no support from reading from config file")
 
     def _format_qsr(self, v):
