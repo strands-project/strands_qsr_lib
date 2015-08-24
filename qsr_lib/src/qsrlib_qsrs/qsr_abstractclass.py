@@ -42,7 +42,7 @@ class QSR_Abstractclass(object):
         return
 
     @abstractmethod
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
+    def _validate_qsrs_for(self, qsrs_for, error_found):
         """Custom checks of the qsrs_for field.
 
         Usually this is provided by a parent class and there is no need for the QSRs to implement it, unless they want
@@ -63,7 +63,6 @@ class QSR_Abstractclass(object):
         """
         # todo does this have to be abstract... and needs to be refactored with a better name
         return 0, ""
-
 
     def get_qsrs(self, **kwargs):
         world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)

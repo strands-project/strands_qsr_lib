@@ -13,7 +13,7 @@ class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
     def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
         return possible_pairs(objects_names_of_world_state)
 
-    def custom_checks_for_qsrs_for(self, qsrs_for):
+    def _validate_qsrs_for(self, qsrs_for):
         """qsrs_for must be tuples of two objects.
 
         :param qsrs_for: list of strings and/or tuples for which QSRs will be computed

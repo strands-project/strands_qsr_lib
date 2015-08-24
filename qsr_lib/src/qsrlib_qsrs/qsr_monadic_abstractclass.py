@@ -12,7 +12,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
     def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
         return objects_names_of_world_state
 
-    def custom_checks_for_qsrs_for(self, qsrs_for):
+    def _validate_qsrs_for(self, qsrs_for):
         """qsrs_for must be list of strings.
 
         :param qsrs_for:
