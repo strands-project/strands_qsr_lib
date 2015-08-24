@@ -11,8 +11,9 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         self._unique_id = "argd"
         self.allowed_value_types = (int, float)
         self.value_sort_key = operator.itemgetter(1) # Sort by threshold
+        # todo this config thing does not seem right; it should be passed during request not during creation; in fact it should be handled on client side
         if config:
-            self.set_from_config_file(config)
+            self._set_from_config_file(config)
 
     # todo IMPORTANT: qsr_relations_and_values should not be a member, but enforced to be passed everytime
     # todo this is incompatible with how the rest of the QSRs are obtaining their parameters

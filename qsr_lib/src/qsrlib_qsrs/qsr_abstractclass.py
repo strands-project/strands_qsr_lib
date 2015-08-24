@@ -141,7 +141,7 @@ class QSR_Abstractclass(object):
         """
         return world_qsr_trace
 
-    def set_from_config_file(self, path):
+    def _set_from_config_file(self, path):
         try:
             import rospkg
         except ImportError:
