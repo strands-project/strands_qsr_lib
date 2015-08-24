@@ -25,6 +25,13 @@ class QSR_Abstractclass(object):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
 
+    def get_qsrs(self, **kwargs):
+        world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)
+        qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
+        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params)
+        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, kwargs, qsr_params)
+        return world_qsr_trace
+
     # todo can be simplified a bit, also custom_checks possibly not needed anymore here
     def _set_input_world_trace(self, req_kwargs):
         try:
@@ -36,14 +43,6 @@ class QSR_Abstractclass(object):
             raise KeyError("No input data found.")
         timestamps = world_trace.get_sorted_timestamps()
         return world_trace, timestamps
-
-    # todo rename get to a more meaningful name
-    def get(self, *args, **kwargs):
-        world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)
-        qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
-        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params)
-        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, kwargs, qsr_params)
-        return world_qsr_trace
 
     def _process_qsrs_for(self, objects_names_of_world_state, req_params, **kwargs):
         try:

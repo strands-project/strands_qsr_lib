@@ -109,10 +109,10 @@ class QSRlib(object):
         for which_qsr in which_qsrs:
             if which_qsr not in self.__qsrs:
                 raise ValueError(which_qsr, "does not exist")
-            world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
-                                                               timestamp_request_received=timestamp_request_received,
-                                                               config=request_message.config,
-                                                               dynamic_args=request_message.dynamic_args))
+            world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=request_message.input_data,
+                                                                    timestamp_request_received=timestamp_request_received,
+                                                                    config=request_message.config,
+                                                                    dynamic_args=request_message.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
             if isinstance(request_message.which_qsr, (list, tuple)):
