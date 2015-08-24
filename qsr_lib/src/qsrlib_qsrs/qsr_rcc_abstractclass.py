@@ -63,7 +63,7 @@ class QSR_RCC_Abstractclass(QSR_Abstractclass):
                     bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                     bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                     qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self._unique_id))
+                              qsr=self.handle_future(kwargs["future"], self.convert_to_current_rcc(self.__compute_qsr(bb1, bb2)), self._unique_id))
                     ret.add_qsr(qsr, timestamp)
             else:
                 if include_missing_data:
