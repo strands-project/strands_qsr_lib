@@ -29,15 +29,13 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         qsr_params = self.__qsr_params_defaults.copy()
         try:
             qsr_params["quantisation_factor"] = float(req_params["dynamic_args"][self._unique_id]["quantisation_factor"])
+        except TypeError:
+            pass
         except KeyError:
             try:
                 qsr_params["quantisation_factor"] = float(req_params["dynamic_args"]["for_all_qsrs"]["quantisation_factor"])
-            except KeyError:
+            except (TypeError, KeyError):
                 pass
-            except TypeError:
-                raise TypeError("quantisation_factor must be numeric")
-        except TypeError:
-            raise TypeError("quantisation_factor must be numeric")
         return qsr_params
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
@@ -50,7 +48,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
                 bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                 bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                 ret.add_qsr(QSR(timestamp=t, between=between,
-                                qsr=self.format_qsr(self._convert_to_current_rcc(self.__compute_qsr(bb1, bb2, qsr_params["quantisation_factor"])))),
+                                qsr=self.format_qsr(self.__compute_qsr(bb1, bb2, qsr_params["quantisation_factor"]))),
                             t)
         return ret
 
