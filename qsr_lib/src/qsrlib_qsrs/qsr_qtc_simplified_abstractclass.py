@@ -6,7 +6,7 @@ Created on Mon Jan 19 11:22:16 2015
 @author: cdondrup
 """
 from abc import abstractmethod, ABCMeta
-from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
+from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 from exceptions import Exception, AttributeError
 import numpy as np
@@ -16,7 +16,7 @@ class QTCException(Exception):
     pass
 
 
-class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
+class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
     """Abstract class for the QSR makers"""
     __metaclass__ = ABCMeta
 
@@ -25,6 +25,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
     def __init__(self):
         self._unique_id = ""
         self.qtc_type = ""
+
+        self.__qsr_params_defaults = {"quantisation_factor": 0.0,
+                                      "validate": False,
+                                      "no_collapse": False}
 
     def custom_set_from_config_file(self, document):
         pass
@@ -316,7 +320,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
             "quantisation_factor: the minimum distance the agents must diverge from the double cross between two timesteps to be counted as movement. Must be in the same unit as the x,y coordinates.\n"\
             "validate: True|False validates the QTC sequence to not have illegal transitions. This inserts necessary transitional steps and messes with the timesteps."
 
-
+    # todo maybe we can include this somewhere else... have a feeling that I was thinking of deprecating this or refactoring to a more meaningful name
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 
@@ -345,13 +349,18 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         :param error_found: if an error was found in the qsrs_for that violates the QSR rules
         :return: qsrs_for, error_found
         """
+        raise DeprecationWarning("No longer needed")
         for p in list(qsrs_for):
             if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
                 qsrs_for.remove(p)
                 error_found = True
         return qsrs_for, error_found
 
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        raise NotImplementedError
+
     def _get_parameters(self, default, **kwargs):
+        raise DeprecationWarning("implement and use _process_qsr_parameters_from_request_parameters and use __qsr_params_defaults")
         try: # Depricated
             if kwargs["dynamic_args"]:
                 suc = False
@@ -380,6 +389,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         return default
 
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+        raise NotImplementedError
+
     def make(self, *args, **kwargs):
         """Make the QSRs
 
@@ -388,6 +400,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                         - input_data: World_Trace
         :return: World_QSR_Trace
         """
+        raise DeprecationWarning("implement and use make_world_qsr_trace")
         input_data = kwargs["input_data"]
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         timestamps = input_data.get_sorted_timestamps()
@@ -477,6 +490,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         return ret
 
     def _return_all_possible_combinations(self, objects_names):
+        raise DeprecationWarning("Use Dyadic._init_qsrs_for_default; bear in mind it returns mirrors by default")
         if len(objects_names) < 2:
             return []
         ret = []
@@ -486,8 +500,12 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                     ret.append((i, j))
         return ret
 
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+        return world_qsr_trace
+
     @staticmethod
     def _rectify_timestamps(world_trace, world_qsr_trace):
+        raise Warning("Integrate with _postprocess_world_qsr_trace")
         return World_QSR_Trace(qsr_type=world_qsr_trace.qsr_type, last_updated=world_qsr_trace.last_updated,
                                trace={t: world_qsr_trace.trace[tqtc]
                                       for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:],

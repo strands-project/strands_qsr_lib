@@ -1,26 +1,12 @@
 # -*- coding: utf-8 -*-
-"""RCC8, based upon RCC3
-
-:Author: Peter Lightbody <plightbody@lincoln.ac.uk>
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Lincoln
-:Date: 12 May 2015
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-
-"""
-
 from __future__ import print_function, division
-from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
+from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 
 
-class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
-    """Make default QSRs and provide an example for others"""
-    def __init__(self):
-        super(QSR_RCC8_Rectangle_Bounding_Boxes_2D, self).__init__()
-        self._unique_id = "rcc8"
+class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Dyadic_Abstractclass):
+    """RCC8
+
         # 'dc'     bb1 is disconnected from bb2
         # 'ec'     bb1 is externally connected with bb2
         # 'po'     bb1 partially overlaps bb2
@@ -29,6 +15,10 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         # 'ntpp'   bb1 is a non-tangential proper part of bb2
         # 'tppi'   bb2 is a tangential proper part of bb1
         # 'ntppi'  bb2 is a non-tangential proper part of bb1
+    """
+    def __init__(self):
+        super(QSR_RCC8_Rectangle_Bounding_Boxes_2D, self).__init__()
+        self._unique_id = "rcc8"
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
     def custom_set_from_config_file(self, document):
@@ -38,6 +28,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         """Write your own help message function"""
         print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")
 
+    # todo possibly no longer needed
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 
@@ -46,59 +37,23 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_Abstractclass):
         """
         return 0, ""
 
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """qsrs_for must be tuples of two objects.
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        return None
 
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
-        """
-        for p in list(qsrs_for):
-            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
-                qsrs_for.remove(p)
-                error_found = True
-        return qsrs_for, error_found
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+        return world_qsr_trace
 
-    def make(self, *args, **kwargs):
-        """Make the QSRs
-
-        :param args: not used at the moment
-        :param kwargs:
-                        - input_data: World_Trace
-        :return: World_QSR_Trace
-        """
-        input_data = kwargs["input_data"]
-        include_missing_data = kwargs["include_missing_data"]
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
-        for t in input_data.get_sorted_timestamps():
-            world_state = input_data.trace[t]
-            timestamp = world_state.timestamp
-            if kwargs["qsrs_for"]:
-                qsrs_for, error_found = self.check_qsrs_for_data_exist(world_state.objects.keys(), kwargs["qsrs_for"])
-            else:
-                qsrs_for = self.__return_all_possible_combinations(world_state.objects.keys())
-            if qsrs_for:
-                for p in qsrs_for:
-                    between = str(p[0]) + "," + str(p[1])
-                    bb1 = world_state.objects[p[0]].return_bounding_box_2d()
-                    bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                    qsr = QSR(timestamp=timestamp, between=between,
-                              qsr=self.handle_future(kwargs["future"], self.__compute_qsr(bb1, bb2), self._unique_id))
-                    ret.add_qsr(qsr, timestamp)
-            else:
-                if include_missing_data:
-                    ret.add_empty_world_qsr_state(timestamp)
-        return ret
-
-    # custom functions follow
-    def __return_all_possible_combinations(self, objects_names):
-        if len(objects_names) < 2:
-            return []
-        ret = []
-        for i in objects_names:
-            for j in objects_names:
-                if i != j:
-                    ret.append((i, j))
+        for t in timestamps:
+            world_state = world_trace.trace[t]
+            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), kwargs)
+            for p in qsrs_for:
+                between = ",".join(p)
+                bb1 = world_state.objects[p[0]].return_bounding_box_2d()
+                bb2 = world_state.objects[p[1]].return_bounding_box_2d()
+                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self.format_qsr(self.__compute_qsr(bb1, bb2))),
+                            t)
         return ret
 
     def __compute_qsr(self, bb1, bb2):

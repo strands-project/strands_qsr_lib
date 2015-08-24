@@ -14,6 +14,8 @@ import abc
 import yaml
 import os
 
+import sys
+
 
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""
@@ -26,47 +28,71 @@ class QSR_Abstractclass(object):
     def help(self):
         self.custom_help()
 
-    def check_input(self, input_data):
-        error, msg = self.custom_checks(input_data)
-        return error, msg
+    # todo can be simplified a bit, also custom_checks possibly not needed anymore here
+    def _set_input_world_trace(self, req_kwargs):
+        try:
+            world_trace = req_kwargs["input_data"]
+            error_code, error_msg = self.custom_checks(input_data=world_trace)
+            if error_code > 0:
+                raise RuntimeError("Something wrong with the input data", error_code, error_msg)
+        except KeyError:
+            raise KeyError("No input data found.")
+        timestamps = world_trace.get_sorted_timestamps()
+        return world_trace, timestamps
 
+    # todo rename get to a more meaningful name
     def get(self, *args, **kwargs):
-        error_code, error_msg = self.check_input(input_data=kwargs["input_data"])
-        if error_code > 0:
-            print("ERROR:", error_msg)
-            self.help()
-            print("\nFailed to compute QSRs")
-            return False
-        return self.make(*args, **kwargs)
+        world_trace, timestamps = self._set_input_world_trace(req_kwargs=kwargs)
+        qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
+        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params)
+        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, kwargs, qsr_params)
+        return world_qsr_trace
 
-    def check_qsrs_for_data_exist(self, objects_names, qsrs_for):
-        if len(objects_names) == 0:
-            error_found = True if qsrs_for else False
-            return [], error_found
+    def _process_qsrs_for(self, objects_names_of_world_state, req_params, **kwargs):
+        try:
+            return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
+                                                                   req_params["dynamic_args"][self._unique_id]["qsrs_for"])
+        except KeyError:
+            try:
+                return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
+                                                                       req_params["dynamic_args"]["for_all_qsrs"]["qsrs_for"])
+            except KeyError:
+                return self._init_qsrs_for_default(objects_names_of_world_state, req_params, **kwargs)
 
-        if type(qsrs_for) is not list:
-            raise ValueError("qsrs_for must be a list of strings and/or tuples of strings")
-
+    def __check_qsrs_for_data_exist_at_world_state(self, objects_names_of_world_state, qsrs_for):
+        if len(objects_names_of_world_state) == 0:
+            return []
+        if not isinstance(qsrs_for, (list, tuple)):
+            raise TypeError("qsrs_for must be list or tuple")
         qsrs_for_ret = []
-        error_found = False
-
         for p in qsrs_for:
-            if type(p) is str:
-                if p in objects_names:
+            if isinstance(p, str):
+                if p in objects_names_of_world_state:
                     qsrs_for_ret.append(p)
-            elif (type(p) is tuple) or (type(p) is list):
+            elif isinstance(p, (list, tuple)):
                 tuple_data_exists = True
                 for o in p:
-                    if o not in objects_names:
+                    if o not in objects_names_of_world_state:
                         tuple_data_exists = False
                         break
                 if tuple_data_exists:
                     qsrs_for_ret.append(p)
             else:
-                raise ValueError("Elements of qsrs_for must be strings and/or tuples")
+                raise TypeError("Elements of qsrs_for must be strings and/or tuples")
+        qsrs_for_ret = self.custom_checks_for_qsrs_for(qsrs_for_ret)
+        return qsrs_for_ret
 
-        qsrs_for_ret, error_found = self.custom_checks_for_qsrs_for(qsrs_for_ret, error_found)
-        return qsrs_for_ret, error_found
+    @abc.abstractmethod
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        return
+
+    @abc.abstractmethod
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+        return
+
+    @abc.abstractmethod
+    def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
+        return
 
     @abc.abstractmethod
     def custom_help(self):
@@ -94,14 +120,7 @@ class QSR_Abstractclass(object):
         return qsrs_for, error_found
 
     @abc.abstractmethod
-    def make(self, *args, **kwargs):
-        """Abstract method that needs to be implemented by the QSR makers
-
-        :param args: not really used at the moment
-        :param kwargs:
-                    - "input_data": Input_Data_Block
-        :return:
-        """
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         return
 
     def set_from_config_file(self, path):
@@ -125,4 +144,8 @@ class QSR_Abstractclass(object):
         return
 
     def handle_future(self, future, v, k):
-        return {k: v} if future else v
+        raise DeprecationWarning("future is default now, use format_qsr instead")
+        # return {k: v} if future else v
+
+    def format_qsr(self, v):
+        return {self._unique_id: v}

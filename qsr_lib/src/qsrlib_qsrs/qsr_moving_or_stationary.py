@@ -11,15 +11,20 @@
 
 from __future__ import print_function, division
 import numpy as np
-from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
+from qsrlib_qsrs.qsr_monadic_abstractclass import QSR_Monadic_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 
 
-class QSR_Moving_or_Stationary(QSR_Abstractclass):
+class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
+    """Computes moving or stationary relations: 'm': moving, 's': stationary
+
+    """
     def __init__(self):
         super(QSR_Moving_or_Stationary, self).__init__()
         self._unique_id = "mos"
         self.all_possible_relations = ["m", "s"]
+
+        self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
     def custom_set_from_config_file(self, document):
         pass
@@ -28,6 +33,7 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
         """Write your own help message function"""
         print("")
 
+    # todo possibly no longer needed
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 
@@ -36,73 +42,35 @@ class QSR_Moving_or_Stationary(QSR_Abstractclass):
         """
         return 0, ""
 
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """qsrs_for must be list of strings.
-
-        :param qsrs_for:
-        :param error_found:
-        :return: qsrs_for, error_found
-        """
-        for p in list(qsrs_for):
-            if type(p) is not str:
-                qsrs_for.remove(p)
-                error_found = True
-        return qsrs_for, error_found
-
-    def make(self, *args, **kwargs):
-        """Make the QSRs
-
-        :param args: not used at the moment
-        :param kwargs:
-                        - input_data: World_Trace
-        :return: World_QSR_Trace
-        """
-        input_data = kwargs["input_data"]
-        include_missing_data = kwargs["include_missing_data"]
-        quantisation_factor = 0.0
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        qsr_params = self.__qsr_params_defaults.copy()
         try:
-            quantisation_factor = float(kwargs["dynamic_args"]["quantisation_factor"])
-            print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
-        except:
+            qsr_params["quantisation_factor"] = float(req_params["dynamic_args"][self._unique_id]["quantisation_factor"])
+        except KeyError:
+            try:
+                qsr_params["quantisation_factor"] = float(req_params["dynamic_args"]["for_all_qsrs"]["quantisation_factor"])
+            except TypeError:
+                pass
+        except TypeError:
             pass
+        return qsr_params
 
-        try:
-            quantisation_factor = float(kwargs["dynamic_args"][self._unique_id]["quantisation_factor"])
-        except:
-            pass
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+        return world_qsr_trace
 
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
-        ts = input_data.get_sorted_timestamps()
-        for t, tp in zip(ts[1:], ts):
-            world_state_now = input_data.trace[t]
-            world_state_previous = input_data.trace[tp]
-            if kwargs["qsrs_for"]:
-                qsrs_for, error_found = self.check_qsrs_for_data_exist(world_state_now.objects.keys(), kwargs["qsrs_for"])
-            else:
-                qsrs_for = world_state_now.objects.keys()
-            if qsrs_for:
-                for between in qsrs_for: # yes between is probably not the best name as it is simply object_name
-                    point_now = (world_state_now.objects[between].x, world_state_now.objects[between].y)
-                    point_previous = (world_state_previous.objects[between].x, world_state_previous.objects[between].y)
-                    qsr = QSR(timestamp=t, between=between,
-                              qsr=self.handle_future(kwargs["future"],
-                                                     self.__compute_qsr(point_now, point_previous, quantisation_factor),
-                                                     self._unique_id))
-                    ret.add_qsr(qsr, t)
-            else:
-                if include_missing_data:
-                    ret.add_empty_world_qsr_state(t)
-        return ret
-
-    # custom functions follow
-    def __return_all_possible_combinations(self, objects_names):
-        if len(objects_names) < 2:
-            return []
-        ret = []
-        for i in objects_names:
-            for j in objects_names:
-                if i != j:
-                    ret.append((i, j))
+        for t, tp in zip(timestamps[1:], timestamps):
+            world_state_now = world_trace.trace[t]
+            world_state_previous = world_trace.trace[tp]
+            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), kwargs)
+            for object_name in qsrs_for: # yes between is probably not the best name as it is simply object_name
+                point_now = (world_state_now.objects[object_name].x, world_state_now.objects[object_name].y)
+                point_previous = (world_state_previous.objects[object_name].x, world_state_previous.objects[object_name].y)
+                ret.add_qsr(QSR(timestamp=t, between=object_name,
+                                qsr=self.format_qsr(self.__compute_qsr(point_now, point_previous,
+                                                                       qsr_params["quantisation_factor"]))),
+                            t)
         return ret
 
     def __compute_qsr(self, p1, p2, quantisation_factor=0.0):

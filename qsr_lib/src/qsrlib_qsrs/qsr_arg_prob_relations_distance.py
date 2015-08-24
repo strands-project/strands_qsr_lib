@@ -15,7 +15,7 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
     def __init__(self, config=None):
         super(QSR_Arg_Prob_Relations_Distance, self).__init__()
         self._unique_id = "argprobd"
-        self.allowed_value_types = (tuple,list)
+        self.allowed_value_types = (tuple, list)
         self.value_sort_key = lambda x: x[1][0] # Sort by first element in value tuple, i.e. mean
         if config:
             self.set_from_config_file(config)
@@ -31,19 +31,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
         """
         return 0, ""
-
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """qsrs_for must be tuples of two objects.
-
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
-        """
-        for p in list(qsrs_for):
-            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
-                qsrs_for.remove(p)
-                error_found = True
-        return qsrs_for, error_found
 
     def __normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
