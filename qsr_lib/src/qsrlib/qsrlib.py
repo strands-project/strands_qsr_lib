@@ -122,9 +122,7 @@ class QSRlib(object):
             else:
                 raise RuntimeError("this should never have occured; file an issue for the developers to fix")
         else:
-            # If something went wrong, world_qsr_traces will be False.
-            # Setting world_qsr_trace to the same value to preserve previous behaviour.
-            world_qsr_trace = world_qsr_traces
+            world_qsr_trace = None
 
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
                                                   timestamp_request_made=request_message.timestamp_request_made,
