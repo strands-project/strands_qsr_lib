@@ -107,8 +107,6 @@ class QSRlib(object):
         # which_qsrs should always be iterable, even it is only a string, to enable the loop
         which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
         for which_qsr in which_qsrs:
-            if which_qsr not in self.__qsrs:
-                raise ValueError(which_qsr, "does not exist")
             world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=request_message.input_data,
                                                                     timestamp_request_received=timestamp_request_received,
                                                                     config=request_message.config,
