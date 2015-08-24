@@ -158,7 +158,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
 
         :return: "q1,q2,q4,q5" or {"qtcbcs": "q1,q2,q4,q5"} if future is True
         """
-        s = super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc) if not np.isnan(qtc[2]) else super(QSR_QTC_BC_Simplified, self).qtc_to_output_format(qtc[0:2])
+        s = self.create_qtc_string(qtc) if not np.isnan(qtc[2]) else self.create_qtc_string(qtc[0:2])
         return self.handle_future(future, s, self._unique_id)
 
     def _get_euclidean_distance(self, p, q):

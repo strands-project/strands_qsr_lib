@@ -493,6 +493,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                                       for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:],
                                                          world_qsr_trace.get_sorted_timestamps())})
 
+    def create_qtc_string(self, qtc):
+        return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')
+
     @abstractmethod
     def qtc_to_output_format(self, qtc, future=False):
         """Overwrite this for the different QTC variants to select only the parts
@@ -501,7 +504,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :param qtc: The full QTCC tuple [q1,q2,q4,q5]
 
-        :return: The part of the tuple you would to have as a result
+        :return: The part of the tuple you would to have as a result using create_qtc_string
         """
-        # TODO bit weird that instantiation of this calls the parent abstract just for string replacement, better to be done in another method
-        return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')
+        return ""
