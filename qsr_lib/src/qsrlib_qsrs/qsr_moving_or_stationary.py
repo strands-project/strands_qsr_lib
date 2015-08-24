@@ -61,7 +61,7 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
                 point_now = (world_state_now.objects[object_name].x, world_state_now.objects[object_name].y)
                 point_previous = (world_state_previous.objects[object_name].x, world_state_previous.objects[object_name].y)
                 ret.add_qsr(QSR(timestamp=t, between=object_name,
-                                qsr=self.format_qsr(self.__compute_qsr(point_now, point_previous,
+                                qsr=self._format_qsr(self.__compute_qsr(point_now, point_previous,
                                                                        qsr_params["quantisation_factor"]))),
                             t)
         return ret

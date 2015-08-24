@@ -58,7 +58,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
                 objs = (world_state.objects[p[0]], world_state.objects[p[1]])
-                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self.format_qsr(self._compute_qsr(objs))),
+                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self._format_qsr(self._compute_qsr(objs))),
                             t)
         return ret
 

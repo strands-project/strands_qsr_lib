@@ -41,7 +41,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
                 between = ",".join(p)
                 bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                 bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self.format_qsr(self.__compute_qsr(bb1, bb2))),
+                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self._format_qsr(self.__compute_qsr(bb1, bb2))),
                             t)
         return ret
 

@@ -161,5 +161,5 @@ class QSR_Abstractclass(object):
     def custom_set_from_config_file(self, document):
         raise NotImplemented(self._unique_id, "has no support from reading from config file")
 
-    def format_qsr(self, v):
+    def _format_qsr(self, v):
         return {self._unique_id: v}
