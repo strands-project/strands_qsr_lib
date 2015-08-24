@@ -155,9 +155,9 @@ class QSR_Abstractclass(object):
                 raise ValueError
         with open(path, "r") as f:
             document = yaml.load(f)
-        self.custom_set_from_config_file(document)
+        self._custom_set_from_config_file(document)
 
-    def custom_set_from_config_file(self, document):
+    def _custom_set_from_config_file(self, document):
         raise NotImplemented(self._unique_id, "has no support from reading from config file")
 
     def _format_qsr(self, v):

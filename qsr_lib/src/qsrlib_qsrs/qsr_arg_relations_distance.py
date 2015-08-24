@@ -14,18 +14,6 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         if config:
             self.set_from_config_file(config)
 
-    def custom_set_from_config_file(self, document):
-        try:
-            relations_and_values = document[self._unique_id]["relations_and_values"]
-        except:
-            print("ERROR (qsr_arg_relations_distance.py/custom_set_from_config_file):"
-                  "'%s' or 'relations_and_values' not found in config file" % self._unique_id)
-            self.qsr_relations_and_values = None
-            self.all_possible_relations = None
-            self.all_possible_values = None
-            raise LookupError
-        self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
-
     # todo IMPORTANT: qsr_relations_and_values should not be a member, but enforced to be passed everytime
     # todo this is incompatible with how the rest of the QSRs are obtaining their parameters
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
@@ -63,3 +51,10 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             if d <= thres:
                 return relation
         return self.all_possible_relations[-1]
+
+    def _custom_set_from_config_file(self, document):
+        try:
+            relations_and_values = document[self._unique_id]["relations_and_values"]
+        except:
+            raise KeyError
+        self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
