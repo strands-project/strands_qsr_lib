@@ -49,7 +49,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         #     pass
 
         try:
-            self.set_qsr_relations_and_values(qsr_relations_and_values=kwargs["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
+            self.set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
         except KeyError:
             raise KeyError("qsr_relations_and_values not set")
         return None
