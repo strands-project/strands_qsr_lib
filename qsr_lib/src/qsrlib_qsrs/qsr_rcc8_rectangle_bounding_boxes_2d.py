@@ -20,5 +20,5 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
         self._unique_id = "rcc8"
         self.all_possible_relations = ["dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi"]
 
-    def _convert_to_current_rcc(self, qsr):
+    def _convert_to_requested_rcc_type(self, qsr):
         return qsr

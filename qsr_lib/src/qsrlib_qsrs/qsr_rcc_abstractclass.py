@@ -38,7 +38,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
                 bb1 = world_state.objects[p[0]].return_bounding_box_2d()
                 bb2 = world_state.objects[p[1]].return_bounding_box_2d()
                 ret.add_qsr(QSR(timestamp=t, between=between,
-                                qsr=self._format_qsr(self._convert_to_current_rcc(self.__compute_qsr(bb1, bb2, qsr_params["quantisation_factor"])))),
+                                qsr=self._format_qsr(self._convert_to_requested_rcc_type(self.__compute_qsr(bb1, bb2, qsr_params["quantisation_factor"])))),
                             t)
         return ret
 
@@ -124,7 +124,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         return "po"
 
     @abstractmethod
-    def _convert_to_current_rcc(self, qsr):
+    def _convert_to_requested_rcc_type(self, qsr):
         """Overwrite this function to filter and return only the relations
         coresponding to the particular RCC version you are using.
         
