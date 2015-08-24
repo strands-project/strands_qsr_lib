@@ -35,12 +35,6 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
         """
         return 0, ""
 
-    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
-        return None
-
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
-        return world_qsr_trace
-
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in timestamps:

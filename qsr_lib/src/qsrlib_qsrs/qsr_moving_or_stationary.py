@@ -51,9 +51,6 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
                 pass
         return qsr_params
 
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
-        return world_qsr_trace
-
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t, tp in zip(timestamps[1:], timestamps):

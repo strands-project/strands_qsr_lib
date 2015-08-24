@@ -39,6 +39,3 @@ class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_Abstractclass):
         if self.__check_validity_of_qsr_relations_and_values(qsr_relations_and_values):
             self.qsr_relations_and_values = qsr_relations_and_values
         self.all_possible_relations, self.all_possible_values = self.__populate_possible_relations_and_values()
-
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
-        return world_qsr_trace

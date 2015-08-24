@@ -79,9 +79,28 @@ class QSR_Abstractclass(object):
         return qsrs_for_ret
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        """
+
+        Overwrite as needed.
+
+        :param req_params:
+        :param kwargs:
+        :return:
+        """
         return {}
 
     def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+        """
+
+        Overwrite as needed.
+
+        :param world_qsr_trace:
+        :param world_trace:
+        :param world_trace_timestamps:
+        :param req_params:
+        :param qsr_params:
+        :return:
+        """
         return world_qsr_trace
 
     @abc.abstractmethod
