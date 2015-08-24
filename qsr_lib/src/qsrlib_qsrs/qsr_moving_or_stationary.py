@@ -26,9 +26,6 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
 
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
-    def custom_set_from_config_file(self, document):
-        pass
-
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
         try:
