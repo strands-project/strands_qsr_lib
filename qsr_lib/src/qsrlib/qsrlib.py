@@ -153,18 +153,16 @@ class QSRlib(object):
             # which_qsrs should always be iterable, even it is only a string, to enable the loop
             which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
             for which_qsr in which_qsrs:
-                try:
-                    world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
-                                                                       include_missing_data=request_message.include_missing_data,
-                                                                       timestamp_request_received=timestamp_request_received,
-                                                                       qsrs_for=request_message.qsrs_for,
-                                                                       qsr_relations_and_values=request_message.qsr_relations_and_values,
-                                                                       future=request_message.future,
-                                                                       config=request_message.config,
-                                                                       dynamic_args=request_message.dynamic_args))
-                except KeyError:
-                    raise KeyError("(QSR_Lib.request_qsrs): it seems that the QSR you requested (" + which_qsr + ") is not implemented yet or has not been activated")
-
+                if which_qsr not in self.__qsrs:
+                    raise ValueError(which_qsr, "does not exist")
+                world_qsr_traces.append(self.__qsrs[which_qsr].get(input_data=request_message.input_data,
+                                                                   include_missing_data=request_message.include_missing_data,
+                                                                   timestamp_request_received=timestamp_request_received,
+                                                                   qsrs_for=request_message.qsrs_for,
+                                                                   qsr_relations_and_values=request_message.qsr_relations_and_values,
+                                                                   future=request_message.future,
+                                                                   config=request_message.config,
+                                                                   dynamic_args=request_message.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
             if request_message.future and isinstance(request_message.which_qsr, (list, tuple)):
