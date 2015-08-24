@@ -23,9 +23,6 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
         self._unique_id = "coneDir"
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
 
-    def custom_set_from_config_file(self, document):
-        pass
-
     # todo possibly no longer needed
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones

@@ -21,9 +21,6 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         """
         return 0, ""
 
-    def custom_set_from_config_file(self, document):
-        pass
-
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
         try:
