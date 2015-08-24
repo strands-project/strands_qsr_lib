@@ -26,10 +26,6 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             raise LookupError
         self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print("")
-
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 

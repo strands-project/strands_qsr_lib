@@ -29,10 +29,6 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
     def custom_set_from_config_file(self, document):
         pass
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print("")
-
     # todo possibly no longer needed
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones

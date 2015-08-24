@@ -20,10 +20,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         if config:
             self.set_from_config_file(config)
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print("")
-
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 

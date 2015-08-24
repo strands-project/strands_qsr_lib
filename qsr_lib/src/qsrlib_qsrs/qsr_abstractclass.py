@@ -25,9 +25,6 @@ class QSR_Abstractclass(object):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
 
-    def help(self):
-        self.custom_help()
-
     # todo can be simplified a bit, also custom_checks possibly not needed anymore here
     def _set_input_world_trace(self, req_kwargs):
         try:
@@ -90,10 +87,6 @@ class QSR_Abstractclass(object):
 
     @abc.abstractmethod
     def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
-        return
-
-    @abc.abstractmethod
-    def custom_help(self):
         return
 
     @abc.abstractmethod

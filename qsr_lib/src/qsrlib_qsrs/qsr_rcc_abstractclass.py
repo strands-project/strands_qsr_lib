@@ -5,16 +5,15 @@ from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
 
 
 class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
-    """Abstract class for the QSR makers"""
+    """Abstract class for the QSR makers
+
+        where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
         self.all_possible_relations = []
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
-
-    def custom_help(self):
-        """Write your own help message function"""
-        print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")
 
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones

@@ -15,6 +15,8 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
         # 'ne'     north-east
         # 'e'      east
         # 'se'     south-east
+
+        where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
     """
     def __init__(self):
         super(QSR_Cone_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
@@ -23,10 +25,6 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
 
     def custom_set_from_config_file(self, document):
         pass
-
-    def custom_help(self):
-        """Write your own help message function"""
-        print("where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle")
 
     # todo possibly no longer needed
     def custom_checks(self, input_data):
