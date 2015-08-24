@@ -134,9 +134,5 @@ class QSR_Abstractclass(object):
     def custom_set_from_config_file(self, document):
         return
 
-    def handle_future(self, future, v, k):
-        raise DeprecationWarning("future is default now, use format_qsr instead")
-        # return {k: v} if future else v
-
     def format_qsr(self, v):
         return {self._unique_id: v}
