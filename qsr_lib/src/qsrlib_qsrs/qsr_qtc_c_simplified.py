@@ -33,5 +33,4 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
 
         :return: "q1,q2,q4,q5" or {"qtccs": "q1,q2,q4,q5"} if future is True
         """
-        s = super(QSR_QTC_C_Simplified, self).qtc_to_output_format(qtc)
-        return self.handle_future(future, s, self._unique_id)
+        return self.handle_future(future, self.create_qtc_string(qtc), self._unique_id)

@@ -82,13 +82,11 @@ class QSR_Abstractclass(object):
         qsrs_for_ret = self.custom_checks_for_qsrs_for(qsrs_for_ret)
         return qsrs_for_ret
 
-    @abc.abstractmethod
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
-        return
+        return {}
 
-    @abc.abstractmethod
     def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
-        return
+        return world_qsr_trace
 
     @abc.abstractmethod
     def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
