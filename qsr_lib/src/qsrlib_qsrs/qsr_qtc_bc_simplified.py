@@ -114,6 +114,10 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                         quantisation_factor = input_data.trace[0].objects[o1_name].kwargs["distance_threshold"]
                 except:
                     pass
+                try:
+                    distance_threshold = float(distance_threshold)
+                except ValueError:
+                    raise Exception('%s only accepts floats for distance_threshold'%self.qsr_keys)
                 distances = np.array([])
                 qtc_sequence = np.array([], dtype=int)
                 for t0, t1 in zip(timestamps, timestamps[1:]):
