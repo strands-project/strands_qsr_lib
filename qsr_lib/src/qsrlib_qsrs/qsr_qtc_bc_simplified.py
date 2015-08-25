@@ -92,6 +92,8 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
 
     def _create_bc_chain(self, qtc, distances, distance_threshold):
         ret = np.array([])
+        if len(qtc.shape) == 1:
+            qtc = [qtc]
         for dist, state in zip(distances, qtc):
             if dist > distance_threshold:
                 ret = np.append(ret, np.append(state[0:2],[np.nan,np.nan]), axis=0)
