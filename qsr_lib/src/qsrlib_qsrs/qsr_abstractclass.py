@@ -59,10 +59,10 @@ class QSR_Abstractclass(object):
         :return: Computed World_QSR_Trace
         :rtype: World_QSR_Trace
         """
-        world_trace, timestamps = self._set_input_world_trace(kwargs)
+        world_trace, timestamps = self._set_input_world_trace(kwargs["input_data"])
         qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
         world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, kwargs["dynamic_args"])
-        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, kwargs, qsr_params)
+        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params)
         return world_qsr_trace
 
     def custom_checks(self, input_data):
@@ -75,14 +75,10 @@ class QSR_Abstractclass(object):
         return 0, ""
 
     # todo can be simplified a bit, also custom_checks possibly not needed anymore here
-    def _set_input_world_trace(self, req_kwargs):
-        try:
-            world_trace = req_kwargs["input_data"]
-            error_code, error_msg = self.custom_checks(input_data=world_trace)
-            if error_code > 0:
-                raise RuntimeError("Something wrong with the input data", error_code, error_msg)
-        except KeyError:
-            raise KeyError("No input data found.")
+    def _set_input_world_trace(self, world_trace):
+        error_code, error_msg = self.custom_checks(input_data=world_trace)
+        if error_code > 0:
+            raise RuntimeError("Something wrong with the input data", error_code, error_msg)
         timestamps = world_trace.get_sorted_timestamps()
         return world_trace, timestamps
 
@@ -131,7 +127,7 @@ class QSR_Abstractclass(object):
         """
         return {}
 
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params):
         """
 
         Overwrite as needed.
@@ -139,7 +135,6 @@ class QSR_Abstractclass(object):
         :param world_qsr_trace:
         :param world_trace:
         :param world_trace_timestamps:
-        :param req_params:
         :param qsr_params:
         :return:
         """
