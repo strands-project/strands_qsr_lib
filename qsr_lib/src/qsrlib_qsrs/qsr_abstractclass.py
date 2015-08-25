@@ -14,7 +14,7 @@ class QSR_Abstractclass(object):
         self.all_possible_relations = []
 
     @abstractmethod
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """The main function that makes the returned World_QSR_Trace and each QSR has to implement.
 
         :param world_trace:
@@ -52,17 +52,17 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for
 
-    def get_qsrs(self, **kwargs):
+    def get_qsrs(self, **req_params):
         """
 
-        :param kwargs: The request args
+        :param req_params: The request args
         :return: Computed World_QSR_Trace
         :rtype: World_QSR_Trace
         """
-        world_trace, timestamps = self._set_input_world_trace(kwargs["input_data"])
-        qsr_params = self._process_qsr_parameters_from_request_parameters(kwargs)
-        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, kwargs["dynamic_args"])
-        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params)
+        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"])
+        qsr_params = self._process_qsr_parameters_from_request_parameters(req_params)
+        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params)
+        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
         return world_qsr_trace
 
     def custom_checks(self, input_data):
@@ -82,6 +82,7 @@ class QSR_Abstractclass(object):
         timestamps = world_trace.get_sorted_timestamps()
         return world_trace, timestamps
 
+    # todo IMPORTANT-BUG: seems that this does not handle multi-time QSRs (e.g. mos, qtcs); needs to be resolved; maybe solution to allow list of lists in object_names_of_world_state
     def _process_qsrs_for(self, objects_names_of_world_state, dynamic_args, **kwargs):
         try:
             return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
@@ -93,6 +94,7 @@ class QSR_Abstractclass(object):
             except KeyError:
                 return self._init_qsrs_for_default(objects_names_of_world_state)
 
+    # todo IMPORTANT-BUG: see todo of _process_qsrs_for
     def __check_qsrs_for_data_exist_at_world_state(self, objects_names_of_world_state, qsrs_for):
         if len(objects_names_of_world_state) == 0:
             return []
@@ -127,7 +129,7 @@ class QSR_Abstractclass(object):
         """
         return {}
 
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params):
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params, req_params, **kwargs):
         """
 
         Overwrite as needed.

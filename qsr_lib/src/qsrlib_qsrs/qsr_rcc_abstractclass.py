@@ -26,11 +26,11 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
                 pass
         return qsr_params
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in timestamps:
             world_state = world_trace.trace[t]
-            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), dynamic_args)
+            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), req_params["dynamic_args"])
             for p in qsrs_for:
                 between = ",".join(p)
                 bb1 = world_state.objects[p[0]].return_bounding_box_2d()

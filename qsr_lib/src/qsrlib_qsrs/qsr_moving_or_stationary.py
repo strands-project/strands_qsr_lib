@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Computes MoS relations: 'm': moving, 's': stationary
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
 import numpy as np
 from qsrlib_qsrs.qsr_monadic_abstractclass import QSR_Monadic_Abstractclass
@@ -37,13 +27,13 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
                 pass
         return qsr_params
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t, tp in zip(timestamps[1:], timestamps):
             world_state_now = world_trace.trace[t]
             world_state_previous = world_trace.trace[tp]
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), dynamic_args)
-            for object_name in qsrs_for: # yes between is probably not the best name as it is simply object_name
+            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
+            for object_name in qsrs_for:
                 point_now = (world_state_now.objects[object_name].x, world_state_now.objects[object_name].y)
                 point_previous = (world_state_previous.objects[object_name].x, world_state_previous.objects[object_name].y)
                 ret.add_qsr(QSR(timestamp=t, between=object_name,

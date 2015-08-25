@@ -277,10 +277,10 @@ if __name__ == "__main__":
         world.add_object_state_series(o1)
 
     # # DBG: testing qsrs_for
-    # try:
-    #     dynamic_args[which_qsr]["qsrs_for"] = [("o1", "o2"), ("o1", "o2")]
-    # except KeyError:
-    #     dynamic_args[which_qsr] = {"qsrs_for": [("o1", "o3"), ("o1", "o2")]}
+    # # try:
+    # #     dynamic_args[which_qsr]["qsrs_for"] = [("o1", "o2"), ("o1", "o3")]
+    # # except KeyError:
+    # #     dynamic_args[which_qsr] = {"qsrs_for": [("o1", "o3"), ("o1", "o3")]}
     # # try:
     # #     dynamic_args[which_qsr]["qsrs_for"] = ["o1"]
     # # except KeyError:
