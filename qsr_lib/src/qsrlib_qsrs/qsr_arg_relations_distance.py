@@ -7,30 +7,23 @@ from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
-    def __init__(self, config=None):
+    def __init__(self):
         super(QSR_Arg_Relations_Distance, self).__init__()
         self._unique_id = "argd"
         self.allowed_value_types = (int, float)
-        self.value_sort_key = operator.itemgetter(1) # Sort by threshold
-        # todo this config thing does not seem right; it should be passed during request not during creation; in fact it should be handled on client side
-        if config:
-            self._set_from_config_file(config)
+        self.value_sort_key = operator.itemgetter(1)  # Sort by threshold
 
     # todo IMPORTANT: qsr_relations_and_values should not be a member, but enforced to be passed everytime
     # todo this is incompatible with how the rest of the QSRs are obtaining their parameters
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
-        # todo need to integrate the read from config file somewhere, or deprecate the config file on the server side completely; can then provide a client-side utility for it
-        # try:
-        #     if kwargs["config"]:
-        #         self.set_from_config_file(kwargs["config"])
-        # except:
-        #     pass
-
-        try:
-            self.set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
-        except KeyError:
-            raise KeyError("qsr_relations_and_values not set")
-        return None
+        # todo feel uncomfortable with config files here as IMO they should be loaded on client side; most likely to deprecate this functionality
+        if req_params["config"]:
+            self._set_from_config_file(req_params["config"])
+        else:
+            try:
+                self.set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
+            except KeyError:
+                raise KeyError("qsr_relations_and_values not set")
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
