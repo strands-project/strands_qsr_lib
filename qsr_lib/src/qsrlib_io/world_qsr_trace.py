@@ -21,18 +21,12 @@ class World_QSR_Trace(object):
     def __init__(self, qsr_type, last_updated=False, trace=None):
         self.qsr_type = qsr_type
         self.last_updated = last_updated
-        # self.timestamps = timestamps if timestamps else []
+        # self.trace.keys() should be floats just like World_Trace.trace.keys(); hence no casting and no checking here to avoid slowing down execution time for all QSRs
         self.trace = trace if trace else {}
 
     def get_sorted_timestamps(self):
-        # TODO this is so inefficient, why do I store the timestamps as strings in the first place (answer ros serializ)
-        ret = self.trace.keys()
-        foo = ret[0]
-        ret = [int(i) for i in ret]
-        ret = sorted(ret)
-        if type(foo) is str:
-            ret = [str(i) for i in ret]  # if they were str make them strs again
-        return ret
+        # self.trace.keys() should be floats just like World_Trace.trace.keys()
+        return sorted(self.trace.keys())
 
     def __add_world_qsr_state(self, world_qsr_state):
         self.trace[world_qsr_state.timestamp] = world_qsr_state
