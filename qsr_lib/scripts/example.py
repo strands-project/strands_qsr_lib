@@ -1,25 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""QSRlib ROS client example
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>, Christan Dondrup <cdondrup@lincoln.ac.uk>
-:Organization: University of Leeds
-:Date: 22 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
-import rospy
 import sys
 try:
     import cPickle as pickle
 except:
     import pickle
-from qsrlib.qsrlib import QSRlib_Request_Message
+from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
-from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
 import argparse
 import csv
 
@@ -36,9 +24,8 @@ if __name__ == "__main__":
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
     parser.add_argument("-c", "--config", help="config file", type=str)
+    parser.add_argument("--ros", action="store_true", default=False, help="Use ROS eco-system")
     args = parser.parse_args()
-
-    client_node = rospy.init_node("qsr_lib_ros_client_example")
 
     if args.qsr in options:
         which_qsr = args.qsr
@@ -291,16 +278,27 @@ if __name__ == "__main__":
 
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
-    cln = QSRlib_ROS_Client()
-    req = cln.make_ros_request_message(qsrlib_request_message)
-    res = cln.request_qsrs(req)
-    out = pickle.loads(res.data)
-    print(which_qsr, "request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
+    if args.ros:
+        try:
+            import rospy
+            from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
+        except ImportError:
+            raise ImportError("ROS not found")
+        client_node = rospy.init_node("qsr_lib_ros_client_example")
+        cln = QSRlib_ROS_Client()
+        req = cln.make_ros_request_message(qsrlib_request_message)
+        res = cln.request_qsrs(req)
+        qsrlib_response_message = pickle.loads(res.data)
+    else:
+        qsrlib = QSRlib()
+        qsrlib_response_message = qsrlib.request_qsrs(request_message=qsrlib_request_message)
+
+    print(which_qsr, "request was made at ", str(qsrlib_response_message.timestamp_request_made) + " and received at " + str(qsrlib_response_message.timestamp_request_received) + " and computed at " + str(qsrlib_response_message.timestamp_qsrs_computed) )
     print("---")
     print("Response is:")
-    for t in out.qsrs.get_sorted_timestamps():
+    for t in qsrlib_response_message.qsrs.get_sorted_timestamps():
         foo = str(t) + ": "
-        for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):
+        for k, v in zip(qsrlib_response_message.qsrs.trace[t].qsrs.keys(), qsrlib_response_message.qsrs.trace[t].qsrs.values()):
             foo += str(k) + ":" + str(v.qsr) + "; "
             # print(type(v.qsr))
         print(foo)
