@@ -17,7 +17,14 @@ class QTCException(Exception):
 
 
 class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
-    """Abstract class for the QSR makers"""
+    """
+
+    print "where,\n" \
+    "it is always necessary to have two agents in every timestep:\n"\
+    "x, y: the xy-coords of the agents\n" \
+    "quantisation_factor: the minimum distance the agents must diverge from the double cross between two timesteps to be counted as movement. Must be in the same unit as the x,y coordinates.\n"\
+    "validate: True|False validates the QTC sequence to not have illegal transitions. This inserts necessary transitional steps and messes with the timesteps."
+    """
     __metaclass__ = ABCMeta
 
     __global_unique_id = "qtcs"
@@ -33,9 +40,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             "no_collapse": False,
             "distance_threshold": 1.22
         }
-
-    def custom_set_from_config_file(self, document):
-        pass
 
     def return_all_possible_state_combinations(self):
         """Method that returns all possible state combinations for the qtc_type
@@ -313,14 +317,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         # Side constraints need to be inverted to give the correct qtc state
         return res*-1 if constraint == "side" else res
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print "where,\n" \
-            "it is always necessary to have two agents in every timestep:\n"\
-            "x, y: the xy-coords of the agents\n" \
-            "quantisation_factor: the minimum distance the agents must diverge from the double cross between two timesteps to be counted as movement. Must be in the same unit as the x,y coordinates.\n"\
-            "validate: True|False validates the QTC sequence to not have illegal transitions. This inserts necessary transitional steps and messes with the timesteps."
-
     # todo maybe we can include this somewhere else... have a feeling that I was thinking of deprecating this or refactoring to a more meaningful name
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
@@ -420,17 +416,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
                 )
                 ret.add_qsr(qsr, idx+1)
 
-        return ret
-
-    def _return_all_possible_combinations(self, objects_names):
-        raise DeprecationWarning("Use Dyadic._init_qsrs_for_default; bear in mind it returns mirrors by default")
-        if len(objects_names) < 2:
-            return []
-        ret = []
-        for i in objects_names:
-            for j in objects_names:
-                if i != j:
-                    ret.append((i, j))
         return ret
 
     def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params, req_params, **kwargs):
