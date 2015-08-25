@@ -83,19 +83,34 @@ class QSR_Abstractclass(object):
         timestamps = world_trace.get_sorted_timestamps()
         return world_trace, timestamps
 
-    # todo IMPORTANT-BUG: seems that this does not handle multi-time QSRs (e.g. mos, qtcs); needs to be resolved; maybe solution to allow list of lists in object_names_of_world_state
-    def _process_qsrs_for(self, objects_names_of_world_state, dynamic_args, **kwargs):
-        try:
-            return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
-                                                                   dynamic_args[self._unique_id]["qsrs_for"])
-        except KeyError:
+    def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):
+        if isinstance(objects_names[0], str):
             try:
-                return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
-                                                                       dynamic_args["for_all_qsrs"]["qsrs_for"])
+                return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                                                                       dynamic_args[self._unique_id]["qsrs_for"])
             except KeyError:
-                return self._init_qsrs_for_default(objects_names_of_world_state)
+                try:
+                    return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                                                                           dynamic_args["for_all_qsrs"]["qsrs_for"])
+                except KeyError:
+                    return self._init_qsrs_for_default(objects_names)
+        elif isinstance(objects_names[0], (list, tuple)):
+            qsrs_for_list = []
+            for objects_names_i in objects_names:
+                try:
+                    qsrs_for_list.append(self.__check_qsrs_for_data_exist_at_world_state(objects_names_i,
+                                                                                         dynamic_args[self._unique_id]["qsrs_for"]))
+                except KeyError:
+                    try:
+                        qsrs_for_list.append(self.__check_qsrs_for_data_exist_at_world_state(objects_names_i,
+                                                                                             dynamic_args["for_all_qsrs"]["qsrs_for"]))
+                    except KeyError:
+                        qsrs_for_list.append(self._init_qsrs_for_default(objects_names_i))
 
-    # todo IMPORTANT-BUG: see todo of _process_qsrs_for
+            return list(set(qsrs_for_list[0]).intersection(*qsrs_for_list))
+        else:
+            raise TypeError("objects_names must be a list of str or list of lists")
+
     def __check_qsrs_for_data_exist_at_world_state(self, objects_names_of_world_state, qsrs_for):
         if len(objects_names_of_world_state) == 0:
             return []

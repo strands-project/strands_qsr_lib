@@ -32,7 +32,8 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
         for t, tp in zip(timestamps[1:], timestamps):
             world_state_now = world_trace.trace[t]
             world_state_previous = world_trace.trace[tp]
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
+            qsrs_for = self._process_qsrs_for([world_state_previous.objects.keys(), world_state_now.objects.keys()],
+                                              req_params["dynamic_args"])
             for object_name in qsrs_for:
                 point_now = (world_state_now.objects[object_name].x, world_state_now.objects[object_name].y)
                 point_previous = (world_state_previous.objects[object_name].x, world_state_previous.objects[object_name].y)

@@ -325,6 +325,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
 
         :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
         """
+        # return 0, ""  # bypass
         timestamps = input_data.get_sorted_timestamps()
         if len(timestamps) < 2:
             return 50, "Data for at least two separate timesteps has to be provided."
@@ -379,10 +380,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         for t, tp in zip(timestamps[1:], timestamps):
             world_state_now = world_trace.trace[t]
             world_state_previous = world_trace.trace[tp]
-            if set(world_state_now.objects.keys()) != set(world_state_previous.objects.keys()):
-                ret.add_empty_world_qsr_state(t)
-                continue # Objects have to be present in both timestamps
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
+            qsrs_for = self._process_qsrs_for([world_state_previous.objects.keys(), world_state_now.objects.keys()],
+                                              req_params["dynamic_args"])
             for o1_name, o2_name in qsrs_for:
                 between = str(o1_name) + "," + str(o2_name)
                 qtc = np.array([], dtype=int)
