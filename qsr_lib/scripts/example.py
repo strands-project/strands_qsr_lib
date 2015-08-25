@@ -276,6 +276,23 @@ if __name__ == "__main__":
         world.add_object_state_series(traj)
         world.add_object_state_series(o1)
 
+    # # DBG: testing qsrs_for
+    # try:
+    #     dynamic_args[which_qsr]["qsrs_for"] = [("o1", "o2"), ("o1", "o2")]
+    # except KeyError:
+    #     dynamic_args[which_qsr] = {"qsrs_for": [("o1", "o3"), ("o1", "o2")]}
+    # # try:
+    # #     dynamic_args[which_qsr]["qsrs_for"] = ["o1"]
+    # # except KeyError:
+    # #     dynamic_args[which_qsr] = {"qsrs_for": ["o1"]}
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": ["o1", ("o1", "o2"), "o2"]}
+    # try:
+    #     print(dynamic_args[which_qsr]["qsrs_for"])
+    # except KeyError:
+    #     print("qsrs_for not set in which_qsr namespace")
+    # print(dynamic_args["for_all_qsrs"]["qsrs_for"])
+    # # DBG: eof
+
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
     if args.ros:

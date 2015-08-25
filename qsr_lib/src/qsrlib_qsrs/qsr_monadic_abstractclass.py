@@ -9,7 +9,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
     def __init__(self):
         super(QSR_Monadic_Abstractclass, self).__init__()
 
-    def _init_qsrs_for_default(self, objects_names_of_world_state, req_params, **kwargs):
+    def _init_qsrs_for_default(self, objects_names_of_world_state):
         return objects_names_of_world_state
 
     def _validate_qsrs_for(self, qsrs_for):

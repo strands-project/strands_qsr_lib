@@ -23,11 +23,11 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_Abstractclass):
         self._unique_id = "coneDir"
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in timestamps:
             world_state = world_trace.trace[t]
-            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), kwargs)
+            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), dynamic_args)
             for p in qsrs_for:
                 between = ",".join(p)
                 bb1 = world_state.objects[p[0]].return_bounding_box_2d()

@@ -37,12 +37,12 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
                 pass
         return qsr_params
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t, tp in zip(timestamps[1:], timestamps):
             world_state_now = world_trace.trace[t]
             world_state_previous = world_trace.trace[tp]
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), kwargs)
+            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), dynamic_args)
             for object_name in qsrs_for: # yes between is probably not the best name as it is simply object_name
                 point_now = (world_state_now.objects[object_name].x, world_state_now.objects[object_name].y)
                 point_previous = (world_state_previous.objects[object_name].x, world_state_previous.objects[object_name].y)

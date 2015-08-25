@@ -25,11 +25,11 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             except KeyError:
                 raise KeyError("qsr_relations_and_values not set")
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, dynamic_args, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in world_trace.get_sorted_timestamps():
             world_state = world_trace.trace[t]
-            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), kwargs)
+            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), dynamic_args)
             for p in qsrs_for:
                 between = str(p[0]) + "," + str(p[1])
                 objs = (world_state.objects[p[0]], world_state.objects[p[1]])
