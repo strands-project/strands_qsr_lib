@@ -30,9 +30,7 @@ class QSR_Moving_or_Stationary(QSR_Monadic_Abstractclass):
         qsr_params = self.__qsr_params_defaults.copy()
         try:
             qsr_params["quantisation_factor"] = float(req_params["dynamic_args"][self._unique_id]["quantisation_factor"])
-        except TypeError:
-            pass
-        except KeyError:
+        except (KeyError, TypeError):
             try:
                 qsr_params["quantisation_factor"] = float(req_params["dynamic_args"]["for_all_qsrs"]["quantisation_factor"])
             except (TypeError, KeyError):
