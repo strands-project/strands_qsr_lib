@@ -24,7 +24,7 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
         self.qtc_type = "c"
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
-    def qtc_to_output_format(self, qtc, future=False):
+    def qtc_to_output_format(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
         from the QTCC tuple that you would like to return.
         Example for QTCB: return qtc[0:2]
@@ -33,4 +33,4 @@ class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
 
         :return: "q1,q2,q4,q5" or {"qtccs": "q1,q2,q4,q5"} if future is True
         """
-        return self.handle_future(future, self.create_qtc_string(qtc), self._unique_id)
+        return self._format_qsr(self.create_qtc_string(qtc))
