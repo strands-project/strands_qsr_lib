@@ -12,6 +12,7 @@ class QSR_Abstractclass(object):
     def __init__(self):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
+        self._allowed_parameters = ["qsrs_for"]
 
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):

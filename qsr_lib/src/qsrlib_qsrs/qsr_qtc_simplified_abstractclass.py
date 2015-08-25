@@ -31,6 +31,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
     __no_state__ = 9.
 
     def __init__(self):
+        super(QSR_QTC_Simplified_Abstractclass, self).__init__()
         self._unique_id = ""
         self.qtc_type = ""
 
@@ -365,6 +366,10 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
 
         if not isinstance(qsr_params["no_collapse"], bool) or not isinstance(qsr_params["validate"], bool):
             raise TypeError("'no_collapse' and 'validate' have to be boolean values.")
+
+        for param in qsr_params:
+            if param not in self.__qsr_params_defaults and param not in self._allowed_parameters:
+                raise KeyError("%s is an unknown parameter" % str(param))
 
         return qsr_params
 
