@@ -13,18 +13,7 @@ from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
 from qsrlib_utils.utils import merge_world_qsr_traces
-
-# Import implemented makers
-from qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d import QSR_RCC2_Rectangle_Bounding_Boxes_2D
-from qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
-from qsrlib_qsrs.qsr_rcc8_rectangle_bounding_boxes_2d import QSR_RCC8_Rectangle_Bounding_Boxes_2D
-from qsrlib_qsrs.qsr_cone_direction_bounding_boxes_centroid_2d import QSR_Cone_Direction_Bounding_Boxes_Centroid_2D
-from qsrlib_qsrs.qsr_qtc_b_simplified import QSR_QTC_B_Simplified
-from qsrlib_qsrs.qsr_qtc_c_simplified import QSR_QTC_C_Simplified
-from qsrlib_qsrs.qsr_qtc_bc_simplified import QSR_QTC_BC_Simplified
-from qsrlib_qsrs.qsr_arg_relations_distance import QSR_Arg_Relations_Distance
-from qsrlib_qsrs.qsr_arg_prob_relations_distance import QSR_Arg_Prob_Relations_Distance
-from qsrlib_qsrs.qsr_moving_or_stationary import QSR_Moving_or_Stationary
+from qsrlib_qsrs import *
 
 
 class QSRlib_Response_Message(object):
@@ -48,20 +37,8 @@ class QSRlib_Request_Message(object):
 class QSRlib(object):
     """The LIB
     """
-    def __init__(self, help=True):
-        # register new qsrs by class name below
-        __qsrs_registration = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
-                               QSR_RCC3_Rectangle_Bounding_Boxes_2D,
-                               QSR_RCC8_Rectangle_Bounding_Boxes_2D,
-                               QSR_Cone_Direction_Bounding_Boxes_Centroid_2D,
-                               QSR_QTC_B_Simplified,
-                               QSR_QTC_C_Simplified,
-                               QSR_QTC_BC_Simplified,
-                               QSR_Arg_Relations_Distance,
-                               QSR_Arg_Prob_Relations_Distance,
-                               QSR_Moving_or_Stationary)
-
-        self.__qsrs = self.check_and_activate_qsrs(__qsrs_registration)
+    def __init__(self, help=False):
+        self.__qsrs = self.check_and_activate_qsrs(qsrs_registry)
         if help:
             self.help()
 
@@ -91,7 +68,7 @@ class QSRlib(object):
         self.print_qsrs_available()
 
     def print_qsrs_available(self):
-        print("Types of QSRs that have been included so far in the lib are the following:")
+        print("Supported QSRs are:")
         for i in sorted(self.__qsrs):
             print("-", i)
 
