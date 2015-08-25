@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Provides a class that wraps QSR makers making requests and returns transparent and easy.
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
@@ -38,12 +28,12 @@ class QSRlib(object):
     """The LIB
     """
     def __init__(self, help=False):
-        self.__qsrs = self.check_and_activate_qsrs(qsrs_registry)
+        self.__qsrs = self.__check_and_activate_qsrs(qsrs_registry)
         if help:
             self.help()
 
     @staticmethod
-    def check_and_activate_qsrs(qsrs_registration):
+    def __check_and_activate_qsrs(qsrs_registration):
         """Checks for uniqueness of the QSRs _unique_id and their corresponding class names and then return a dictionary
         with the unique IDs as keys and their corresponding objects.
 
@@ -65,9 +55,9 @@ class QSRlib(object):
         return qsrs
 
     def help(self):
-        self.print_qsrs_available()
+        self.__print_qsrs_available()
 
-    def print_qsrs_available(self):
+    def __print_qsrs_available(self):
         print("Supported QSRs are:")
         for i in sorted(self.__qsrs):
             print("-", i)
