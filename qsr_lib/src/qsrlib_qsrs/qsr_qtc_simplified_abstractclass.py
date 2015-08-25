@@ -372,7 +372,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
 
         return qsr_params
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         qtc_sequence = {}
         for t, tp in zip(timestamps[1:], timestamps):
@@ -381,7 +381,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             if set(world_state_now.objects.keys()) != set(world_state_previous.objects.keys()):
                 ret.add_empty_world_qsr_state(t)
                 continue # Objects have to be present in both timestamps
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), kwargs)
+            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
             for o1_name, o2_name in qsrs_for:
                 between = str(o1_name) + "," + str(o2_name)
                 qtc = np.array([], dtype=int)
@@ -433,7 +433,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
                     ret.append((i, j))
         return ret
 
-    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, req_params, qsr_params):
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params, req_params, **kwargs):
         if qsr_params["no_collapse"] and not qsr_params["validate"]:
             return World_QSR_Trace(
                 qsr_type=world_qsr_trace.qsr_type,

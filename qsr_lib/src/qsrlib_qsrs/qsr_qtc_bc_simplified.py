@@ -26,7 +26,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         self.qtc_type = "bc"
         self.all_possible_relations = self.return_all_possible_state_combinations()[0]
 
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         qtc_sequence = {}
         for t, tp in zip(timestamps[1:], timestamps):
@@ -35,7 +35,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
             if set(world_state_now.objects.keys()) != set(world_state_previous.objects.keys()):
                 ret.add_empty_world_qsr_state(t)
                 continue # Objects have to be present in both timestamps
-            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), kwargs)
+            qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
             for o1_name, o2_name in qsrs_for:
                 between = str(o1_name) + "," + str(o2_name)
                 qtc = np.array([], dtype=int)
