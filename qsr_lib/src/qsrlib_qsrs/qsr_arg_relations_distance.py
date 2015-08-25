@@ -2,8 +2,9 @@
 from __future__ import print_function, division
 import numpy as np
 import operator
-from qsr_arg_relations_abstractclass import QSR_Arg_Relations_Abstractclass
+from qsrlib_qsrs.qsr_arg_relations_abstractclass import QSR_Arg_Relations_Abstractclass
 from qsrlib_io.world_qsr_trace import *
+
 
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
     def __init__(self, config=None):
