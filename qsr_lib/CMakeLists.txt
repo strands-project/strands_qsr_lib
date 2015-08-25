@@ -26,8 +26,7 @@ catkin_package()
 #############
 
 install(PROGRAMS
-  scripts/example_ros_client.py
-  scripts/example_standalone
+  scripts/example.py
   scripts/qsrlib_ros_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
