@@ -54,6 +54,9 @@ class QSRlib(object):
                 qsrs[o._unique_id] = o
         return qsrs
 
+    def get_qsrs_registry(self):
+        return self.__qsrs
+
     def help(self):
         self.__print_qsrs_available()
 
