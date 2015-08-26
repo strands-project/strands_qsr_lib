@@ -14,7 +14,7 @@ class QSRlib_Response_Message(object):
         self.timestamp_qsrs_computed = timestamp_qsrs_computed
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr, input_data, dynamic_args=None, timestamp_request_made=None, config=None):
+    def __init__(self, which_qsr, input_data, dynamic_args={}, timestamp_request_made=None, config=None):
         self.which_qsr = which_qsr
         if isinstance(input_data, World_Trace):
             self.input_data = input_data
@@ -53,6 +53,9 @@ class QSRlib(object):
             else:
                 qsrs[o._unique_id] = o
         return qsrs
+
+    def get_qsrs_registry(self):
+        return self.__qsrs
 
     def help(self):
         self.__print_qsrs_available()
