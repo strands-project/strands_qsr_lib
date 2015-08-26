@@ -39,4 +39,5 @@ install(DIRECTORY share
 if (CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(tests/qtc_tester.test)
+  add_rostest(tests/qsrlib_object_creation_tester.test)
 endif()
