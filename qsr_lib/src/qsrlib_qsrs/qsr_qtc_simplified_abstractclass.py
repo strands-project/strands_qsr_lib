@@ -90,11 +90,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
 
         :return: The valid state chain as a numpy array
         """
+        if len(qtc.shape) == 1:
+            return np.array(qtc)  # Only one state in chain.
+
         if self.qtc_type == "b":
             qtc = qtc[:,0:2]
-
-        if len(qtc.shape) == 1:
-            return qtc  # Only one state in chain.
 
         legal_qtc = np.array([qtc[0,:]])
 
@@ -412,6 +412,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
                 qtc = self._collapse_similar_states(qtc)
             if qsr_params["validate"]:
                 qtc = self._validate_qtc_sequence(qtc)
+            qtc = qtc if len(qtc.shape) > 1 else [qtc]
             for idx, q in enumerate(qtc):
                 qsr = QSR(
                     timestamp=idx+1,
