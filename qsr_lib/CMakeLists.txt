@@ -26,8 +26,8 @@ catkin_package()
 #############
 
 install(PROGRAMS
-  scripts/example_ros_client.py
-  scripts/example_standalone
+  scripts/example_extended.py
+  scripts/mwe.py
   scripts/qsrlib_ros_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -39,4 +39,5 @@ install(DIRECTORY share
 if (CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(tests/qtc_tester.test)
+  add_rostest(tests/qsrlib_object_creation_tester.test)
 endif()

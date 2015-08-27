@@ -1,25 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""QSRlib ROS client example
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>, Christan Dondrup <cdondrup@lincoln.ac.uk>
-:Organization: University of Leeds
-:Date: 22 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
-import rospy
 import sys
 try:
     import cPickle as pickle
 except:
     import pickle
-from qsrlib.qsrlib import QSRlib_Request_Message
+from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
-from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
 import argparse
 import csv
 
@@ -35,11 +23,9 @@ if __name__ == "__main__":
     parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float)
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
     parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
-    parser.add_argument("--future", help="QSRs as dict", action="store_true")
     parser.add_argument("-c", "--config", help="config file", type=str)
+    parser.add_argument("--ros", action="store_true", default=False, help="Use ROS eco-system")
     args = parser.parse_args()
-
-    client_node = rospy.init_node("qsr_lib_ros_client_example")
 
     if args.qsr in options:
         which_qsr = args.qsr
@@ -70,6 +56,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
 
     elif which_qsr == "rcc8":
+        # dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
               Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
@@ -150,15 +137,6 @@ if __name__ == "__main__":
         world.add_object_state_series(o3)
         world.add_object_state_series(o4)
 
-    elif which_qsr == "rcc3a":
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-              Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.)]
-
-        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.)]
-
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
-
     elif which_qsr == "qtcbs":
         dynamic_args = {which_qsr: {
             "quantisation_factor": args.quantisation_factor,
@@ -195,8 +173,17 @@ if __name__ == "__main__":
                   Object_State(name="o2", timestamp=1, x=4., y=1.),
                   Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
+            o3 = [Object_State(name="o3", timestamp=0, x=4., y=1.),
+                  Object_State(name="o3", timestamp=1, x=4., y=1.),
+                  Object_State(name="o3", timestamp=2, x=5., y=1.)]
+
+            o4 = [Object_State(name="o4", timestamp=0, x=14., y=11.),
+                  Object_State(name="o4", timestamp=1, x=14., y=11.)]
+
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+            world.add_object_state_series(o3)
+            # world.add_object_state_series(o4)
 
     elif which_qsr == "qtccs":
         dynamic_args = {which_qsr: {
@@ -289,27 +276,46 @@ if __name__ == "__main__":
         world.add_object_state_series(traj)
         world.add_object_state_series(o1)
 
-    # uncomment this to test qsrs_for (and comment out the next line)
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args=dynamic_args,
-    #                                                 qsrs_for=[("o1", "o3"), ("o2", "o3")])
-    # qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-    #                                                 dynamic_args=dynamic_args, future=args.future, config=args.config)
+    # # DBG: testing qsrs_for
+    # try:
+    #     dynamic_args[which_qsr]["qsrs_for"] = [("o1", "o2"), ("o1", "o3")]
+    # except KeyError:
+    #     dynamic_args[which_qsr] = {"qsrs_for": [("o1", "o3"), ("o1", "o3")]}
+    # try:
+    #     dynamic_args[which_qsr]["qsrs_for"] = ["o1"]
+    # except KeyError:
+    #     dynamic_args[which_qsr] = {"qsrs_for": ["o1"]}
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o1", "o2"), "o2"]}
+    # try:
+    #     print(dynamic_args[which_qsr]["qsrs_for"])
+    # except KeyError:
+    #     print("qsrs_for not set in which_qsr namespace")
+    # print(dynamic_args["for_all_qsrs"]["qsrs_for"])
+    # # DBG: eof
 
-    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, include_missing_data=True,
-                                                    dynamic_args=dynamic_args,
-                                                    future=args.future)
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
-    cln = QSRlib_ROS_Client()
-    req = cln.make_ros_request_message(qsrlib_request_message)
-    res = cln.request_qsrs(req)
-    out = pickle.loads(res.data)
-    print(which_qsr, "request was made at ", str(out.timestamp_request_made) + " and received at " + str(out.timestamp_request_received) + " and computed at " + str(out.timestamp_qsrs_computed) )
+    if args.ros:
+        try:
+            import rospy
+            from qsrlib_ros.qsrlib_ros_client import QSRlib_ROS_Client
+        except ImportError:
+            raise ImportError("ROS not found")
+        client_node = rospy.init_node("qsr_lib_ros_client_example")
+        cln = QSRlib_ROS_Client()
+        req = cln.make_ros_request_message(qsrlib_request_message)
+        res = cln.request_qsrs(req)
+        qsrlib_response_message = pickle.loads(res.data)
+    else:
+        qsrlib = QSRlib()
+        qsrlib_response_message = qsrlib.request_qsrs(request_message=qsrlib_request_message)
+
+    print(which_qsr, "request was made at ", str(qsrlib_response_message.timestamp_request_made) + " and received at " + str(qsrlib_response_message.timestamp_request_received) + " and computed at " + str(qsrlib_response_message.timestamp_qsrs_computed) )
     print("---")
     print("Response is:")
-    for t in out.qsrs.get_sorted_timestamps():
+    for t in qsrlib_response_message.qsrs.get_sorted_timestamps():
         foo = str(t) + ": "
-        for k, v in zip(out.qsrs.trace[t].qsrs.keys(), out.qsrs.trace[t].qsrs.values()):
+        for k, v in zip(qsrlib_response_message.qsrs.trace[t].qsrs.keys(), qsrlib_response_message.qsrs.trace[t].qsrs.values()):
             foo += str(k) + ":" + str(v.qsr) + "; "
             # print(type(v.qsr))
         print(foo)

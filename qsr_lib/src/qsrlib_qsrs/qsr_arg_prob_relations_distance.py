@@ -15,43 +15,18 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
     def __init__(self, config=None):
         super(QSR_Arg_Prob_Relations_Distance, self).__init__()
         self._unique_id = "argprobd"
-        self.allowed_value_types = (tuple,list)
+        self.allowed_value_types = (tuple, list)
         self.value_sort_key = lambda x: x[1][0] # Sort by first element in value tuple, i.e. mean
         if config:
             self.set_from_config_file(config)
-
-    def custom_help(self):
-        """Write your own help message function"""
-        print("")
-
-    def custom_checks(self, input_data):
-        """Write your own custom checks on top of the default ones
-
-
-        :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
-        """
-        return 0, ""
-
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """qsrs_for must be tuples of two objects.
-
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
-        """
-        for p in list(qsrs_for):
-            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
-                qsrs_for.remove(p)
-                error_found = True
-        return qsrs_for, error_found
 
     def __normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
         y = (1/(np.sqrt(2*np.pi)*np.abs(sigma)))*np.exp(-u*u/2)
         return np.around(y, decimals=3)
 
-    def _compute_qsr(self, objs):
-        d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y))
+    def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
+        d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         r = (None, 0.0)
         for values, relation in zip(self.all_possible_values, self.all_possible_relations):
             prob = uniform(0.0, self.__normpdf(d, mu=values[0], sigma=values[1]))

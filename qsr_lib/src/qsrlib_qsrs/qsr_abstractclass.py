@@ -1,110 +1,165 @@
 # -*- coding: utf-8 -*-
-"""Provides the abstract class of the QSR makers.
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
-import abc
+from abc import ABCMeta, abstractmethod
 import yaml
 import os
 
 
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""
-    __metaclass__ = abc.ABCMeta
+    __metaclass__ = ABCMeta
 
     def __init__(self):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
         self.all_possible_relations = []
+        self._allowed_parameters = ["qsrs_for"]
+        self._dtype = ""
 
-    def help(self):
-        self.custom_help()
+    @abstractmethod
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
+        """The main function that makes the returned World_QSR_Trace and each QSR has to implement.
 
-    def check_input(self, input_data):
-        error, msg = self.custom_checks(input_data)
-        return error, msg
+        :param world_trace:
+        :param timestamps:
+        :param qsr_params:
+        :param dynamic_args:
+        :param kwargs:
+        :return:
+        """
+        return
 
-    def get(self, *args, **kwargs):
-        error_code, error_msg = self.check_input(input_data=kwargs["input_data"])
+    @abstractmethod
+    def _init_qsrs_for_default(self, objects_names_of_world_state, **kwargs):
+        """The default list of entities at each time-step (i.e. World_State.objects.keys() for which QSRs are computed for.
+
+        Usually this is provided by a parent class and there is no need for the QSRs to implement it, unless they want
+        to override the parent default method.
+
+        :param objects_names_of_world_state:
+        :param req_params:
+        :param kwargs:
+        :return:
+        """
+        return
+
+    @abstractmethod
+    def _validate_qsrs_for(self, qsrs_for):
+        """Custom checks of the qsrs_for field.
+
+        Usually this is provided by a parent class and there is no need for the QSRs to implement it, unless they want
+        to override the parent default method.
+
+        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
+        :return: qsrs_for
+        """
+        return qsrs_for
+
+    def get_qsrs(self, **req_params):
+        """
+
+        :param req_params: The request args
+        :return: Computed World_QSR_Trace
+        :rtype: World_QSR_Trace
+        """
+        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"])
+        qsr_params = self._process_qsr_parameters_from_request_parameters(req_params)
+        world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params)
+        world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
+        return world_qsr_trace
+
+    def custom_checks(self, input_data):
+        # todo needs to be refactored to a better name; not even sure if needed or should be integrated somewhere else
+        """Customs checks on the input data.
+
+        :param input_data:
+        :return:
+        """
+        return 0, ""
+
+    # todo can be simplified a bit, also custom_checks possibly not needed anymore here
+    def _set_input_world_trace(self, world_trace):
+        error_code, error_msg = self.custom_checks(input_data=world_trace)
         if error_code > 0:
-            print("ERROR:", error_msg)
-            self.help()
-            print("\nFailed to compute QSRs")
-            return False
-        return self.make(*args, **kwargs)
+            raise RuntimeError("Something wrong with the input data", error_code, error_msg)
+        timestamps = world_trace.get_sorted_timestamps()
+        return world_trace, timestamps
 
-    def check_qsrs_for_data_exist(self, objects_names, qsrs_for):
-        if len(objects_names) == 0:
-            error_found = True if qsrs_for else False
-            return [], error_found
+    def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):
+        if isinstance(objects_names[0], str):
+            try:
+                return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                                                                       dynamic_args[self._unique_id]["qsrs_for"])
+            except KeyError:
+                try:
+                    return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                                                                           dynamic_args["for_all_qsrs"]["qsrs_for"])
+                except KeyError:
+                    return self._init_qsrs_for_default(objects_names)
+        elif isinstance(objects_names[0], (list, tuple)):
+            qsrs_for_list = []
+            for objects_names_i in objects_names:
+                try:
+                    qsrs_for_list.append(self.__check_qsrs_for_data_exist_at_world_state(objects_names_i,
+                                                                                         dynamic_args[self._unique_id]["qsrs_for"]))
+                except KeyError:
+                    try:
+                        qsrs_for_list.append(self.__check_qsrs_for_data_exist_at_world_state(objects_names_i,
+                                                                                             dynamic_args["for_all_qsrs"]["qsrs_for"]))
+                    except KeyError:
+                        qsrs_for_list.append(self._init_qsrs_for_default(objects_names_i))
 
-        if type(qsrs_for) is not list:
-            raise ValueError("qsrs_for must be a list of strings and/or tuples of strings")
+            return list(set(qsrs_for_list[0]).intersection(*qsrs_for_list))
+        else:
+            raise TypeError("objects_names must be a list of str or list of lists")
 
+    def __check_qsrs_for_data_exist_at_world_state(self, objects_names_of_world_state, qsrs_for):
+        if len(objects_names_of_world_state) == 0:
+            return []
+        if not isinstance(qsrs_for, (list, tuple)):
+            raise TypeError("qsrs_for must be list or tuple")
         qsrs_for_ret = []
-        error_found = False
-
         for p in qsrs_for:
-            if type(p) is str:
-                if p in objects_names:
+            if isinstance(p, str):
+                if p in objects_names_of_world_state:
                     qsrs_for_ret.append(p)
-            elif (type(p) is tuple) or (type(p) is list):
+            elif isinstance(p, (list, tuple)):
                 tuple_data_exists = True
                 for o in p:
-                    if o not in objects_names:
+                    if o not in objects_names_of_world_state:
                         tuple_data_exists = False
                         break
                 if tuple_data_exists:
                     qsrs_for_ret.append(p)
             else:
-                raise ValueError("Elements of qsrs_for must be strings and/or tuples")
+                raise TypeError("Elements of qsrs_for must be strings and/or tuples")
+        qsrs_for_ret = self._validate_qsrs_for(qsrs_for_ret)
+        return qsrs_for_ret
 
-        qsrs_for_ret, error_found = self.custom_checks_for_qsrs_for(qsrs_for_ret, error_found)
-        return qsrs_for_ret, error_found
-
-    @abc.abstractmethod
-    def custom_help(self):
-        return
-
-    @abc.abstractmethod
-    def custom_checks(self, input_data):
-        return 0, ""
-
-    @abc.abstractmethod
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """Custom checks of the qsrs_for field.
-        Hint: If you have to iterate over the qsrs_for make sure you do it on a copy of it or there might be dragons,
-        e.g.:
-         for p in list(qsrs_for):
-            if p is not valid:
-                qsrs_for.remove(p)
-                error_found = True
-
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         """
 
-        return qsrs_for, error_found
+        Overwrite as needed.
 
-    @abc.abstractmethod
-    def make(self, *args, **kwargs):
-        """Abstract method that needs to be implemented by the QSR makers
-
-        :param args: not really used at the moment
+        :param req_params:
         :param kwargs:
-                    - "input_data": Input_Data_Block
         :return:
         """
-        return
+        return {}
 
-    def set_from_config_file(self, path):
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params, req_params, **kwargs):
+        """
+
+        Overwrite as needed.
+
+        :param world_qsr_trace:
+        :param world_trace:
+        :param world_trace_timestamps:
+        :param qsr_params:
+        :return:
+        """
+        return world_qsr_trace
+
+    def _set_from_config_file(self, path):
         try:
             import rospkg
         except ImportError:
@@ -118,11 +173,17 @@ class QSR_Abstractclass(object):
                 raise ValueError
         with open(path, "r") as f:
             document = yaml.load(f)
-        self.custom_set_from_config_file(document)
+        self._custom_set_from_config_file(document)
 
-    @abc.abstractmethod
-    def custom_set_from_config_file(self, document):
-        return
+    def _custom_set_from_config_file(self, document):
+        """
 
-    def handle_future(self, future, v, k):
-        return {k: v} if future else v
+        Overwrite as needed.
+
+        :param document:
+        :return:
+        """
+        raise NotImplemented(self._unique_id, "has no support from reading from config file")
+
+    def _format_qsr(self, v):
+        return {self._unique_id: v}

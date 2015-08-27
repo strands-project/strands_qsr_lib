@@ -39,3 +39,18 @@ def merge_world_qsr_traces(world_qsr_traces, qsr_type=""):
 
 def isnan(x):
     return numpy.isnan(x)
+
+def flatten_list(l):
+    """Flattens an irregular list, i.e. a list containing a mixture of iteratable and non-iteratable items, returning a generator object.
+
+    :param l: The list to flatten.
+    :type l: list or tuple
+    :return: Flattened list as a generator. Use `list(flatten_list(l))` to get a list back.
+    :rtype: generator
+    """
+    for el in l:
+        if isinstance(el, (list, tuple)):
+            for sub in flatten_list(el):
+                yield sub
+        else:
+            yield el

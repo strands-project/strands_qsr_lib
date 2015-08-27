@@ -6,7 +6,7 @@ Created on Mon Jan 19 11:22:16 2015
 @author: cdondrup
 """
 from abc import abstractmethod, ABCMeta
-from qsrlib_qsrs.qsr_abstractclass import QSR_Abstractclass
+from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
 from qsrlib_io.world_qsr_trace import *
 from exceptions import Exception, AttributeError
 import numpy as np
@@ -16,19 +16,31 @@ class QTCException(Exception):
     pass
 
 
-class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
-    """Abstract class for the QSR makers"""
+class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
+    """
+
+    print "where,\n" \
+    "it is always necessary to have two agents in every timestep:\n"\
+    "x, y: the xy-coords of the agents\n" \
+    "quantisation_factor: the minimum distance the agents must diverge from the double cross between two timesteps to be counted as movement. Must be in the same unit as the x,y coordinates.\n"\
+    "validate: True|False validates the QTC sequence to not have illegal transitions. This inserts necessary transitional steps and messes with the timesteps."
+    """
     __metaclass__ = ABCMeta
 
-    __qsr_keys = "qtcs"
+    __global_unique_id = "qtcs"
     __no_state__ = 9.
 
     def __init__(self):
+        super(QSR_QTC_Simplified_Abstractclass, self).__init__()
         self._unique_id = ""
         self.qtc_type = ""
 
-    def custom_set_from_config_file(self, document):
-        pass
+        self.__qsr_params_defaults= {
+            "quantisation_factor": 0.0,
+            "validate": True,
+            "no_collapse": False,
+            "distance_threshold": 1.22
+        }
 
     def return_all_possible_state_combinations(self):
         """Method that returns all possible state combinations for the qtc_type
@@ -78,11 +90,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
 
         :return: The valid state chain as a numpy array
         """
+        if len(qtc.shape) == 1:
+            return np.array(qtc)  # Only one state in chain.
+
         if self.qtc_type == "b":
             qtc = qtc[:,0:2]
-
-        if len(qtc.shape) == 1:
-            return qtc  # Only one state in chain.
 
         legal_qtc = np.array([qtc[0,:]])
 
@@ -225,7 +237,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         )
         #print "l", l
 
-        return [k[0],l[0],k[1],l[1]]
+        return np.array([k[0],l[0],k[1],l[1]])
 
     def _translate(self, point, trans_vec):
         """Translating points by trans_vec.
@@ -306,21 +318,14 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
         # Side constraints need to be inverted to give the correct qtc state
         return res*-1 if constraint == "side" else res
 
-    def custom_help(self):
-        """Write your own help message function"""
-        print "where,\n" \
-            "it is always necessary to have two agents in every timestep:\n"\
-            "x, y: the xy-coords of the agents\n" \
-            "quantisation_factor: the minimum distance the agents must diverge from the double cross between two timesteps to be counted as movement. Must be in the same unit as the x,y coordinates.\n"\
-            "validate: True|False validates the QTC sequence to not have illegal transitions. This inserts necessary transitional steps and messes with the timesteps."
-
-
+    # todo maybe we can include this somewhere else... have a feeling that I was thinking of deprecating this or refactoring to a more meaningful name
     def custom_checks(self, input_data):
         """Write your own custom checks on top of the default ones
 
 
         :return: error code, error message (integer, string), use 10 and above for error code as 1-9 are reserved by system
         """
+        # return 0, ""  # bypass
         timestamps = input_data.get_sorted_timestamps()
         if len(timestamps) < 2:
             return 50, "Data for at least two separate timesteps has to be provided."
@@ -336,189 +341,108 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Abstractclass):
                         return 52, "Coordinates x: %f, y: %f are not defined correctly for timestep %f." % (x, y, t)
         return 0, ""
 
-    def custom_checks_for_qsrs_for(self, qsrs_for, error_found):
-        """Custom checks of the qsrs_for field
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        qsr_params = self.__qsr_params_defaults.copy()
 
-        :param qsrs_for: list of strings and/or tuples for which QSRs will be computed
-        :param error_found: if an error was found in the qsrs_for that violates the QSR rules
-        :return: qsrs_for, error_found
-        """
-        for p in list(qsrs_for):
-            if (type(p) is not tuple) and (type(p) is not list) and (len(p) != 2):
-                qsrs_for.remove(p)
-                error_found = True
-        return qsrs_for, error_found
-
-    def _get_parameters(self, default, **kwargs):
-        try: # Depricated
-            if kwargs["dynamic_args"]:
-                suc = False
-                for k, v in kwargs["dynamic_args"].items():
-                    if k in default.keys():
-                        default[k] = v # This will always work so we have to check if name is default keys first
-                        suc = True
-                if suc:
-                    print("Warning: This feature is deprecated, use dynamic_args with the namespace '%s' on your request message instead" % self._unique_id)
+        try: # global namespace
+            if req_params["dynamic_args"]["for_all_qsrs"]:
+                for k, v in req_params["dynamic_args"]["for_all_qsrs"].items():
+                    qsr_params[k] = v
         except KeyError:
             pass
 
         try: # General case
-            if kwargs["dynamic_args"][self.__qsr_keys]:
-                for k, v in kwargs["dynamic_args"][self.__qsr_keys].items():
-                    default[k] = v
+            if req_params["dynamic_args"][self.__global_unique_id]:
+                for k, v in req_params["dynamic_args"][self.__global_unique_id].items():
+                    qsr_params[k] = v
         except KeyError:
             pass
 
         try: # Parameters for a specific variant
-            if kwargs["dynamic_args"][self._unique_id]:
-                for k, v in kwargs["dynamic_args"][self._unique_id].items():
-                    default[k] = v
+            if req_params["dynamic_args"][self._unique_id]:
+                for k, v in req_params["dynamic_args"][self._unique_id].items():
+                    qsr_params[k] = v
         except KeyError:
             pass
 
-        return default
+        if not isinstance(qsr_params["no_collapse"], bool) or not isinstance(qsr_params["validate"], bool):
+            raise TypeError("'no_collapse' and 'validate' have to be boolean values.")
 
-    def make(self, *args, **kwargs):
-        """Make the QSRs
+        for param in qsr_params:
+            if param not in self.__qsr_params_defaults and param not in self._allowed_parameters:
+                raise KeyError("%s is an unknown parameter" % str(param))
 
-        :param args: not used at the moment
-        :param kwargs:
-                        - input_data: World_Trace
-        :return: World_QSR_Trace
-        """
-        input_data = kwargs["input_data"]
+        return qsr_params
+
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)
-        timestamps = input_data.get_sorted_timestamps()
+        qtc_sequence = {}
+        for t, tp in zip(timestamps[1:], timestamps):
+            world_state_now = world_trace.trace[t]
+            world_state_previous = world_trace.trace[tp]
+            qsrs_for = self._process_qsrs_for([world_state_previous.objects.keys(), world_state_now.objects.keys()],
+                                              req_params["dynamic_args"])
+            for o1_name, o2_name in qsrs_for:
+                between = str(o1_name) + "," + str(o2_name)
+                qtc = np.array([], dtype=int)
+                k = [world_state_previous.objects[o1_name].x,
+                     world_state_previous.objects[o1_name].y,
+                     world_state_now.objects[o1_name].x,
+                     world_state_now.objects[o1_name].y]
+                l = [world_state_previous.objects[o2_name].x,
+                     world_state_previous.objects[o2_name].y,
+                     world_state_now.objects[o2_name].x,
+                     world_state_now.objects[o2_name].y]
+                qtc = self._create_qtc_representation(
+                    k,
+                    l,
+                    qsr_params["quantisation_factor"]
+                )
 
-        if kwargs["qsrs_for"]:
-            qsrs_for, error_found = self.check_qsrs_for_data_exist(sorted(input_data.trace[timestamps[0]].objects.keys()), kwargs["qsrs_for"])
-            if error_found:
-                raise Exception("Invalid object combination. Has to be list of tuples. Heard: " + np.array2string(np.array(kwargs['qsrs_for'])))
-        else:
-            qsrs_for = self._return_all_possible_combinations(sorted(input_data.trace[timestamps[0]].objects.keys()))
-
-        parameters = {
-            "quantisation_factor": 0.0,
-            "validate": True,
-            "no_collapse": False,
-            "distance_threshold": 1.22
-        }
-
-        parameters = self._get_parameters(parameters, **kwargs)
-
-        try:
-            no_collapse = parameters["no_collapse"]
-            if input_data.trace[0].objects[o1_name].kwargs["no_collapse"]:
-                print "Definition of no_collapse in object is depricated. Please use parameters field in dynamic_args in service call."
-                no_collapse = input_data.trace[0].objects[o1_name].kwargs["no_collapse"]
-        except:
-            pass
-        try:
-            validate = parameters["validate"]
-            if input_data.trace[0].objects[o1_name].kwargs["validate"]:
-                print "Definition of validate in object is depricated. Please use parameters field in dynamic_args in service call."
-                validate = input_data.trace[0].objects[o1_name].kwargs["validate"]
-        except:
-            pass
-
-        if not type(no_collapse) is bool or not type(validate) is bool:
-            raise Exception("'no_collapse' and 'validate' have to be boolean values.")
-
-        if qsrs_for:
-            for p in qsrs_for:
-                between = str(p[0]) + "," + str(p[1])
-                # If the opposit combination of objects has been calculated before,
-                # Just flip the numbers around and republish.
-                q = None
-                for idx, qsr in ret.trace.items():
-                    try:
-                        try:
-                            qtc = np.array(qsr.qsrs[str(p[1]) + "," + str(p[0])].qsr.split(','))
-                        except AttributeError: # future == True
-                            qtc = np.array(qsr.qsrs[str(p[1]) + "," + str(p[0])].qsr[self._unique_id].split(','))
-                    except KeyError: # New object pair
-                        continue
-                    try:
-                        new = qtc[[1,0,3,2]]
-                    except IndexError:
-                        new = qtc[[1,0]] # QTCb
-                    q = QSR(
-                        timestamp=idx,
-                        between=between,
-                        qsr=self.handle_future(kwargs["future"], ','.join(new), self._unique_id)
-                    )
-                    ret.add_qsr(q, idx)
-                if q:
-                    continue
-                o1_name = p[0]
-                o2_name = p[1]
-                quantisation_factor = parameters["quantisation_factor"]
                 try:
-                    if input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]:
-                        print "Definition of quantisation_factor in object is depricated. Please use parameters field in dynamic_args in service call."
-                        quantisation_factor = input_data.trace[0].objects[o1_name].kwargs["quantisation_factor"]
-                except:
-                    pass
-                qtc_sequence = np.array([], dtype=int)
-                for t0, t1 in zip(timestamps, timestamps[1:]):
-                    timestamp = t1
-                    try:
-                        k = [input_data.trace[t0].objects[o1_name].x,
-                             input_data.trace[t0].objects[o1_name].y,
-                             input_data.trace[t1].objects[o1_name].x,
-                             input_data.trace[t1].objects[o1_name].y]
-                        l = [input_data.trace[t0].objects[o2_name].x,
-                             input_data.trace[t0].objects[o2_name].y,
-                             input_data.trace[t1].objects[o2_name].x,
-                             input_data.trace[t1].objects[o2_name].y]
-                        qtc_sequence = np.append(qtc_sequence, self._create_qtc_representation(
-                            k,
-                            l,
-                            quantisation_factor
-                        )).reshape(-1,4)
+                    qtc_sequence[between] = np.append(
+                        qtc_sequence[between],
+                        qtc
+                    ).reshape(-1,4)
+                except KeyError:
+                    qtc_sequence[between] = qtc
 
-                    except KeyError:
-                        ret.add_empty_world_qsr_state(timestamp)
+        for between, qtc in qtc_sequence.items():
+            if not qsr_params["no_collapse"]:
+                qtc = self._collapse_similar_states(qtc)
+            if qsr_params["validate"]:
+                qtc = self._validate_qtc_sequence(qtc)
+            qtc = qtc if len(qtc.shape) > 1 else [qtc]
+            for idx, q in enumerate(qtc):
+                qsr = QSR(
+                    timestamp=idx+1,
+                    between=between,
+                    qsr=self.qtc_to_output_format(q)
+                )
+                ret.add_qsr(qsr, idx+1)
 
-                if not no_collapse:
-                    qtc_sequence = self._collapse_similar_states(qtc_sequence)
-                if validate:
-                    qtc_sequence = self._validate_qtc_sequence(qtc_sequence)
-                for idx, qtc in enumerate(qtc_sequence):
-                    qsr = QSR(
-                        timestamp=idx+1,
-                        between=between,
-                        qsr=self.qtc_to_output_format((qtc), kwargs["future"])
+        return ret
+
+    def _postprocess_world_qsr_trace(self, world_qsr_trace, world_trace, world_trace_timestamps, qsr_params, req_params, **kwargs):
+        if qsr_params["no_collapse"] and not qsr_params["validate"]:
+            return World_QSR_Trace(
+                qsr_type=world_qsr_trace.qsr_type,
+                last_updated=world_qsr_trace.last_updated,
+                trace={t: world_qsr_trace.trace[tqtc]
+                    for t, tqtc in zip(
+                        world_trace.get_sorted_timestamps()[1:],
+                        world_qsr_trace.get_sorted_timestamps()
                     )
-                    ret.add_qsr(qsr, idx+1)
-
-        if no_collapse and not validate:
-            ret = self._rectify_timestamps(input_data, ret)
-
-        return ret
-
-    def _return_all_possible_combinations(self, objects_names):
-        if len(objects_names) < 2:
-            return []
-        ret = []
-        for i in objects_names:
-            for j in objects_names:
-                if i != j:
-                    ret.append((i, j))
-        return ret
-
-    @staticmethod
-    def _rectify_timestamps(world_trace, world_qsr_trace):
-        return World_QSR_Trace(qsr_type=world_qsr_trace.qsr_type, last_updated=world_qsr_trace.last_updated,
-                               trace={t: world_qsr_trace.trace[tqtc]
-                                      for t, tqtc in zip(world_trace.get_sorted_timestamps()[1:],
-                                                         world_qsr_trace.get_sorted_timestamps())})
+                }
+            )
+        else:
+            return world_qsr_trace
 
     def create_qtc_string(self, qtc):
         return ','.join(map(str, qtc.astype(int))).replace('-1','-').replace('1','+')
 
     @abstractmethod
-    def qtc_to_output_format(self, qtc, future=False):
+    def qtc_to_output_format(self, qtc):
         """Overwrite this for the different QTC variants to select only the parts
         from the QTCC tuple that you would like to return.
         Example for QTCB: return qtc[0:2]

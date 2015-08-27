@@ -20,7 +20,7 @@ class Object_State(object):
                  length=float('nan'), width=float('nan'), height=float('nan'),
                  *args, **kwargs):
         self.name = name
-        self.timestamp = timestamp
+        self.timestamp = float(timestamp)
         self.x = x
         self.y = y
         self.z = z
@@ -53,7 +53,7 @@ class Object_State(object):
 
 class World_State(object):
     def __init__(self, timestamp, objects=None):
-        self.timestamp = timestamp
+        self.timestamp = float(timestamp)
         self.objects = objects if objects else {}
 
     def add_object_state(self, object_state):
@@ -66,14 +66,7 @@ class World_Trace(object):
         self.trace = trace if trace else {}
 
     def get_sorted_timestamps(self):
-        # TODO this is so inefficient, why do I store the timestamps as strings in the first place (answer ros serializ)
-        ret = self.trace.keys()
-        foo = ret[0]
-        ret = [int(i) for i in ret]
-        ret = sorted(ret)
-        if type(foo) is str:  # if they were str make them strs again
-            ret = [str(i) for i in ret]
-        return ret
+        return sorted(self.trace.keys())
 
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
@@ -84,15 +77,15 @@ class World_Trace(object):
         :param kwargs:
         """
         object_state_series = []
-        for t in range(len(track)):
-            x = track[t][0]
-            y = track[t][1]
+        for t, v in enumerate(track):
+            x = v[0]
+            y = v[1]
             try:
-                width = track[t][2]
+                width = v[2]
             except IndexError:
                 width = float('nan')
             try:
-                length = track[t][3]
+                length = v[3]
             except IndexError:
                 length = float('nan')
             object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
@@ -101,8 +94,7 @@ class World_Trace(object):
         self.add_object_state_series(object_state_series)
 
     def add_object_state_to_trace(self, object_state, timestamp=None):
-        if not timestamp:
-            timestamp = object_state.timestamp
+        timestamp = float(timestamp) if timestamp else object_state.timestamp
         try:
             self.trace[timestamp].add_object_state(object_state)
         except KeyError:
@@ -114,12 +106,14 @@ class World_Trace(object):
         for s in object_states:
             self.add_object_state_to_trace(object_state=s)
 
+    # todo: needs validation, and should be part of World_Trace or in utils?
     def get_last(self):
         timestamps = self.get_sorted_timestamps()
         timestamp = timestamps[-1]
         return World_Trace(last_updated=self.last_updated,
                            trace=copy.deepcopy(self.trace[timestamp]))
 
+    # todo: needs validation, and should be part of World_Trace or in utils?
     def get_at_timestamp(self, timestamp):
         try:
             trace = copy.deepcopy(self.trace[timestamp])
@@ -128,6 +122,7 @@ class World_Trace(object):
             print("ERROR: Timestamp not in trace")
             return False
 
+    # todo: needs validation, and should be part of World_Trace or in utils?
     def get_at_timestamp_range(self, start, finish, by_reference=True, inclusive=True):
         """Returns a World_Trace object between start and finish timestamps.
 
@@ -160,6 +155,7 @@ class World_Trace(object):
             ret.trace[timestamp] = self.trace[timestamp] if by_reference else copy.deepcopy(self.trace[timestamp])
         return ret
 
+    # todo: needs validation, and should be part of World_Trace or in utils?
     def get_for_objects(self, objects_names):
         ret = World_Trace(last_updated=self.last_updated,
                           trace=copy.deepcopy(self.trace))
@@ -169,6 +165,7 @@ class World_Trace(object):
                     world_state.objects.pop(object_state_name)
         return ret
 
+    # todo: needs validation, and should be part of World_Trace or in utils?
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names):
         try:
             ret = self.get_at_timestamp_range(start, finish)
