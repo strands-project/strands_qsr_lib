@@ -2,6 +2,104 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* got rid of make_world_qsr_trace when possible (depends on inherited class)
+* providing more prototypes making QSRs developement even easier
+* wrapped qsrlib_object_creation_test in ros
+* minimilizing further the MWE
+* MWE of usage and delopement/registration of new QSRs
+* fixed bug when dynamic_args is not passed in request and is empty
+* QTC had problems when there was only one QTC state in the chain and would error. This fixes it.
+* fixed _process_qsrs_for to work with multiple timesteps (needed by e.g. mos and qtcs)
+* added parameters check in QTCS
+* removed deprecated functions
+* Adjusting function headers according to new layout
+* Adjusting tests.
+  Adding new tests for inverse objects and multiple objects.
+* Adopting new structure of QSR for QTCS
+* reverting back to passing the whole request params as kwargs
+* simplification make_world_qsr_trace arguments
+* fixed buggy qsrs_for implementation
+* fixed reading of q-factor
+* World_QSR_Trace.get_sorted_timestamps simply returns a sorted list as timestamps should be floats just like World_Trace.trace.keys()
+* config functionality for argd should be working again
+* uniform import like the other QSRs
+* fixed installation of example.py
+* timestamps in World_Trace are forced to float now
+* unified standalone/ros example (use --ros to run via ros)
+* changed to protected scope as necessary
+* changed registration of developed QSRs to be in qsrlib_qsrs.__init__.py
+* removed if-check in request_qsrs for speed improvement
+* code cleanup
+* set_from_config_file refactored to private scope
+* custom_set_from_config_file refactored to local scope
+* refactored convert_to_current_rcc
+* fixed a bug introduced when I was checking something
+* removed redundant uses of custom_set_from_config_file
+* custom_checks no longer an abstract, removed where unnecessary
+* refactored format_qsr to private scope
+* refactored custom_checks_for_qsrs_for
+* abstract methods on top, some doc too
+* custom_set_from_config_file no longer abstractmethod; removed from when unnecessary
+* removed redundant overwrites of _postprocess and _process_qsr_parameters...
+* renamed get to get_qsrs and removed *args
+* removed handle_future as no longer needed
+* removed help/custom_help methods that were never used, and are reduntant cause doc should serve this purpose
+* fixed bug in reading mos q-factor
+* fixed a bug in RCC family with q-factor reading
+* Called the convert function
+* Merge branch 'master' into towards-0.2
+  Conflicts:
+  qsr_lib/src/qsrlib_qsrs/qsr_rcc2_rectangle_bounding_boxes_2d.py
+  qsr_lib/src/qsrlib_qsrs/qsr_rcc3_rectangle_bounding_boxes_2d.py
+  qsr_lib/src/qsrlib_qsrs/qsr_rcc8_rectangle_bounding_boxes_2d.py
+* Merge pull request `#133 <https://github.com/strands-project/strands_qsr_lib/issues/133>`_ from cdondrup/qtc_performance
+  [qsr_lib] QTC performance enhancements
+* request returns None for empty/failed world_qsr_traces
+* removed set_input_data function that made no sense
+* cleaning up for deprecated features on request message
+* removed try that resulted in non-sense error messages and difficut debugging
+* fixed bug in argd and argprobd
+* 0.2 changes see PR notes and below as too many to list here
+  Mainly this commit:
+  * restructures code to avoid repeatability and make it simpler
+  * makes --future the only option deprecating old way (still left overs)
+  * argd and argprobd are bugged
+  * QTCS family has not been restructured and needs to be done too
+* Moving no_collapse and validate type check closer to variable assignment and out of main loop
+* Applying same changes to qtcbc as well.
+* Looking up previous result in World_QSR_Trace instead of creating my own dict for it.
+* Saving previous combinations of objects in case their inverse combination has to be calculated as well.
+  Saves 1 calculation per object pair if no explicit qsrs_for are given.
+* Vectorising collapse method. Saves 0.02~0.04 seconds for every test case.
+* Removing confusing super call to create string representation of QTC states
+* RCC Abstraction
+  Added quantisation factor
+* Merge branch 'master' of https://github.com/strands-project/strands_qsr_lib
+* Merge pull request `#107 <https://github.com/strands-project/strands_qsr_lib/issues/107>`_ from yianni/change_to_qsr_unique_id_shorts
+  Change to qsr unique id shorts + new way of registering QSRs in QSRlib
+* quantisation factors for RCC
+  RCC2, RCC3, RCC8
+* Merge branch 'master' into change_to_qsr_unique_id_shorts
+  Conflicts:
+  qsr_lib/scripts/example_ros_client.py
+* Fixing qtc tests
+* added unittest for QSRlib object creation
+* fixed super init in children classes
+* Merge branch 'master' into change_to_qsr_unique_id_shorts
+  Conflicts:
+  qsr_lib/scripts/example_ros_client.py
+  qsr_lib/src/qsrlib/qsrlib.py
+  qsr_lib/src/qsrlib_qsrs/qsr_arg_relations_abstractclass.py
+  qsr_lib/src/qsrlib_qsrs/qsr_arg_relations_distance.py
+* some protection to unique_id and qsrs_registration
+* even simpler and automated registration of newly developed QSRs
+* qsrs_registry has a local scope
+* added new registry of qsrs, updated ros example
+* changed to unique_id, dropped qsr_type
+* Contributors: Christian Dondrup, Peter Lightbody, Yiannis Gatsoulis
+
 0.1.3 (2015-08-13)
 ------------------
 * Adding test for non collapsed QTC.
