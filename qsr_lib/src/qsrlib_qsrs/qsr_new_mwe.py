@@ -8,9 +8,7 @@ class QSR_MWE(QSR_Dyadic_1t_Abstractclass):
         super(QSR_MWE, self).__init__()
         self._unique_id = "mwe"
         self.all_possible_relations = ["left", "together", "right"]
-
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "points", **kwargs)
+        self._dtype = "points"
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         return {

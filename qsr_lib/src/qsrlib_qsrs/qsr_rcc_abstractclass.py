@@ -14,6 +14,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         super(QSR_RCC_Abstractclass, self).__init__()
         self.all_possible_relations = []
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
+        self._dtype = "bounding_boxes"
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
@@ -25,9 +26,6 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
             except (TypeError, KeyError):
                 pass
         return qsr_params
-
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "bounding_boxes", **kwargs)
 
     def _compute_qsr(self, bb1, bb2, qsr_params, **kwargs):
         """Return symmetrical RCC8 relation

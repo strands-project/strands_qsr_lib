@@ -21,9 +21,7 @@ class QSR_Cone_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractclass)
         super(QSR_Cone_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
         self._unique_id = "coneDir"
         self.all_possible_relations = ["n", "ne", "e", "se", "s", "sw", "w", "nw", "eq"]
-
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "bounding_boxes", **kwargs)
+        self._dtype = "bounding_boxes"
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Return cone direction relation

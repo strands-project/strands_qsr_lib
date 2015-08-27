@@ -41,7 +41,7 @@ class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         return
 
-    def _make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, dtype, **kwargs):
+    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """
 
         :param world_trace:
@@ -60,10 +60,10 @@ class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
                                               req_params["dynamic_args"])
             for object_name in qsrs_for:
                 try:
-                    data1, data2 = self._allowed_dtype[dtype](world_state_now.objects[object_name],
+                    data1, data2 = self._allowed_dtype[self._dtype](world_state_now.objects[object_name],
                                                               world_state_previous.objects[object_name])
                 except KeyError:
-                    raise KeyError("%s is not a valid value, should be one of %s" % (dtype, self._allowed_dtype.keys()))
+                    raise KeyError("%s is not a valid value, should be one of %s" % (self._dtype, self._allowed_dtype.keys()))
                 ret.add_qsr(QSR(timestamp=t, between=object_name,
                                 qsr=self._format_qsr(self._compute_qsr(data1, data2, qsr_params, **kwargs))),
                             t)

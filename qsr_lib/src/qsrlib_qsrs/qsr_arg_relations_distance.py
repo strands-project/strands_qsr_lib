@@ -12,6 +12,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         self._unique_id = "argd"
         self.allowed_value_types = (int, float)
         self.value_sort_key = operator.itemgetter(1)  # Sort by threshold
+        self._dtype = "points"
 
     # todo IMPORTANT: qsr_relations_and_values should not be a member, but enforced to be passed everytime
     # todo this is incompatible with how the rest of the QSRs are obtaining their parameters
@@ -24,9 +25,6 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                 self.set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
             except KeyError:
                 raise KeyError("qsr_relations_and_values not set")
-
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "points", **kwargs)
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         if np.isnan(data1.z) or np.isnan(data2.z):

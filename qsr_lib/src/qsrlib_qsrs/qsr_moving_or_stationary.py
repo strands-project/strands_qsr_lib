@@ -12,6 +12,7 @@ class QSR_Moving_or_Stationary(QSR_Monadic_2t_Abstractclass):
         super(QSR_Moving_or_Stationary, self).__init__()
         self._unique_id = "mos"
         self.all_possible_relations = ["m", "s"]
+        self._dtype = "points"
 
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
@@ -25,9 +26,6 @@ class QSR_Moving_or_Stationary(QSR_Monadic_2t_Abstractclass):
             except (TypeError, KeyError):
                 pass
         return qsr_params
-
-    def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "points", **kwargs)
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Return MOS relation
