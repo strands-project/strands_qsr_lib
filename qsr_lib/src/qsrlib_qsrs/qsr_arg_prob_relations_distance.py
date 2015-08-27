@@ -25,8 +25,8 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         y = (1/(np.sqrt(2*np.pi)*np.abs(sigma)))*np.exp(-u*u/2)
         return np.around(y, decimals=3)
 
-    def _compute_qsr(self, objs):
-        d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y))
+    def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
+        d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         r = (None, 0.0)
         for values, relation in zip(self.all_possible_values, self.all_possible_relations):
             prob = uniform(0.0, self.__normpdf(d, mu=values[0], sigma=values[1]))

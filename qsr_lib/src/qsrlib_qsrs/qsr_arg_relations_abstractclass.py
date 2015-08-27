@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
 import abc
-from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
+from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 
 
-class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_Abstractclass):
+class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_1t_Abstractclass):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self):
+        super(QSR_Arg_Relations_Abstractclass, self).__init__()
         self.qsr_relations_and_values = None
         self.all_possible_relations = None
         self.all_possible_values = None

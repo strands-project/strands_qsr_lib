@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from abc import abstractmethod, ABCMeta
-from qsrlib_io.world_qsr_trace import *
-from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_Abstractclass
+from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 
 
-class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
+class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
     """Abstract class for the QSR makers
 
         where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
@@ -12,6 +11,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
     __metaclass__ = ABCMeta
 
     def __init__(self):
+        super(QSR_RCC_Abstractclass, self).__init__()
         self.all_possible_relations = []
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
@@ -27,20 +27,9 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         return qsr_params
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        ret = World_QSR_Trace(qsr_type=self._unique_id)
-        for t in timestamps:
-            world_state = world_trace.trace[t]
-            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), req_params["dynamic_args"])
-            for p in qsrs_for:
-                between = ",".join(p)
-                bb1 = world_state.objects[p[0]].return_bounding_box_2d()
-                bb2 = world_state.objects[p[1]].return_bounding_box_2d()
-                ret.add_qsr(QSR(timestamp=t, between=between,
-                                qsr=self._format_qsr(self._convert_to_requested_rcc_type(self.__compute_qsr(bb1, bb2, qsr_params["quantisation_factor"])))),
-                            t)
-        return ret
+        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "bounding_boxes", **kwargs)
 
-    def __compute_qsr(self, bb1, bb2, q):
+    def _compute_qsr(self, bb1, bb2, qsr_params, **kwargs):
         """Return symmetrical RCC8 relation
             :param bb1: diagonal points coordinates of first bounding box (x1, y1, x2, y2)
             :param bb2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
@@ -62,11 +51,12 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
                  |            b|         |            d|
                  +-------------+         +-------------+
         """
+        q = qsr_params["quantisation_factor"]
 
         # CALCULATE EQ
         # Is object1 equal to object2
-        if(bb1 == bb2):
-            return "eq"
+        if (bb1 == bb2):
+            return self._convert_to_requested_rcc_type("eq")
 
         ax, ay, bx, by = bb1
         cx, cy, dx, dy = bb2
@@ -79,7 +69,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         
         #    Cond1           Cond2          Cond3         Cond4
         if (ax-q > dx+q) or (bx+q < cx-q) or (ay-q > dy+q) or (by+q < cy-q):
-            return "dc"
+            return self._convert_to_requested_rcc_type("dc")
 
         # Is one object inside the other ()
         BinsideA = (ax <= cx) and (ay <= cy) and (bx >= dx) and (by >= dy)
@@ -90,17 +80,18 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
         sameY = (abs(ay - cy)<=q) or (abs(ay - dy)<=q) or (abs(by - cy)<=q) or (abs(by - dy)<=q)
         
         if AinsideB and (sameX or sameY):
-            return "tpp"
+            return self._convert_to_requested_rcc_type("tpp")
 
         if BinsideA and (sameX or sameY):
-            return "tppi"
+            return self._convert_to_requested_rcc_type("tppi")
 
         if AinsideB:
-            return "ntpp"
+            return self._convert_to_requested_rcc_type("ntpp")
 
         if BinsideA:
-            return "ntppi"
+            return self._convert_to_requested_rcc_type("ntppi")
 
+        # todo: code inspection says similarX and similarY are unused
         similarX = (abs(ax - cx)<q) or (abs(ax - dx)<q) or (abs(bx - cx)<q) or (abs(bx - dx)<q)
         similarY = (abs(ay - cy)<q) or (abs(ay - dy)<q) or (abs(by - cy)<q) or (abs(by - dy)<q)
 
@@ -116,19 +107,20 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_Abstractclass):
            ((dx+q) >= (ax-q)) and ((dx+q) <= (ax)) or \
            ((cy-q) <= (by+q)) and ((cy-q) >= (by)) or \
            ((dy+q) >= (ay-q)) and ((dy+q) <= (ay)):
-            return "ec"
+            return self._convert_to_requested_rcc_type("ec")
 
         # If none of the other conditions are met, the objects must be parially overlapping
-        return "po"
+        return self._convert_to_requested_rcc_type("po")
 
     @abstractmethod
     def _convert_to_requested_rcc_type(self, qsr):
-        """Overwrite this function to filter and return only the relations
-        coresponding to the particular RCC version you are using.
-        
+        """Overwrite this function to filter and return only the relations corresponding to the particular RCC version.
+
         Example for RCC2: return qsr if qsr =="dc" else "c"
 
-        :param qtc: The RCC8 relation between two objects
+        :param qsr: The RCC8 relation between two objects
+        :type qsr: str
         :return: The part of the tuple you would to have as a result
+        :rtype: str
         """
         return

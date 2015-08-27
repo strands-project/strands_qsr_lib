@@ -26,22 +26,13 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
                 raise KeyError("qsr_relations_and_values not set")
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
-        ret = World_QSR_Trace(qsr_type=self._unique_id)
-        for t in world_trace.get_sorted_timestamps():
-            world_state = world_trace.trace[t]
-            qsrs_for = self._process_qsrs_for(world_state.objects.keys(), req_params["dynamic_args"])
-            for p in qsrs_for:
-                between = str(p[0]) + "," + str(p[1])
-                objs = (world_state.objects[p[0]], world_state.objects[p[1]])
-                ret.add_qsr(QSR(timestamp=t, between=between, qsr=self._format_qsr(self._compute_qsr(objs))),
-                            t)
-        return ret
+        return self._make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params, "points", **kwargs)
 
-    def _compute_qsr(self, objs):
-        if np.isnan(objs[0].z) or np.isnan(objs[1].z):
-            d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y))
+    def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
+        if np.isnan(data1.z) or np.isnan(data2.z):
+            d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         else:
-            d = np.sqrt(np.square(objs[0].x - objs[1].x) + np.square(objs[0].y - objs[1].y) + np.square(objs[0].z - objs[1].z))
+            d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y) + np.square(data1.z - data2.z))
         for thres, relation in zip(self.all_possible_values, self.all_possible_relations):
             if d <= thres:
                 return relation
