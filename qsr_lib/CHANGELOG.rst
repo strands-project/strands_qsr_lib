@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2015-08-27)
+------------------
 * got rid of make_world_qsr_trace when possible (depends on inherited class)
 * providing more prototypes making QSRs developement even easier
 * wrapped qsrlib_object_creation_test in ros
