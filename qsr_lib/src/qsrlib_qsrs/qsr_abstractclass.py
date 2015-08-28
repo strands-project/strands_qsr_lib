@@ -162,31 +162,5 @@ class QSR_Abstractclass(object):
         """
         return world_qsr_trace
 
-    def _set_from_config_file(self, path):
-        try:
-            import rospkg
-        except ImportError:
-            raise ImportError("Module rospkg not found; setting from config file works for now only within the ROS eco-system")
-        if path is None:
-            path = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.yml")
-        else:
-            path_ext = os.path.splitext(path)[1]
-            if path_ext != ".yml" and path_ext != ".yaml":
-                print("ERROR (qsr_abstractclass.py/set_from_config_file): Only yaml files are supported")
-                raise ValueError
-        with open(path, "r") as f:
-            document = yaml.load(f)
-        self._custom_set_from_config_file(document)
-
-    def _custom_set_from_config_file(self, document):
-        """
-
-        Overwrite as needed.
-
-        :param document:
-        :return:
-        """
-        raise NotImplemented(self._unique_id, "has no support from reading from config file")
-
     def _format_qsr(self, v):
         return {self._unique_id: v}

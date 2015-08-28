@@ -14,7 +14,7 @@ class QSRlib_Response_Message(object):
         self.req_finished_at = req_finished_at
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr, input_data, dynamic_args={}, req_made_at=None, config=None):
+    def __init__(self, which_qsr, input_data, dynamic_args={}, req_made_at=None):
         self.which_qsr = which_qsr
         if isinstance(input_data, World_Trace):
             self.input_data = input_data
@@ -22,7 +22,6 @@ class QSRlib_Request_Message(object):
             raise TypeError("input_data must be of type 'World_Trace'")
         self.dynamic_args = dynamic_args
         self.made_at = req_made_at if req_made_at else datetime.now()
-        self.config = config
 
 class QSRlib(object):
     """The LIB
@@ -79,7 +78,6 @@ class QSRlib(object):
         for which_qsr in which_qsrs:
             world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=req_msg.input_data,
                                                                     timestamp_request_received=req_received_at,
-                                                                    config=req_msg.config,
                                                                     dynamic_args=req_msg.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
