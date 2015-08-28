@@ -27,7 +27,7 @@ class QSRlib(object):
     """The LIB
     """
     def __init__(self, help=False):
-        self.__qsrs = self.__check_and_activate_qsrs(qsrs_registry)
+        self.__qsrs_registry = self.__check_and_activate_qsrs(qsrs_registry)
         if help:
             self.help()
 
@@ -54,20 +54,20 @@ class QSRlib(object):
         return qsrs
 
     def get_qsrs_registry(self):
-        return self.__qsrs
+        return self.__qsrs_registry
 
     def help(self):
         self.__print_qsrs_available()
 
     def __print_qsrs_available(self):
         print("Supported QSRs are:")
-        for i in sorted(self.__qsrs):
+        for i in sorted(self.__qsrs_registry):
             print("-", i)
 
     def request_qsrs(self, req_msg):
         """
 
-        :param req_msg: QSRlib_Request_Message, default=None
+        :param req_msg: QSRlib_Request_Message
         :return: QSRlib_Response_Message
         """
         req_received_at = datetime.now()
@@ -76,8 +76,8 @@ class QSRlib(object):
         # which_qsrs should always be iterable, even it is only a string, to enable the loop
         which_qsrs = req_msg.which_qsr if isinstance(req_msg.which_qsr, (list, tuple)) else [req_msg.which_qsr]
         for which_qsr in which_qsrs:
-            world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=req_msg.input_data,
-                                                                    dynamic_args=req_msg.dynamic_args))
+            world_qsr_traces.append(self.__qsrs_registry[which_qsr].get_qsrs(input_data=req_msg.input_data,
+                                                                             dynamic_args=req_msg.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
             if isinstance(req_msg.which_qsr, (list, tuple)):
