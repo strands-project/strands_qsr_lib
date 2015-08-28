@@ -32,19 +32,19 @@ class QSRlib(object):
             self.help()
 
     @staticmethod
-    def __check_and_activate_qsrs(qsrs_registration):
+    def __check_and_activate_qsrs(qsrs_registry):
         """Checks for uniqueness of the QSRs _unique_id and their corresponding class names and then return a dictionary
         with the unique IDs as keys and their corresponding objects.
 
-        :param qsrs_registration: The dictionary where the QSRs are registered (see constructor source).
-            :type qsrs_registration: tuple
+        :param qsrs_registry: The dictionary where the QSRs are registered (see constructor source).
+            :type qsrs_registry: tuple
         :return: A dictionary with the QSRs _unique_id as keys and an object of their corresponding classes
         :rtype: dict
         """
-        if len(set(qsrs_registration)) != len(qsrs_registration):
+        if len(set(qsrs_registry)) != len(qsrs_registry):
             raise KeyError("Repeated class name found")
         qsrs = {}
-        for class_name in qsrs_registration:
+        for class_name in qsrs_registry:
             o = class_name()
             if o._unique_id in qsrs:
                 raise KeyError("Non unique QSR ID <%s> found while processing class <%s> which was mapped to class <%s>"
