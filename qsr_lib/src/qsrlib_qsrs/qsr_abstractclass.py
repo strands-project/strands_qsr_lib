@@ -54,6 +54,9 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for
 
+    def get_unique_id(self):
+        return self._unique_id
+
     def get_qsrs(self, **req_params):
         """
 
