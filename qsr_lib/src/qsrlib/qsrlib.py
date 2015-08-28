@@ -77,7 +77,6 @@ class QSRlib(object):
         which_qsrs = req_msg.which_qsr if isinstance(req_msg.which_qsr, (list, tuple)) else [req_msg.which_qsr]
         for which_qsr in which_qsrs:
             world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=req_msg.input_data,
-                                                                    timestamp_request_received=req_received_at,
                                                                     dynamic_args=req_msg.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
