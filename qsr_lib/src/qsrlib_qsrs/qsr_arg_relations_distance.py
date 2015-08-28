@@ -22,7 +22,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             self._set_from_config_file(req_params["config"])
         else:
             try:
-                self.set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
+                self._set_qsr_relations_and_values(qsr_relations_and_values=req_params["dynamic_args"][self._unique_id]["qsr_relations_and_values"])
             except KeyError:
                 raise KeyError("qsr_relations_and_values not set")
 
@@ -41,4 +41,4 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             relations_and_values = document[self._unique_id]["relations_and_values"]
         except:
             raise KeyError
-        self.set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)
+        self._set_qsr_relations_and_values(qsr_relations_and_values=relations_and_values)

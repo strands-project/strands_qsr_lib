@@ -36,7 +36,7 @@ class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_1t_Abstractclass):
                     raise ValueError("qsr_relations_and_values must be a dict of str:%s" % self.allowed_value_types.__name__)
         return True
 
-    def set_qsr_relations_and_values(self, qsr_relations_and_values):
+    def _set_qsr_relations_and_values(self, qsr_relations_and_values):
         if self.__check_validity_of_qsr_relations_and_values(qsr_relations_and_values):
             self.qsr_relations_and_values = qsr_relations_and_values
         self.all_possible_relations, self.all_possible_values = self.__populate_possible_relations_and_values()
