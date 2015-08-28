@@ -7,21 +7,21 @@ from qsrlib_qsrs import *
 
 
 class QSRlib_Response_Message(object):
-    def __init__(self, qsrs, timestamp_request_made, timestamp_request_received, timestamp_qsrs_computed):
+    def __init__(self, qsrs, req_made_at, req_received_at, req_finished_at):
         self.qsrs = qsrs
-        self.timestamp_request_made = timestamp_request_made
-        self.timestamp_request_received = timestamp_request_received
-        self.timestamp_qsrs_computed = timestamp_qsrs_computed
+        self.req_made_at = req_made_at
+        self.req_received_at = req_received_at
+        self.req_finished_at = req_finished_at
 
 class QSRlib_Request_Message(object):
-    def __init__(self, which_qsr, input_data, dynamic_args={}, timestamp_request_made=None, config=None):
+    def __init__(self, which_qsr, input_data, dynamic_args={}, req_made_at=None, config=None):
         self.which_qsr = which_qsr
         if isinstance(input_data, World_Trace):
             self.input_data = input_data
         else:
             raise TypeError("input_data must be of type 'World_Trace'")
         self.dynamic_args = dynamic_args
-        self.timestamp_request_made = datetime.now() if timestamp_request_made is None else timestamp_request_made
+        self.made_at = req_made_at if req_made_at else datetime.now()
         self.config = config
 
 class QSRlib(object):
@@ -65,26 +65,26 @@ class QSRlib(object):
         for i in sorted(self.__qsrs):
             print("-", i)
 
-    def request_qsrs(self, request_message):
+    def request_qsrs(self, req_msg):
         """
 
-        :param request_message: QSRlib_Request_Message, default=None
+        :param req_msg: QSRlib_Request_Message, default=None
         :return: QSRlib_Response_Message
         """
+        req_received_at = datetime.now()
         world_qsr_traces = []
-        timestamp_request_received = datetime.now()
 
         # which_qsrs should always be iterable, even it is only a string, to enable the loop
-        which_qsrs = request_message.which_qsr if isinstance(request_message.which_qsr, (list, tuple)) else [request_message.which_qsr]
+        which_qsrs = req_msg.which_qsr if isinstance(req_msg.which_qsr, (list, tuple)) else [req_msg.which_qsr]
         for which_qsr in which_qsrs:
-            world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=request_message.input_data,
-                                                                    timestamp_request_received=timestamp_request_received,
-                                                                    config=request_message.config,
-                                                                    dynamic_args=request_message.dynamic_args))
+            world_qsr_traces.append(self.__qsrs[which_qsr].get_qsrs(input_data=req_msg.input_data,
+                                                                    timestamp_request_received=req_received_at,
+                                                                    config=req_msg.config,
+                                                                    dynamic_args=req_msg.dynamic_args))
         if world_qsr_traces:
             # If the input was a list of QSRs, merge the results
-            if isinstance(request_message.which_qsr, (list, tuple)):
-                world_qsr_trace = merge_world_qsr_traces(world_qsr_traces, ",".join(request_message.which_qsr))
+            if isinstance(req_msg.which_qsr, (list, tuple)):
+                world_qsr_trace = merge_world_qsr_traces(world_qsr_traces, ",".join(req_msg.which_qsr))
             elif len(world_qsr_traces) == 1:  # Just take the first because the list will only contain that one element
                 world_qsr_trace = world_qsr_traces[0]
             else:
@@ -93,8 +93,8 @@ class QSRlib(object):
             world_qsr_trace = None
 
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
-                                                  timestamp_request_made=request_message.timestamp_request_made,
-                                                  timestamp_request_received=timestamp_request_received,
-                                                  timestamp_qsrs_computed=datetime.now())
+                                                  req_made_at=req_msg.made_at,
+                                                  req_received_at=req_received_at,
+                                                  req_finished_at=datetime.now())
 
         return qsrlib_response

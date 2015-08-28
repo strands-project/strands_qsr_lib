@@ -6,9 +6,9 @@ from qsrlib_io.world_trace import Object_State, World_Trace
 import argparse
 
 def pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message):
-    print(which_qsr, "request was made at ", str(qsrlib_response_message.timestamp_request_made)
-          + " and received at " + str(qsrlib_response_message.timestamp_request_received)
-          + " and computed at " + str(qsrlib_response_message.timestamp_qsrs_computed))
+    print(which_qsr, "request was made at ", str(qsrlib_response_message.req_made_at)
+          + " and received at " + str(qsrlib_response_message.req_received_at)
+          + " and finished at " + str(qsrlib_response_message.req_finished_at))
     print("---")
     print("Response is:")
     for t in qsrlib_response_message.qsrs.get_sorted_timestamps():
@@ -49,7 +49,7 @@ if __name__ == "__main__":
     # make a QSRlib request message
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world)
     # request your QSRs
-    qsrlib_response_message = qsrlib.request_qsrs(request_message=qsrlib_request_message)
+    qsrlib_response_message = qsrlib.request_qsrs(req_msg=qsrlib_request_message)
 
     # ****************************************************************************************************
     # print out your QSRs

@@ -32,7 +32,7 @@ class QSRlib_ROS_Server(object):
     def handle_request_qsrs(self, req):
         rospy.logdebug("Handling QSRs request made at %i.%i" % (req.header.stamp.secs, req.header.stamp.nsecs))
         request_message = pickle.loads(req.data)
-        qsrs_response_message = self.qsrlib.request_qsrs(request_message=request_message)
+        qsrs_response_message = self.qsrlib.request_qsrs(req_msg=request_message)
         res = RequestQSRsResponse()
         res.header.stamp = rospy.get_rostime()
         res.data = pickle.dumps(qsrs_response_message)
