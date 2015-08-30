@@ -73,22 +73,19 @@ class QSR_Abstractclass(object):
         world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
         return world_qsr_trace
 
-    def custom_checks(self, input_data):
-        # todo needs to be refactored to a better name; not even sure if needed or should be integrated somewhere else
-        """Customs checks on the input data.
+    def _custom_checks_world_trace(self, world_trace):
+        """Customs checks of the input data.
 
-        :param input_data:
-        :return:
+        :param world_trace: The input data.
+        :type world_trace: World_Trace
+        :return: False for no problems.
+        :rtype: bool
         """
-        return 0, ""
+        return False
 
-    # todo can be simplified a bit, also custom_checks possibly not needed anymore here
     def _set_input_world_trace(self, world_trace):
-        error_code, error_msg = self.custom_checks(input_data=world_trace)
-        if error_code > 0:
-            raise RuntimeError("Something wrong with the input data", error_code, error_msg)
-        timestamps = world_trace.get_sorted_timestamps()
-        return world_trace, timestamps
+        self._custom_checks_world_trace(world_trace)
+        return world_trace, world_trace.get_sorted_timestamps()
 
     def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):
         if isinstance(objects_names[0], str):
