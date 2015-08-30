@@ -11,7 +11,7 @@ class QSR_Abstractclass(object):
 
     def __init__(self):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
-        self.all_possible_relations = []
+        self._all_possible_relations = []
         self._allowed_parameters = ["qsrs_for"]
         self._dtype = ""
 
@@ -56,6 +56,9 @@ class QSR_Abstractclass(object):
 
     def get_unique_id(self):
         return self._unique_id
+
+    def get_all_possible_relations(self):
+        return self._all_possible_relations
 
     def get_qsrs(self, **req_params):
         """

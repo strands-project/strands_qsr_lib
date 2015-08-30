@@ -25,7 +25,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
             d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         else:
             d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y) + np.square(data1.z - data2.z))
-        for thres, relation in zip(self.all_possible_values, self.all_possible_relations):
+        for thres, relation in zip(self.all_possible_values, self._all_possible_relations):
             if d <= thres:
                 return relation
-        return self.all_possible_relations[-1]
+        return self._all_possible_relations[-1]
