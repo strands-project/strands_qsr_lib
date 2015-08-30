@@ -67,8 +67,8 @@ class QSR_Abstractclass(object):
         :return: Computed World_QSR_Trace
         :rtype: World_QSR_Trace
         """
-        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"])
         qsr_params = self._process_qsr_parameters_from_request_parameters(req_params)
+        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"], qsr_params)
         world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params)
         world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
         return world_qsr_trace
@@ -83,8 +83,8 @@ class QSR_Abstractclass(object):
         """
         return False
 
-    def _set_input_world_trace(self, world_trace):
-        self._custom_checks_world_trace(world_trace)
+    def _set_input_world_trace(self, world_trace, qsr_params):
+        self._custom_checks_world_trace(world_trace, qsr_params)
         return world_trace, world_trace.get_sorted_timestamps()
 
     def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):

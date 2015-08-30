@@ -197,7 +197,7 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
             world.add_object_state_series(o3)
-            # world.add_object_state_series(o4)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "qtccs":
         dynamic_args = {which_qsr: {
@@ -235,8 +235,12 @@ if __name__ == "__main__":
                   Object_State(name="o2", timestamp=1, x=4., y=1.),
                   Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
+            o4 = [Object_State(name="o4", timestamp=0, x=14., y=11.),
+                  Object_State(name="o4", timestamp=1, x=14., y=11.)]
+
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "qtcbcs":
         dynamic_args = {which_qsr: {
@@ -275,8 +279,12 @@ if __name__ == "__main__":
                   Object_State(name="o2", timestamp=1, x=4., y=1.),
                   Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
+            o4 = [Object_State(name="o4", timestamp=0, x=14., y=11.),
+                  Object_State(name="o4", timestamp=1, x=14., y=11.)]
+
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "multiple":
         which_qsr = multiple

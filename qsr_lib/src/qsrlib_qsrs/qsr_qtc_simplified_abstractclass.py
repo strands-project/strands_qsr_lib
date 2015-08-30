@@ -318,26 +318,25 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         # Side constraints need to be inverted to give the correct qtc state
         return res*-1 if constraint == "side" else res
 
-    # todo maybe we can include this somewhere else... have a feeling that I was thinking of deprecating this or refactoring to a more meaningful name
-    def _custom_checks_world_trace(self, input_data):
+    def _custom_checks_world_trace(self, input_data, qsr_params):
         """Write your own custom checks on top of the default ones and raise exceptions as necessary.
 
         :return: False for no problems.
         :rtype: bool
         """
-        # return  # bypass
         timestamps = input_data.get_sorted_timestamps()
         if len(timestamps) < 2:
             raise ValueError("Data for at least two separate timesteps has to be provided.")
-        objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
-        for t in timestamps:
-            for o in objects_names:
-                try:
-                    input_data.trace[t].objects[o]
-                except KeyError:
-                    raise KeyError("Only one object defined for timestep %f. Two objects have to be present at any given step." % t)
-                if np.isnan(input_data.trace[t].objects[o].x) or np.isnan(input_data.trace[t].objects[o].y):
-                    raise ValueError("Coordinates x: %f, y: %f are not defined correctly for timestep %f." % (input_data.trace[t].objects[o].x, input_data.trace[t].objects[o].y, t))
+        if self._unique_id != "qtcbs" or qsr_params["validate"] or not qsr_params["no_collapse"]:
+            objects_names = sorted(input_data.trace[timestamps[0]].objects.keys())
+            for t in timestamps:
+                for o in objects_names:
+                    try:
+                        input_data.trace[t].objects[o]
+                    except KeyError:
+                        raise KeyError("Only one object defined for timestep %f. Two objects have to be present at any given step." % t)
+                    if np.isnan(input_data.trace[t].objects[o].x) or np.isnan(input_data.trace[t].objects[o].y):
+                        raise ValueError("Coordinates x: %f, y: %f are not defined correctly for timestep %f." % (input_data.trace[t].objects[o].x, input_data.trace[t].objects[o].y, t))
         return False
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
