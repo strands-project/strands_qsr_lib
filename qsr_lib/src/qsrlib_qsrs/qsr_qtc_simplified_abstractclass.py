@@ -166,7 +166,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
 
     def _create_qtc_representation(self, pos_k, pos_l, quantisation_factor=0):
         """Creating the QTCC representation for the given data. Uses the
-        double cross to determine to which side of the lines the points are
+        double cross to determine to which side of the qsrs_list_r the points are
         moving.
 
         :param pos_k: An array of positions for agent k, exactly 2 entries of x,y positions
@@ -181,7 +181,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         pos_l = np.array(pos_l).reshape(-1, 2)
 
         # Creating double cross, RL_ext being the connecting line, trans_RL_k
-        # and l being the orthogonal lines going through k and l respectively.
+        # and l being the orthogonal qsrs_list_r going through k and l respectively.
         RL_ext = np.append(
             self._translate(pos_k[-2], (pos_k[-2]-pos_l[-2])/2),
             self._translate(pos_l[-2], (pos_l[-2]-pos_k[-2])/2)
