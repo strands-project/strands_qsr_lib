@@ -1,11 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
+import sys
 import argparse
-# import csv
-# import os
-# import json
-# import sys
 import random
 from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from unittests_data_loaders import *
@@ -46,6 +43,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.qsr in options:
         which_qsr = args.qsr
+    elif args.qsr == "multiple":
+        which_qsr = options[:]
+        # todo: qtcs is giving a warning message
     else:
         raise ValueError("qsr not found, keywords: %s" % options)
     if args.input not in load_by_world_name:
@@ -58,30 +58,38 @@ if __name__ == "__main__":
 
     # ****************************************************************************************************
     # make a QSRlib request message
-    if which_qsr == "argprobd":
+    if args.qsr == "argprobd" or args.qsr == "multiple":
         random.seed(100)
 
     # defaults
-    if which_qsr == "argd":
+    if args.qsr == "argd":
         dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0}}}
-    elif which_qsr == "argprobd":
+    elif args.qsr == "argprobd":
         dynamic_args = {"argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
                                                                   "far": (30, 30/2), "veryfar": (40, 40/2)}}}
+    elif args.qsr == "multiple":
+        dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0,
+                                                              "far": 30.0, "veryfar": 40.0}},
+                        "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
+                                                                  "far": (30, 30/2), "veryfar": (40, 40/2)}},
+                        "qtcbs": {"validate": False, "no_collapse": True},
+                        "qtccs": {"validate": False, "no_collapse": True},
+                        "qtcbcs": {"validate": False, "no_collapse": True}}
     else:
         dynamic_args = {}
 
     # quantisation_factor
-    # dynamic_args = {which_qsr: {"quantisation_factor": 2.0}}
+    # dynamic_args = {args.qsr: {"quantisation_factor": 2.0}}
 
     ### monadic
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": ["o2"]}}  # qsrs_for_global_namespace
-    # dynamic_args = {which_qsr: {"qsrs_for": ["o1"]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
-    # dynamic_args = {which_qsr: {"qsrs_for": ["o1"], "quantisation_factor": 2.0}}  # custom
+    # dynamic_args = {args.qsr: {"qsrs_for": ["o1"]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
+    # dynamic_args = {args.qsr: {"qsrs_for": ["o1"], "quantisation_factor": 2.0}}  # custom
 
     #### dyadic (except argd and argprobd, see below for these two
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]}}  # qsrs_for_global_namespace
-    # dynamic_args = {which_qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
-    # dynamic_args = {which_qsr: {"qsrs_for": [("o1", "o2")], "quantisation_factor": 2.0}}  # custom
+    # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
+    # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")], "quantisation_factor": 2.0}}  # custom
 
     #### argd special case
     # qsrs_for_global_namespace
@@ -97,10 +105,25 @@ if __name__ == "__main__":
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
     #                 "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
     #                                                           "far": (30, 30/2), "veryfar": (40, 40/2)}}}
-    dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
-                    "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
-                                                              "far": (30, 30/2), "veryfar": (40, 40/2)},
-                                 "qsrs_for": [("o1", "o2")]}}
+    # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
+    #                 "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
+    #                                                           "far": (30, 30/2), "veryfar": (40, 40/2)},
+    #                              "qsrs_for": [("o1", "o2")]}}
+
+    #### multiple
+    # qsrs_for_global_namespace
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o2", "o1"), "o2"]}
+    # qsrs_for_qsr_namespace - cherry pick
+    # dynamic_args["rcc2"] = {"qsrs_for": [("o1", "o2")]}
+    # dynamic_args["qtcbs"]["qsrs_for"] = [("o1", "o2")]
+    # dynamic_args["mwe"] = {"qsrs_for": [("o1", "o2")]}
+    # dynamic_args["mos"] = {"qsrs_for": ["o1"]}
+    # qsrs_for_qsr_namespace_over_global - cherry pick
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o2", "o1"), "o2"]}
+    # dynamic_args["rcc2"] = {"qsrs_for": [("o1", "o2")]}
+    # dynamic_args["qtcbs"]["qsrs_for"] = [("o1", "o2")]
+    # dynamic_args["mwe"] = {"qsrs_for": [("o1", "o2")]}
+    # dynamic_args["mos"] = {"qsrs_for": ["o1"]}
 
     print("> Computing QSRs", which_qsr, dynamic_args)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr, world, dynamic_args)
@@ -111,9 +134,12 @@ if __name__ == "__main__":
     # save
     qsrs = qsrlib_response_message.qsrs
     print(len(qsrs.trace))
-    t = qsrs.get_sorted_timestamps()[0]
+    t = qsrs.get_sorted_timestamps()[1]
     print(qsrs.trace[t].qsrs)
-    qsrs_list = unittest_get_qsrs_as_one_long_list(qsrlib_response_message.qsrs)
+    if args.qsr != "multiple":
+        qsrs_list = unittest_get_qsrs_as_one_long_list(qsrs)
+    else:
+        qsrs_list = unittest_get_multiple_qsrs_as_one_long_list(qsrs, which_qsr)
     print("> Saving to:", args.output)
     unittest_write_qsrs_as_one_long_list(qsrs_list, args.output)
     print("> Validating...")

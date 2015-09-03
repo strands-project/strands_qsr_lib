@@ -48,5 +48,6 @@ if (CATKIN_ENABLE_TESTING)
   add_rostest(tests/rcc2_tester.test)
   add_rostest(tests/rcc3_tester.test)
   add_rostest(tests/rcc8_tester.test)
+  add_rostest(tests/multiple_tester.test)
 
 endif()
