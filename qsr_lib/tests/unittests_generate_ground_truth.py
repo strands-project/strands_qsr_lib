@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
 import argparse
-import csv
-import os
-import json
-import sys
+# import csv
+# import os
+# import json
+# import sys
+import random
 from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from unittests_data_loaders import *
 from unittests_utils import *
@@ -57,31 +58,49 @@ if __name__ == "__main__":
 
     # ****************************************************************************************************
     # make a QSRlib request message
-    # defaults
-    # if which_qsr == "argd":
-    #     dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0}}}
-    # elif which_qsr == "argprobd":
-    #     raise NotImplementedError
-    # else:
-    #     dynamic_args = {}
+    if which_qsr == "argprobd":
+        random.seed(100)
 
-    # dynamic_args = {which_qsr: {"quantisation_factor": 2.0}}  # quantisation_factor
+    # defaults
+    if which_qsr == "argd":
+        dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0}}}
+    elif which_qsr == "argprobd":
+        dynamic_args = {"argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
+                                                                  "far": (30, 30/2), "veryfar": (40, 40/2)}}}
+    else:
+        dynamic_args = {}
+
+    # quantisation_factor
+    # dynamic_args = {which_qsr: {"quantisation_factor": 2.0}}
+
     ### monadic
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": ["o2"]}}  # qsrs_for_global_namespace
     # dynamic_args = {which_qsr: {"qsrs_for": ["o1"]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
     # dynamic_args = {which_qsr: {"qsrs_for": ["o1"], "quantisation_factor": 2.0}}  # custom
-    #### dyadic
+
+    #### dyadic (except argd and argprobd, see below for these two
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]}}  # qsrs_for_global_namespace
     # dynamic_args = {which_qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
     # dynamic_args = {which_qsr: {"qsrs_for": [("o1", "o2")], "quantisation_factor": 2.0}}  # custom
+
     #### argd special case
     # qsrs_for_global_namespace
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
     #                 "argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0}}}
     # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
+    # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
+    #                 "argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0},
+    #                          "qsrs_for": [("o1", "o2")]}}
+
+    #### argprobd special case
+    # qsrs_for_global_namespace
+    # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
+    #                 "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
+    #                                                           "far": (30, 30/2), "veryfar": (40, 40/2)}}}
     dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
-                    "argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0, "far": 30.0, "veryfar": 40.0},
-                             "qsrs_for": [("o1", "o2")]}}
+                    "argprobd": {"qsr_relations_and_values": {"close": (10, 10/2), "near": (20, 20/2),
+                                                              "far": (30, 30/2), "veryfar": (40, 40/2)},
+                                 "qsrs_for": [("o1", "o2")]}}
 
     print("> Computing QSRs", which_qsr, dynamic_args)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr, world, dynamic_args)
