@@ -25,7 +25,11 @@ class MOS_Test(Abstractclass_Unittest_Monadic):
                                                                             "data1_mos_qsrs_for_qsr_namespace.txt"))
 
     def test_q_factor(self):
-        self.assertItemsEqual(*self.q_factor("data1", "data1_mos_q_factor_2p0.txt", self.__params["quantisation_factor"]))
+        self.assertItemsEqual(*self.q_factor("data1", "data1_mos_q_factor_2p0.txt",
+                                             self.__params["quantisation_factor"]))
+        q_factor_results, defaults_results = self.q_factor_data_notequal_defaults("data1_mos_q_factor_2p0.txt",
+                                                                                  "data1_mos_defaults.txt")
+        self.assertFalse(q_factor_results == defaults_results)
 
     def test_with_bounding_boxes(self):
         self.assertItemsEqual(*self.defaults("data2", "data2_mos_defaults.txt"))
