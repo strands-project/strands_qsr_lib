@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
 import sys
+import os
 import argparse
 import random
 from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
@@ -91,6 +92,12 @@ if __name__ == "__main__":
     # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
     # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")], "quantisation_factor": 2.0}}  # custom
 
+    #### qtcs special case
+    # dynamic_args = {args.qsr: {"validate": True, "no_collapse": True}}
+    # dynamic_args = {args.qsr: {"validate": True, "no_collapse": False}}
+    # dynamic_args = {args.qsr: {"validate": False, "no_collapse": True}}
+    # dynamic_args = {args.qsr: {"validate": False, "no_collapse": False}}
+
     #### argd special case
     # qsrs_for_global_namespace
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]},
@@ -148,9 +155,9 @@ if __name__ == "__main__":
     if qsrs_list != qsrs_list_r:
         raise RuntimeError("file written does not match the data, this should not have happened")
 
-    # # q-factor makes a difference
-    # foo = unittest_read_qsrs_as_one_long_list(args.output)
-    # filename = os.path.join(os.path.split(args.output)[0], "_".join([args.input, which_qsr, "defaults"]) + ".txt")  # quantisation_factor
-    # # filename = os.path.join(os.path.split(args.output)[0], "_".join(["data1", which_qsr, "qsrs_for_qsr_namespace"]) + ".txt")  # custom
-    # bar = unittest_read_qsrs_as_one_long_list(filename)
-    # print(foo == bar)
+    # q-factor makes a difference
+    foo = unittest_read_qsrs_as_one_long_list(args.output)
+    filename = os.path.join(os.path.split(args.output)[0], "_".join([args.input, which_qsr, "defaults"]) + ".txt")  # quantisation_factor
+    # filename = os.path.join(os.path.split(args.output)[0], "_".join(["data1", which_qsr, "qsrs_for_qsr_namespace"]) + ".txt")  # custom
+    bar = unittest_read_qsrs_as_one_long_list(filename)
+    print(foo == bar)

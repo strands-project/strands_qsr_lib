@@ -27,6 +27,9 @@ class RCC8_Test(Abstractclass_Unittest_Dyadic):
     def test_q_factor(self):
         self.assertItemsEqual(*self.q_factor("data1", "data1_rcc8_q_factor_2p0.txt",
                                              self.__params["quantisation_factor"]))
+        q_factor_results, defaults_results = self.q_factor_data_notequal_defaults("data1_rcc8_q_factor_2p0.txt",
+                                                                                  "data1_rcc8_defaults.txt")
+        self.assertFalse(q_factor_results == defaults_results)
 
     def test_with_bounding_boxes(self):
         self.assertItemsEqual(*self.defaults("data2", "data2_rcc8_defaults.txt"))
