@@ -24,7 +24,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         super(QSR_QTC_BC_Simplified, self).__init__()
         self._unique_id = "qtcbcs"
         self.qtc_type = "bc"
-        self.all_possible_relations = self.return_all_possible_state_combinations()[0]
+        self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         ret = World_QSR_Trace(qsr_type=self._unique_id)

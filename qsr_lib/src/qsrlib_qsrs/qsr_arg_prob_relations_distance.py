@@ -17,8 +17,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         self._unique_id = "argprobd"
         self.allowed_value_types = (tuple, list)
         self.value_sort_key = lambda x: x[1][0] # Sort by first element in value tuple, i.e. mean
-        if config:
-            self.set_from_config_file(config)
 
     def __normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
@@ -28,7 +26,7 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         r = (None, 0.0)
-        for values, relation in zip(self.all_possible_values, self.all_possible_relations):
+        for values, relation in zip(self.all_possible_values, self._all_possible_relations):
             prob = uniform(0.0, self.__normpdf(d, mu=values[0], sigma=values[1]))
             r = (relation, prob) if prob > r[1] else r
-        return r[0] if r[0] else self.all_possible_relations[-1]
+        return r[0] if r[0] else self._all_possible_relations[-1]

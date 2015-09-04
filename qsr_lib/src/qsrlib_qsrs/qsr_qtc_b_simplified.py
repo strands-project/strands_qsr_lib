@@ -22,7 +22,7 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
         super(QSR_QTC_B_Simplified, self).__init__()
         self._unique_id = "qtcbs"
         self.qtc_type = "b"
-        self.all_possible_relations = self.return_all_possible_state_combinations()[0]
+        self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
 
     def qtc_to_output_format(self, qtc):
         """Overwrite this for the different QTC veriants to select only the parts
