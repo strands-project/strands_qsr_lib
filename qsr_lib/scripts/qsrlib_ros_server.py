@@ -1,15 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""QSRlib ROS server interface.
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 22 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
 import rospy
 from qsrlib.qsrlib import QSRlib
@@ -31,12 +21,12 @@ class QSRlib_ROS_Server(object):
 
     def handle_request_qsrs(self, req):
         rospy.logdebug("Handling QSRs request made at %i.%i" % (req.header.stamp.secs, req.header.stamp.nsecs))
-        request_message = pickle.loads(req.data)
-        qsrs_response_message = self.qsrlib.request_qsrs(request_message=request_message)
-        res = RequestQSRsResponse()
-        res.header.stamp = rospy.get_rostime()
-        res.data = pickle.dumps(qsrs_response_message)
-        return res
+        req_msg = pickle.loads(req.data)
+        qsrlib_res_msg = self.qsrlib.request_qsrs(req_msg)
+        ros_res_msg = RequestQSRsResponse()
+        ros_res_msg.header.stamp = rospy.get_rostime()
+        ros_res_msg.data = pickle.dumps(qsrlib_res_msg)
+        return ros_res_msg
 
 
 if __name__ == "__main__":

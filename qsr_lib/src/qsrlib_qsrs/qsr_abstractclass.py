@@ -11,7 +11,7 @@ class QSR_Abstractclass(object):
 
     def __init__(self):
         self._unique_id = ""  # must be the same that goes in the QSRlib.__qsrs_registration
-        self.all_possible_relations = []
+        self._all_possible_relations = []
         self._allowed_parameters = ["qsrs_for"]
         self._dtype = ""
 
@@ -54,6 +54,12 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for
 
+    def get_unique_id(self):
+        return self._unique_id
+
+    def get_all_possible_relations(self):
+        return self._all_possible_relations
+
     def get_qsrs(self, **req_params):
         """
 
@@ -61,28 +67,25 @@ class QSR_Abstractclass(object):
         :return: Computed World_QSR_Trace
         :rtype: World_QSR_Trace
         """
-        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"])
         qsr_params = self._process_qsr_parameters_from_request_parameters(req_params)
+        world_trace, timestamps = self._set_input_world_trace(req_params["input_data"], qsr_params)
         world_qsr_trace = self.make_world_qsr_trace(world_trace, timestamps, qsr_params, req_params)
         world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
         return world_qsr_trace
 
-    def custom_checks(self, input_data):
-        # todo needs to be refactored to a better name; not even sure if needed or should be integrated somewhere else
-        """Customs checks on the input data.
+    def _custom_checks_world_trace(self, world_trace):
+        """Customs checks of the input data.
 
-        :param input_data:
-        :return:
+        :param world_trace: The input data.
+        :type world_trace: World_Trace
+        :return: False for no problems.
+        :rtype: bool
         """
-        return 0, ""
+        return False
 
-    # todo can be simplified a bit, also custom_checks possibly not needed anymore here
-    def _set_input_world_trace(self, world_trace):
-        error_code, error_msg = self.custom_checks(input_data=world_trace)
-        if error_code > 0:
-            raise RuntimeError("Something wrong with the input data", error_code, error_msg)
-        timestamps = world_trace.get_sorted_timestamps()
-        return world_trace, timestamps
+    def _set_input_world_trace(self, world_trace, qsr_params):
+        self._custom_checks_world_trace(world_trace, qsr_params)
+        return world_trace, world_trace.get_sorted_timestamps()
 
     def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):
         if isinstance(objects_names[0], str):
@@ -158,32 +161,6 @@ class QSR_Abstractclass(object):
         :return:
         """
         return world_qsr_trace
-
-    def _set_from_config_file(self, path):
-        try:
-            import rospkg
-        except ImportError:
-            raise ImportError("Module rospkg not found; setting from config file works for now only within the ROS eco-system")
-        if path is None:
-            path = os.path.join(rospkg.RosPack().get_path("qsr_lib"), "cfg/defaults.yml")
-        else:
-            path_ext = os.path.splitext(path)[1]
-            if path_ext != ".yml" and path_ext != ".yaml":
-                print("ERROR (qsr_abstractclass.py/set_from_config_file): Only yaml files are supported")
-                raise ValueError
-        with open(path, "r") as f:
-            document = yaml.load(f)
-        self._custom_set_from_config_file(document)
-
-    def _custom_set_from_config_file(self, document):
-        """
-
-        Overwrite as needed.
-
-        :param document:
-        :return:
-        """
-        raise NotImplemented(self._unique_id, "has no support from reading from config file")
 
     def _format_qsr(self, v):
         return {self._unique_id: v}

@@ -12,6 +12,20 @@ import argparse
 import csv
 
 
+def pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message):
+    print(which_qsr, "request was made at ", str(qsrlib_response_message.req_made_at)
+          + " and received at " + str(qsrlib_response_message.req_received_at)
+          + " and finished at " + str(qsrlib_response_message.req_finished_at))
+    print("---")
+    print("Response is:")
+    for t in qsrlib_response_message.qsrs.get_sorted_timestamps():
+        foo = str(t) + ": "
+        for k, v in zip(qsrlib_response_message.qsrs.trace[t].qsrs.keys(),
+                        qsrlib_response_message.qsrs.trace[t].qsrs.values()):
+            foo += str(k) + ":" + str(v.qsr) + "; "
+        print(foo)
+
+
 if __name__ == "__main__":
     options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
     multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
@@ -183,7 +197,7 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
             world.add_object_state_series(o3)
-            # world.add_object_state_series(o4)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "qtccs":
         dynamic_args = {which_qsr: {
@@ -221,8 +235,12 @@ if __name__ == "__main__":
                   Object_State(name="o2", timestamp=1, x=4., y=1.),
                   Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
+            o4 = [Object_State(name="o4", timestamp=0, x=14., y=11.),
+                  Object_State(name="o4", timestamp=1, x=14., y=11.)]
+
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "qtcbcs":
         dynamic_args = {which_qsr: {
@@ -261,8 +279,12 @@ if __name__ == "__main__":
                   Object_State(name="o2", timestamp=1, x=4., y=1.),
                   Object_State(name="o2", timestamp=2, x=5., y=1.)]
 
+            o4 = [Object_State(name="o4", timestamp=0, x=14., y=11.),
+                  Object_State(name="o4", timestamp=1, x=14., y=11.)]
+
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
+            # world.add_object_state_series(o4)  # test for missing values
 
     elif which_qsr == "multiple":
         which_qsr = multiple
@@ -308,14 +330,6 @@ if __name__ == "__main__":
         qsrlib_response_message = pickle.loads(res.data)
     else:
         qsrlib = QSRlib()
-        qsrlib_response_message = qsrlib.request_qsrs(request_message=qsrlib_request_message)
+        qsrlib_response_message = qsrlib.request_qsrs(req_msg=qsrlib_request_message)
 
-    print(which_qsr, "request was made at ", str(qsrlib_response_message.timestamp_request_made) + " and received at " + str(qsrlib_response_message.timestamp_request_received) + " and computed at " + str(qsrlib_response_message.timestamp_qsrs_computed) )
-    print("---")
-    print("Response is:")
-    for t in qsrlib_response_message.qsrs.get_sorted_timestamps():
-        foo = str(t) + ": "
-        for k, v in zip(qsrlib_response_message.qsrs.trace[t].qsrs.keys(), qsrlib_response_message.qsrs.trace[t].qsrs.values()):
-            foo += str(k) + ":" + str(v.qsr) + "; "
-            # print(type(v.qsr))
-        print(foo)
+    pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message)

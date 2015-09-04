@@ -12,7 +12,6 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
 
     def __init__(self):
         super(QSR_RCC_Abstractclass, self).__init__()
-        self.all_possible_relations = []
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
         self._dtype = "bounding_boxes"
 
