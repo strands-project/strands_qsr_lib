@@ -3,6 +3,7 @@
 from __future__ import print_function, division
 from qsrlib_io.world_trace import Object_State, World_Trace
 
+
 def print_world_trace(world_trace):
     for t in world_trace.get_sorted_timestamps():
         print("-t:", t)
