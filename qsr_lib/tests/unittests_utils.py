@@ -15,6 +15,20 @@ def unittest_get_qsrs_as_one_long_list(world_qsrs):
             ret.append(",".join([str(t), oname, str(world_qsrs.trace[t].qsrs[oname].qsr)]))
     return ret
 
+def unittest_get_multiple_qsrs_as_one_long_list(world_qsrs, which_qsrs):
+    ret = []
+    for t in world_qsrs.get_sorted_timestamps():
+        for oname in sorted(world_qsrs.trace[t].qsrs.keys()):
+            qsrs_str_list = []
+            for which_qsr in which_qsrs:
+                try:
+                    qsrs_str_list.append(which_qsr + ":" + str(world_qsrs.trace[t].qsrs[oname].qsr[which_qsr]))
+                except KeyError:
+                    pass
+            ret.append(",".join([str(t), oname, str(qsrs_str_list)]))
+    return ret
+
+
 def unittest_write_qsrs_as_one_long_list(qsrs_list, filename):
     with open(filename, "w") as f:
         json.dump(qsrs_list, f)
