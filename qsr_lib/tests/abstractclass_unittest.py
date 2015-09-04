@@ -43,6 +43,11 @@ class AbstractClass_UnitTest(unittest.TestCase):
         actual = unittest_get_qsrs_as_one_long_list(self._qsrlib.request_qsrs(req_msg).qsrs)
         return expected, actual
 
+    def q_factor_data_notequal_defaults(self, q_factor_filename, defaults_filename):
+        q_factor_results = unittest_read_qsrs_as_one_long_list(find_resource(PKG, q_factor_filename)[0])
+        defaults_results = unittest_read_qsrs_as_one_long_list(find_resource(PKG, defaults_filename)[0])
+        return q_factor_results, defaults_results
+
     def custom(self, world_name, gt_filename, dynamic_args):
         expected = unittest_read_qsrs_as_one_long_list(find_resource(PKG, gt_filename)[0])
         req_msg = QSRlib_Request_Message(self._unique_id, self._worlds[world_name], dynamic_args)
