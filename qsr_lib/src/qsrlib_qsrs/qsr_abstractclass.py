@@ -5,6 +5,7 @@ import yaml
 import os
 
 
+
 class QSR_Abstractclass(object):
     """Abstract class for the QSR makers"""
     __metaclass__ = ABCMeta
