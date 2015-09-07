@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
-"""World state, provides input to QSRlib
-
-:Author: Yiannis Gatsoulis <y.gatsoulis@leeds.ac.uk>
-:Organization: University of Leeds
-:Date: 22 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-"""
-
 from __future__ import print_function, division
 from numpy import isnan
 import copy
+
 
 class Object_State(object):
     def __init__(self, name, timestamp,
@@ -59,6 +50,7 @@ class World_State(object):
     def add_object_state(self, object_state):
         self.objects[object_state.name] = object_state
 
+
 class World_Trace(object):
     def __init__(self, description="", last_updated=False, trace=None):
         self.description = description
@@ -68,6 +60,7 @@ class World_Trace(object):
     def get_sorted_timestamps(self):
         return sorted(self.trace.keys())
 
+    # *** data adders
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
 
@@ -105,72 +98,62 @@ class World_Trace(object):
     def add_object_state_series(self, object_states):
         for s in object_states:
             self.add_object_state_to_trace(object_state=s)
+    # *** end of data adders
 
-    # todo: needs validation, and should be part of World_Trace or in utils?
-    def get_last(self):
-        timestamps = self.get_sorted_timestamps()
-        timestamp = timestamps[-1]
-        return World_Trace(last_updated=self.last_updated,
-                           trace=copy.deepcopy(self.trace[timestamp]))
+    def get_last_world_state(self, return_by_reference=True):
+        t = self.get_sorted_timestamps()[-1]
+        return self.trace[t] if return_by_reference else copy.deepcopy(self.trace[t])
 
-    # todo: needs validation, and should be part of World_Trace or in utils?
-    def get_at_timestamp(self, timestamp):
-        try:
-            trace = copy.deepcopy(self.trace[timestamp])
-            return World_Trace(last_updated=self.last_updated, timestamps=[timestamp], trace=trace)
-        except KeyError:
-            print("ERROR: Timestamp not in trace")
-            return False
-
-    # todo: needs validation, and should be part of World_Trace or in utils?
-    def get_at_timestamp_range(self, start, finish, by_reference=True, inclusive=True):
+    # *** slicing utilities
+    def get_at_timestamp_range(self, start, finish=None, return_by_reference=True, include_finish=True):
         """Returns a World_Trace object between start and finish timestamps.
 
         :param start: Start timestamp.
             :type start: timestamp format, hopefully
         :param finish: Finish timestamp.
-        :param by_reference: Returned World_Trace contains links to original or is a deepcopy (default=True).
-            :type by_reference: bool
-        :param inclusive: Include or not the finish element (default=True).
-            :type inclusive: bool
+        :param return_by_reference: Returned World_Trace contains links to original or is a deepcopy (default=True).
+            :type return_by_reference: bool
+        :param include_finish: Include or not the finish element (default=True).
+            :type include_finish: bool
         :return: A subsampled between start and finish (including finish element by default) World_Trace.
         :rtype: World_Trace
         """
         timestamps = self.get_sorted_timestamps()
         try:
-            iStart = timestamps.index(start)
+            istart = timestamps.index(start)
         except ValueError:
             raise ValueError("start not found")
         if not finish:
             finish = timestamps[-1]
         try:
-            iFinish = timestamps.index(finish)
+            ifinish = timestamps.index(finish)
         except ValueError:
             raise ValueError("finish not found")
-        if iStart > iFinish:
+        if istart > ifinish:
             raise ValueError("start cannot be after finish")
-        timestamps = timestamps[iStart:iFinish] + [timestamps[iFinish]] if inclusive else timestamps[iStart:iFinish]
+        timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
         ret = World_Trace(last_updated=self.last_updated)
-        for timestamp in timestamps:
-            ret.trace[timestamp] = self.trace[timestamp] if by_reference else copy.deepcopy(self.trace[timestamp])
+        for t in timestamps:
+            ret.trace[t] = self.trace[t] if return_by_reference else copy.deepcopy(self.trace[t])
         return ret
 
-    # todo: needs validation, and should be part of World_Trace or in utils?
-    def get_for_objects(self, objects_names):
-        ret = World_Trace(last_updated=self.last_updated,
-                          trace=copy.deepcopy(self.trace))
-        for world_state in ret.trace.values():
-            for object_state_name in world_state.objects.keys():
-                if object_state_name not in objects_names:
-                    world_state.objects.pop(object_state_name)
+    def get_for_objects(self, objects_names, return_by_reference=True):
+        ret = World_Trace(last_updated=self.last_updated)
+        for t, world_state in self.trace.items():
+            for oname in objects_names:
+                if return_by_reference:
+                    ret.add_object_state_to_trace(world_state.objects[oname], t)
+                else:
+                    ret.add_object_state_to_trace(copy.deepcopy(world_state.objects[oname]), t)
         return ret
 
-    # todo: needs validation, and should be part of World_Trace or in utils?
-    def get_for_objects_at_timestamp_range(self, start, finish, objects_names):
-        try:
-            ret = self.get_at_timestamp_range(start, finish)
+    def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
+                                           return_by_reference=True, include_finish=True, time_slicing_first=True):
+        if time_slicing_first:
+            ret = self.get_at_timestamp_range(start, finish, return_by_reference, include_finish)
             ret = ret.get_for_objects(objects_names)
-            return ret
-        except:
-            print("ERROR: something went wrong")
-            return False
+        else:
+            ret = self.get_for_objects(objects_names, return_by_reference)
+            ret = ret.get_at_timestamp_range(start, finish, include_finish=include_finish)
+        return ret
+    # *** end of slicing utilities

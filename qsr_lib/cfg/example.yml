@@ -1,0 +1,10 @@
+## Format example
+#for_all_qsrs:
+#  quantisation_factor: 100
+#argd:
+#  relations_and_values:
+#    "0": 5.
+#    "1": 15.
+#    "2": 150.
+#qtcbs:
+#  quantisation_factor: 100
