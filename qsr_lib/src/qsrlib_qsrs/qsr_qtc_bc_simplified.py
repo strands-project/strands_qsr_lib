@@ -74,6 +74,10 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
                         "distances": np.array([distance])
                     }
 
+        try: # Check if d thresh is a float
+            float(qsr_params["distance_threshold"])
+        except ValueError:
+            raise Exception("%s only accepts floats for distance_threshold" % self._unique_id)
         for between, qtcbc in qtc_sequence.items():
             qtcbc["qtc"] = self._create_bc_chain(qtcbc["qtc"], qtcbc["distances"], qsr_params["distance_threshold"])
             if not qsr_params["no_collapse"]:

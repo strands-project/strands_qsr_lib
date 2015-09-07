@@ -35,7 +35,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         self._unique_id = ""
         self.qtc_type = ""
 
-        self.__qsr_params_defaults= {
+        self._qsr_params_defaults = {
             "quantisation_factor": 0.0,
             "validate": True,
             "no_collapse": False,
@@ -342,7 +342,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         return 0, ""
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
-        qsr_params = self.__qsr_params_defaults.copy()
+        qsr_params = self._qsr_params_defaults.copy()
 
         try: # global namespace
             if req_params["dynamic_args"]["for_all_qsrs"]:
@@ -369,7 +369,7 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             raise TypeError("'no_collapse' and 'validate' have to be boolean values.")
 
         for param in qsr_params:
-            if param not in self.__qsr_params_defaults and param not in self._allowed_parameters:
+            if param not in self._qsr_params_defaults and param not in self._allowed_parameters:
                 raise KeyError("%s is an unknown parameter" % str(param))
 
         return qsr_params

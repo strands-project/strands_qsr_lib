@@ -13,8 +13,8 @@ import csv
 
 
 if __name__ == "__main__":
-    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
-    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
+    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "qtcbcs_argprobd", "argd", "argprobd", "mos", "multiple"]
+    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd"); multiple.remove("qtcbcs_argprobd")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true")
     parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float)
     parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true")
-    parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
+    parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC. Float for qtcbcs or string for qtcbcs_argprobd.")
     parser.add_argument("-c", "--config", help="config file", type=str)
     parser.add_argument("--ros", action="store_true", default=False, help="Use ROS eco-system")
     args = parser.parse_args()
@@ -224,13 +224,26 @@ if __name__ == "__main__":
             world.add_object_state_series(o1)
             world.add_object_state_series(o2)
 
-    elif which_qsr == "qtcbcs":
+    elif which_qsr in ("qtcbcs", "qtcbcs_argprobd"):
         dynamic_args = {which_qsr: {
             "quantisation_factor": args.quantisation_factor,
             "distance_threshold": args.distance_threshold,
             "validate": args.validate,
             "no_collapse": args.no_collapse
-        }}
+        }} if which_qsr == "qtcbcs" else \
+            {which_qsr: {
+                "quantisation_factor": args.quantisation_factor,
+                "distance_threshold": args.distance_threshold,
+                "validate": args.validate,
+                "no_collapse": args.no_collapse,
+                "qsr_relations_and_values": {
+                    "int": (  (.46-.0)/2  +.0,    (.46-.0)/4),
+                    "per": ((1.22-.46)/2 +.46,  (1.22-.46)/4),
+                    "soc": ((3.7-1.22)/2+1.22,  (3.7-1.22)/4),
+                    "pub": ((6.0-3.7)/2  +3.7,   (6.0-3.7)/4),
+                    "und": ((10.0-6.0)/2 +6.0,  (10.0-6.0)/4)
+                }
+            }}
 
         if args.input:
             ob = []

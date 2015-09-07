@@ -20,7 +20,7 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         if config:
             self.set_from_config_file(config)
 
-    def __normpdf(self, x, mu, sigma):
+    def _normpdf(self, x, mu, sigma):
         u = (x-mu)/np.abs(sigma)
         y = (1/(np.sqrt(2*np.pi)*np.abs(sigma)))*np.exp(-u*u/2)
         return np.around(y, decimals=3)
@@ -29,6 +29,6 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         d = np.sqrt(np.square(data1.x - data2.x) + np.square(data1.y - data2.y))
         r = (None, 0.0)
         for values, relation in zip(self.all_possible_values, self.all_possible_relations):
-            prob = uniform(0.0, self.__normpdf(d, mu=values[0], sigma=values[1]))
+            prob = uniform(0.0, self._normpdf(d, mu=values[0], sigma=values[1]))
             r = (relation, prob) if prob > r[1] else r
         return r[0] if r[0] else self.all_possible_relations[-1]
