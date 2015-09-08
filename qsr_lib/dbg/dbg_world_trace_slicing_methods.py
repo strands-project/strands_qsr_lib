@@ -30,7 +30,7 @@ if __name__ == "__main__":
     world.add_object_state_series(o1)
     world.add_object_state_series(o2)
 
-    # world_new = world.get_at_timestamp_range(2, 3, return_by_reference=False, include_finish=False)
+    # world_new = world.get_at_timestamp_range(2, 3, include_finish=False)
     # world_new.trace[2.0].objects["o1"].x = 100.0
     # print(">> original")
     # print_world_trace(world)
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # print(">> new")
     # print_world_trace(world_new)
     #
-    # world_state_latest = world.get_last_world_state(return_by_reference=True)
+    # world_state_latest = world.get_last_state(copy_by_reference=True)
     # world_state_latest.objects["o1"].x = 100.0
     # print(">> original")
     # print("-t:", world.get_sorted_timestamps()[-1])
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     # print("-t:", world_state_latest.timestamp)
     # print_world_state(world_state_latest)
     #
-    # world_new = world.get_for_objects(["o1"], return_by_reference=False)
+    # world_new = world.get_for_objects(["o1"])
     # world_new.trace[4.0].objects["o1"].x = 100.0
     # print(">> original")
     # print_world_trace(world)
@@ -56,8 +56,7 @@ if __name__ == "__main__":
     # print(">> new")
     # print_world_trace(world_new)
     #
-    # world_new = world.get_for_objects_at_timestamp_range(2, 3, ["o1"], return_by_reference=False,
-    #                                                      include_finish=False, time_slicing_first=True)
+    # world_new = world.get_for_objects_at_timestamp_range(2, 3, ["o1"], include_finish=False, time_slicing_first=True)
     # world_new.trace[2.0].objects["o1"].x = 100.0
     # print(">> original")
     # print_world_trace(world)

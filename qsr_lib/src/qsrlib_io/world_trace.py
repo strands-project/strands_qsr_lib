@@ -100,19 +100,19 @@ class World_Trace(object):
             self.add_object_state_to_trace(object_state=s)
     # *** end of data adders
 
-    def get_last_world_state(self, return_by_reference=True):
+    def get_last_state(self, copy_by_reference=False):
         t = self.get_sorted_timestamps()[-1]
-        return self.trace[t] if return_by_reference else copy.deepcopy(self.trace[t])
+        return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
-    def get_at_timestamp_range(self, start, finish=None, return_by_reference=True, include_finish=True):
+    def get_at_timestamp_range(self, start, finish=None, copy_by_reference=False, include_finish=True):
         """Returns a World_Trace object between start and finish timestamps.
 
         :param start: Start timestamp.
             :type start: timestamp format, hopefully
         :param finish: Finish timestamp.
-        :param return_by_reference: Returned World_Trace contains links to original or is a deepcopy (default=True).
-            :type return_by_reference: bool
+        :param copy_by_reference: Returned World_Trace contains links to original or is a deepcopy.
+            :type copy_by_reference: bool
         :param include_finish: Include or not the finish element (default=True).
             :type include_finish: bool
         :return: A subsampled between start and finish (including finish element by default) World_Trace.
@@ -123,7 +123,7 @@ class World_Trace(object):
             istart = timestamps.index(start)
         except ValueError:
             raise ValueError("start not found")
-        if not finish:
+        if finish is None:
             finish = timestamps[-1]
         try:
             ifinish = timestamps.index(finish)
@@ -134,26 +134,26 @@ class World_Trace(object):
         timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
         ret = World_Trace(last_updated=self.last_updated)
         for t in timestamps:
-            ret.trace[t] = self.trace[t] if return_by_reference else copy.deepcopy(self.trace[t])
+            ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
         return ret
 
-    def get_for_objects(self, objects_names, return_by_reference=True):
+    def get_for_objects(self, objects_names, copy_by_reference=False):
         ret = World_Trace(last_updated=self.last_updated)
-        for t, world_state in self.trace.items():
+        for t, state in self.trace.items():
             for oname in objects_names:
-                if return_by_reference:
-                    ret.add_object_state_to_trace(world_state.objects[oname], t)
+                if copy_by_reference:
+                    ret.add_object_state_to_trace(state.objects[oname], t)
                 else:
-                    ret.add_object_state_to_trace(copy.deepcopy(world_state.objects[oname]), t)
+                    ret.add_object_state_to_trace(copy.deepcopy(state.objects[oname]), t)
         return ret
 
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
-                                           return_by_reference=True, include_finish=True, time_slicing_first=True):
+                                           copy_by_reference=False, include_finish=True, time_slicing_first=True):
         if time_slicing_first:
-            ret = self.get_at_timestamp_range(start, finish, return_by_reference, include_finish)
+            ret = self.get_at_timestamp_range(start, finish, copy_by_reference, include_finish)
             ret = ret.get_for_objects(objects_names)
         else:
-            ret = self.get_for_objects(objects_names, return_by_reference)
+            ret = self.get_for_objects(objects_names, copy_by_reference)
             ret = ret.get_at_timestamp_range(start, finish, include_finish=include_finish)
         return ret
     # *** end of slicing utilities
