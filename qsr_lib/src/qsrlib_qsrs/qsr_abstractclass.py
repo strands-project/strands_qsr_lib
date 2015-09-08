@@ -73,7 +73,7 @@ class QSR_Abstractclass(object):
         world_qsr_trace = self._postprocess_world_qsr_trace(world_qsr_trace, world_trace, timestamps, qsr_params, req_params)
         return world_qsr_trace
 
-    def _custom_checks_world_trace(self, world_trace):
+    def _custom_checks_world_trace(self, world_trace, qsr_params):
         """Customs checks of the input data.
 
         :param world_trace: The input data.
