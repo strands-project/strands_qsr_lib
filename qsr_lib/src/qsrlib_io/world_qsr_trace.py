@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from __future__ import print_function, division
-# import copy
+import copy
 
 
 class QSR(object):
@@ -55,61 +56,67 @@ class World_QSR_Trace(object):
     def add_empty_world_qsr_state(self, timestamp):
         self.add_world_qsr_state(World_QSR_State(timestamp=timestamp))
 
-    # def insert_timestamp(self, timestamp, append):
-    #     if append:
-    #           self.timestamps.append(timestamp)
-    #     else: # for now always append
-    #         self.timestamps.append(timestamp)
-    #
-    # def get_last(self):
-    #     timestamp = self.timestamps[-1]
-    #     return World_QSR_Trace(last_updated=self.last_updated,
-    #                            timestamps=[timestamp],
-    #                            trace=copy.deepcopy(self.trace[timestamp]))
-    #
-    # def get_at_timestamp(self, timestamp):
-    #     try:
-    #         trace = copy.deepcopy(self.trace[timestamp])
-    #         return World_QSR_Trace(last_updated=self.last_updated, timestamps=[timestamp], trace=trace)
-    #     except KeyError:
-    #         print("ERROR: Timestamp not in trace")
-    #         return False
-    #
-    # def get_at_timestamp_range(self, start, finish):
-    #     ret = World_QSR_Trace(last_updated=self.last_updated, timestamps=[], trace={})
-    #     try:
-    #         iStart = self.timestamps.index(start)
-    #     except ValueError:
-    #         print("ERROR: start not found")
-    #         return False
-    #     try:
-    #         iFinish = self.timestamps.index(finish)
-    #     except ValueError:
-    #         print("ERROR: finish not found")
-    #         return False
-    #     if iStart > iFinish:
-    #         print("ERROR: start after finish")
-    #         return False
-    #     ret.timestamps = self.timestamps[iStart:iFinish] + [self.timestamps[iFinish]]
-    #     for timestamp in ret.timestamps:
-    #         ret.trace[timestamp] = copy.deepcopy(self.trace[timestamp])
-    #     return ret
+    def get_last_state(self, copy_by_reference=False):
+        t = self.get_sorted_timestamps()[-1]
+        return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
-    # def get_for_objects(self, objects_names):
-    #     ret = World_QSR_Trace(last_updated=self.last_updated,
-    #                           timestamps=copy.deepcopy(self.timestamps),
-    #                           trace=copy.deepcopy(self.trace))
-    #     for world_state in ret.trace.values():
-    #         for object_state_name in world_state.objects.keys():
-    #             if object_state_name not in objects_names:
-    #                 world_state.objects.pop(object_state_name)
-    #     return ret
-    #
-    # def get_for_objects_at_timestamp_range(self, start, finish, objects_names):
-    #     try:
-    #         ret = self.get_at_timestamp_range(start, finish)
-    #         ret = ret.get_for_objects(objects_names)
-    #         return ret
-    #     except:
-    #         print("ERROR: something went wrong")
-    #         return False
+    # *** slicing utilities
+    def get_at_timestamp_range(self, start, finish=None, copy_by_reference=False, include_finish=True):
+        timestamps = self.get_sorted_timestamps()
+        try:
+            istart = timestamps.index(start)
+        except ValueError:
+            raise ValueError("start not found")
+        if finish is None:
+            finish = timestamps[-1]
+        try:
+            ifinish = timestamps.index(finish)
+        except ValueError:
+            raise ValueError("finish not found")
+        if istart > ifinish:
+            raise ValueError("start cannot be after finish")
+        timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
+        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        for t in timestamps:
+            ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
+        return ret
+
+    def get_for_objects(self, objects_names, copy_by_reference=False):
+        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        all_objects = set([oname for t in self.get_sorted_timestamps() for oname in self.trace[t].qsrs])
+        for t, state in self.trace.items():
+            for oname in objects_names:
+                try:
+                    if copy_by_reference:
+                        ret.add_qsr(state.qsrs[oname], t)
+                    else:
+                        ret.add_qsr(copy.deepcopy(state.qsrs[oname]), t)
+                except KeyError as e:
+                    if oname not in all_objects:
+                        raise e
+        return ret
+
+    def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
+                                           copy_by_reference=False, include_finish=True, time_slicing_first=True):
+        if time_slicing_first:
+            ret = self.get_at_timestamp_range(start, finish, copy_by_reference, include_finish)
+            ret = ret.get_for_objects(objects_names)
+        else:
+            ret = self.get_for_objects(objects_names, copy_by_reference)
+            ret = ret.get_at_timestamp_range(start, finish, include_finish=include_finish)
+        return ret
+
+    def get_for_qsrs(self, qsrs_list):
+        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        for t, state in self.trace.items():
+            for oname, qsrs in state.qsrs.items():
+                qsr = {}
+                for q in qsrs_list:
+                    try:
+                        qsr[q] = qsrs.qsr[q]
+                    except KeyError:
+                        pass
+                if qsr:
+                    ret.add_qsr(QSR(t, oname, qsr, ",".join(sorted(qsrs_list))), t)
+        return ret
+    # *** end of slicing utilities
