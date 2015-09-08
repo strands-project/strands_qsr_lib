@@ -5,11 +5,43 @@ import copy
 
 
 class Object_State(object):
+    """
+
+    """
     def __init__(self, name, timestamp,
                  x=float('nan'), y=float('nan'), z=float('nan'),
                  roll=float('nan'), pitch=float('nan'), yaw=float('nan'),
                  length=float('nan'), width=float('nan'), height=float('nan'),
                  *args, **kwargs):
+        """Constructor.
+
+        :param name: Typically the name of the object.
+        :type name: str
+        :param timestamp: The timestamp of the object state. Usually it matches the corresponding
+        key `t` in `World_Trace.trace[t]`.
+        :type timestamp: float or int
+        :param x: (default: float('nan')) The x-coordinate of the center point.
+        :type x: float or int
+        :param y: (default: float('nan')) The y-coordinate of the center point.
+        :type y: float or int
+        :param z: (default: float('nan')) The z-coordinate of the center point.
+        :type z: float or int
+        :param roll: (default: float('nan')) Roll of the object.
+        :type roll: float or int
+        :param pitch: (default: float('nan')) Pitch of the object.
+        :type pitch: float or int
+        :param yaw: (default: float('nan')) Yaw of the object.
+        :type yaw: float or int
+        :param length: (default: float('nan')) Total size of the object in the y-dimension.
+        :type length: float or int
+        :param width: (default: float('nan')) Total size of the object in the x-dimension.
+        :type width: float or int
+        :param height: (default: float('nan')) Total size of the object in the z-dimension.
+        :type height: float or int
+        :param args: Optional args.
+        :param kwargs: Optional args.
+        :return:
+        """
         self.name = name
         self.timestamp = float(timestamp)
         self.x = x
@@ -27,6 +59,13 @@ class Object_State(object):
         self.kwargs = kwargs
 
     def set_length_width_height(self, length=float('nan'), width=float('nan'), height=float('nan')):
+        """
+
+        :param length:
+        :param width:
+        :param height:
+        :return:
+        """
         if length < 0 or width < 0 or height < 0:
             raise ValueError("Object length, width and height cannot be negative; leave them to default values if unset")
         else:
