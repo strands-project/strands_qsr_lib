@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # print(">> new")
     # print_world_trace(world_new)
     #
-    # world_state_latest = world.get_last_world_state(return_by_reference=True)
+    # world_state_latest = world.get_last_state(return_by_reference=True)
     # world_state_latest.objects["o1"].x = 100.0
     # print(">> original")
     # print("-t:", world.get_sorted_timestamps()[-1])

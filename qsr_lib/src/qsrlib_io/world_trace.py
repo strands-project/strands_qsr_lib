@@ -100,7 +100,7 @@ class World_Trace(object):
             self.add_object_state_to_trace(object_state=s)
     # *** end of data adders
 
-    def get_last_world_state(self, return_by_reference=True):
+    def get_last_state(self, return_by_reference=True):
         t = self.get_sorted_timestamps()[-1]
         return self.trace[t] if return_by_reference else copy.deepcopy(self.trace[t])
 
@@ -123,7 +123,7 @@ class World_Trace(object):
             istart = timestamps.index(start)
         except ValueError:
             raise ValueError("start not found")
-        if not finish:
+        if finish is None:
             finish = timestamps[-1]
         try:
             ifinish = timestamps.index(finish)
@@ -139,12 +139,12 @@ class World_Trace(object):
 
     def get_for_objects(self, objects_names, return_by_reference=True):
         ret = World_Trace(last_updated=self.last_updated)
-        for t, world_state in self.trace.items():
+        for t, state in self.trace.items():
             for oname in objects_names:
                 if return_by_reference:
-                    ret.add_object_state_to_trace(world_state.objects[oname], t)
+                    ret.add_object_state_to_trace(state.objects[oname], t)
                 else:
-                    ret.add_object_state_to_trace(copy.deepcopy(world_state.objects[oname]), t)
+                    ret.add_object_state_to_trace(copy.deepcopy(state.objects[oname]), t)
         return ret
 
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
