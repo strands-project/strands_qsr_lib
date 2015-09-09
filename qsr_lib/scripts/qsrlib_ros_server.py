@@ -11,15 +11,41 @@ except:
 
 
 class QSRlib_ROS_Server(object):
+    """QSRlib ROS server.
+
+    """
     def __init__(self, node_name="qsr_lib"):
+        """Constructor.
+
+        :param node_name: The QSRlib ROS server node name.
+        :type node_name: str
+        :return:
+        """
         self.qsrlib = QSRlib()
+        """qsrlib.qsrlib.QSRlib: QSRlib main object."""
+
         self.node_name = node_name
+        """str: The QSRlib ROS server node name."""
+
+        # todo no need for self.node as rospy.init_node returns None
         self.node = rospy.init_node(self.node_name)
+
         self.service_topic_names = {"request": self.node_name+"/request"}
+        """dict: Holds the service topic names."""
+
         self.srv_qsrs_request = rospy.Service(self.service_topic_names["request"], RequestQSRs, self.handle_request_qsrs)
+        """rospy.impl.tcpros_service.Service: The QSRlib ROS service."""
+
         rospy.loginfo("QSRlib_ROS_Server up and running, listening to: %s" % self.service_topic_names["request"])
 
     def handle_request_qsrs(self, req):
+        """Service handler.
+
+        :param req: The QSRlib ROS request.
+        :type req: qsr_lib.srv.RequestQSRsRequest
+        :return: The QSRlib ROS response message.
+        :rtype: qsr_lib.srv.RequestQSRsResponse
+        """
         rospy.logdebug("Handling QSRs request made at %i.%i" % (req.header.stamp.secs, req.header.stamp.nsecs))
         req_msg = pickle.loads(req.data)
         qsrlib_res_msg = self.qsrlib.request_qsrs(req_msg)

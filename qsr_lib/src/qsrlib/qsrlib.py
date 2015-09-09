@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""QSRlib module.
+
+"""
+
 from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
@@ -38,9 +42,6 @@ class QSRlib_Request_Message(object):
     def __init__(self, which_qsr, input_data, dynamic_args={}, req_made_at=None):
         """Constructor.
 
-        `qsrs_registry` is a tuple where the developers have registered the class names of the QSR, and is found in
-        `qsrlib_qsrs.__init__.py`.
-
         :param which_qsr: The name(s) of the wanted QSR(s) to be computed.
         :type which_qsr: str or list
         :param input_data: The input data.
@@ -61,7 +62,7 @@ class QSRlib_Request_Message(object):
             raise TypeError("input_data must be of type 'World_Trace'")
 
         self.dynamic_args = dynamic_args
-        """ dict ({}): User args passed dynamically during the request."""
+        """ dict: User args passed dynamically during the request."""
 
         self.made_at = req_made_at if req_made_at else datetime.now()
         """datetime.datetime (`datetime.datetime.now()`): Time the request was made."""
@@ -71,6 +72,9 @@ class QSRlib(object):
     """The LIB"""
     def __init__(self, help=False):
         """Constructor.
+
+        `qsrs_registry` is a tuple where the developers have registered the class names of the QSR, and is found in
+        `qsrlib_qsrs.__init__.py`.
 
         :param help: Print helpful message at start.
         :type help: bool
@@ -104,7 +108,13 @@ class QSRlib(object):
                 qsrs[o._unique_id] = o
         return qsrs
 
+    # todo turn this into a property get method
     def get_qsrs_registry(self):
+        """Getter method.
+
+        :return: The `self.__qsrs_registry` containing the mapping of the unique names of the QSRs and their corresponding generated objects.
+        :rtype: dict
+        """
         return self.__qsrs_registry
 
     def help(self):

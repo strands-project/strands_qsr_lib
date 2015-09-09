@@ -4,39 +4,131 @@ import copy
 
 
 class QSR(object):
+    """Data class structure that is holding the QSR and other related information.
+
+    """
     def __init__(self, timestamp, between, qsr, qsr_type=""):
+        """Constructor.
+
+        :param timestamp: The timestamp of the QSR, which matches the corresponding key `t` in `World_QSR_Trace.trace[t]`.
+        :type: float
+        :param between: For which object(s) is the QSR for. For multiple objects names are separated by commas, e.g. "o1,o2".
+        :type between: str
+        :param qsr: The QSR value(s). It is a dictionary where the keys are the unique names of each QSR and the values
+        are the QSR values as strings.
+        :type qsr: dict
+        :param qsr_type: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string.
+        :type qsr_type: str
+        :return:
+        """
         self.timestamp = timestamp
+        """float: The timestamp of the QSR, which usually matches the corresponding key `t` in `World_QSR_Trace.trace[t]`."""
+
         self.between = between
+        """str: For which object(s) is the QSR for. For multiple objects names are separated by commas, e.g. "o1,o2"."""
+
         self.qsr = qsr
+        """dict: The QSR value(s). It is a dictionary where the keys are the unique names of each QSR and the values
+        are the QSR values as strings."""
+
         self.type = qsr_type
+        """str: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string."""
 
 
 class World_QSR_State(object):
-    def __init__(self, timestamp, qsrs=None):
-        self.timestamp = timestamp
-        self.qsrs = qsrs if qsrs else {}
+    """Data class structure that is holding various information about the QSR world at a particular time.
 
+    """
+    def __init__(self, timestamp, qsrs=None):
+        """Constructor.
+
+        :param timestamp: The timestamp of the state, which matches the corresponding key `t` in `World_QSR_Trace.trace[t]`.
+        :type timestamp: float
+        :param qsrs: A dictionary holding the QSRs that exist in this world QSR state, i.e. a dict of
+        objects of type QSR with the keys being the object(s) names that these QSR are for.
+        :type qsrs: dict
+        :return:
+        """
+        self.timestamp = timestamp
+        """float: The timestamp of the state, which matches the corresponding key `t` in `World_QSR_Trace.trace[t]`."""
+
+        self.qsrs = qsrs if qsrs else {}
+        """dict: Holds the QSRs that exist in this world QSR state, i.e. a dict of objects of type QSR with the keys
+        being the object(s) names that these QSR are for."""
+
+    # todo maybe add overwrite protection, add argument overwrite=False; I think it was removed for efficiency
     def add_qsr(self, qsr):
+        """Add a QSR object to the state.
+
+        :param qsr: QSR to be added in the world QSR state.
+        :type qsr: QSR
+        :return:
+        """
         self.qsrs[qsr.between] = qsr
 
+
 class World_QSR_Trace(object):
+    """Data class structure that is holding a time series of the world QSR states.
+
+    """
+    # todo deprecate last_updated
     def __init__(self, qsr_type, last_updated=False, trace=None):
+        """Constructor.
+
+        :param qsr_type: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string.
+        :type str:
+        :param last_updated: to be deprecated.
+        :param trace: A time series of world QSR states, i.e. a dict of objects of type World_QSR_State with the keys being the timestamps.
+        :type trace: dict
+        :return:
+        """
         self.qsr_type = qsr_type
+        """str: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string."""
+
         self.last_updated = last_updated
-        # self.trace.keys() should be floats just like World_Trace.trace.keys(); hence no casting and no checking here to avoid slowing down execution time for all QSRs
+        """to be deprecated"""
+
         self.trace = trace if trace else {}
+        """dict: A time series of world QSR states, i.e. a dict of objects of type World_QSR_State with the keys being the timestamps."""
 
     def get_sorted_timestamps(self):
-        # self.trace.keys() should be floats just like World_Trace.trace.keys()
+        """Return a sorted list of the timestamps.
+
+        :return: A sorted list of the timestamps.
+        :rtype: list
+        """
+        # self.trace.keys() should be floats just like World_Trace.trace.keys(), no casting for better performance
         return sorted(self.trace.keys())
 
     def __add_world_qsr_state(self, world_qsr_state):
+        """Add a world QSR state.
+
+        :param world_qsr_state: The world QSR state to be added.
+        :type world_qsr_state: World_QSR_State
+        :return:
+        """
         self.trace[world_qsr_state.timestamp] = world_qsr_state
+        # todo what is this commented out code?
         # if world_qsr_state.timestamp not in self.timestamps:
         #     self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
         self.last_updated = world_qsr_state.timestamp
 
+    # todo this could be cleaned up a bit
     def add_world_qsr_state(self, world_qsr_state, overwrite=False):
+        """Add a world QSR state.
+
+        :param world_qsr_state: The world QSR state to be added.
+        :type world_qsr_state: World_QSR_State
+        :param overwrite: Allow overwriting or not.
+        :type overwrite: bool
+        :return:
+        :raises: KeyError: When overwriting is disabled and `self.trace` already contains an entry for `world_qsr_state.timestamp`.
+        """
+        # # should be something like as follows:
+        # if not overwrite and world_qsr_state.timestamp in self.trace:
+        #     raise KeyError("%f already exists and overwriting is disabled" % world_qsr_state.timestamp)
+        # else:
+        #     self.__add_world_qsr_state(world_qsr_state)
         if world_qsr_state.timestamp in self.trace:
             print("Warning: state already exists")
             if overwrite:
@@ -45,7 +137,16 @@ class World_QSR_Trace(object):
         else:
             self.__add_world_qsr_state(world_qsr_state)
 
+    # todo it should work as it has worked so far but does it actually work for multiple?
     def add_qsr(self, qsr, timestamp):
+        """Add a QSR at timestamp.
+
+        :param qsr: The QSR value to be added.
+        :type qsr: QSR
+        :param timestamp: The timestamp of the QSR.
+        :type timestamp: float
+        :return:
+        """
         try:
             self.trace[timestamp].add_qsr(qsr)
         except KeyError:
@@ -54,14 +155,38 @@ class World_QSR_Trace(object):
         self.last_updated = timestamp
 
     def add_empty_world_qsr_state(self, timestamp):
+        """Add an empty World_QSR_State object at timestamp.
+
+        :param timestamp: Timestamp of where to add an empty World_QSR_State
+        :type timestamp: float
+        :return:
+        """
         self.add_world_qsr_state(World_QSR_State(timestamp=timestamp))
 
     def get_last_state(self, copy_by_reference=False):
+        """ Get the last world QSR state.
+
+        :param copy_by_reference: Return by value or by reference.
+        :type copy_by_reference: bool
+        :return:
+        """
         t = self.get_sorted_timestamps()[-1]
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
     def get_at_timestamp_range(self, start, finish=None, copy_by_reference=False, include_finish=True):
+        """Return a subsample between start and finish timestamps.
+
+        :param start: The start timestamp.
+        :type start: int or float
+        :param finish: The finish timestamp. If empty then finish is set to the last timestamp.
+        :param copy_by_reference: Return by value or by reference.
+        :type copy_by_reference: bool
+        :param include_finish: Whether to include or not the world state at the finish timestamp.
+        :type include_finish: bool
+        :return: A subsample between start and finish.
+        :rtype: World_QSR_Trace
+        """
         timestamps = self.get_sorted_timestamps()
         try:
             istart = timestamps.index(start)
@@ -82,6 +207,15 @@ class World_QSR_Trace(object):
         return ret
 
     def get_for_objects(self, objects_names, copy_by_reference=False):
+        """Return a subsample for requested objects.
+
+        :param objects_names: The requested objects names.
+        :type objects_names: list or tuple
+        :param copy_by_reference: Return by value or by reference.
+        :type copy_by_reference: bool
+        :return: A subsample for the requested objects.
+        :rtype: World_QSR_Trace
+        """
         ret = World_QSR_Trace(self.qsr_type, self.last_updated)
         all_objects = set([oname for t in self.get_sorted_timestamps() for oname in self.trace[t].qsrs])
         for t, state in self.trace.items():
@@ -96,8 +230,25 @@ class World_QSR_Trace(object):
                         raise e
         return ret
 
+    # todo allow finish=None
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
                                            copy_by_reference=False, include_finish=True, time_slicing_first=True):
+        """Return a subsample for requested objects between start and finish timestamps.
+
+        :param start: The start timestamp.
+        :type start: int or float
+        :param finish: The finish timestamp.
+        :type finish: bool
+        :param objects_names: The requested objects names.
+        :param copy_by_reference: Return by value or by reference.
+        :type copy_by_reference: bool
+        :param include_finish: Whether to include or not the world state at the finish timestamp.
+        :type include_finish: bool
+        :param time_slicing_first: Perform time slicing first or object slicing, can be used to optimize the call.
+        :type time_slicing_first: bool
+        :return: A subsample for the requested objects between start and finish timestamps.
+        :rtype: World_QSR_Trace
+        """
         if time_slicing_first:
             ret = self.get_at_timestamp_range(start, finish, copy_by_reference, include_finish)
             ret = ret.get_for_objects(objects_names)
@@ -107,6 +258,13 @@ class World_QSR_Trace(object):
         return ret
 
     def get_for_qsrs(self, qsrs_list):
+        """Return a subsample for requested QSRs only.
+
+        :param qsrs_list: List of requested QSRs.
+        :type qsrs_list: list
+        :return: A subsample for the requested QSRs.
+        :rtype: World_QSR_Trace
+        """
         ret = World_QSR_Trace(self.qsr_type, self.last_updated)
         for t, state in self.trace.items():
             for oname, qsrs in state.qsrs.items():
