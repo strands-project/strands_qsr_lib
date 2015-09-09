@@ -58,3 +58,7 @@ target/
 .idea/
 
 *~
+
+# DOC
+qsr_lib/docs/_build/
+qsr_lib/docs/rst_tests/

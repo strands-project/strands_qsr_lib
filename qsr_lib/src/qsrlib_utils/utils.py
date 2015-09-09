@@ -6,15 +6,15 @@ from qsrlib_io.world_qsr_trace import World_QSR_Trace
 
 
 def merge_world_qsr_traces(world_qsr_traces, qsr_type=""):
-    """
-    Merge a list of traces into one world_qsr_trace. It offers no protection versus overwriting previously
-    existing relation.
-    :param world_qsr_traces: list of World_QSR_Trace objects
-        :type world_qsr_traces: list or tuple
-    :param qsr_type: the qsr_type of the returned merged World_QSR_Trace object
-        :type qsr_type: str
-    :return: a World_QSR_Trace that is the merge of all World_QSR_Trace objects in traces
-        :rtype: World_QSR_Trace
+    """Merge a list of traces into one world_qsr_trace. It offers no protection versus overwriting previously
+    existing relations.
+
+    :param world_qsr_traces: The World_QSR_Trace objects to be merged.
+    :type world_qsr_traces: list or tuple
+    :param qsr_type: The QSR type of the merged object.
+    :type qsr_type: str
+    :return: The merged `world_qsr_traces`.
+    :rtype: World_QSR_Trace
     """
     ret_world_qsr_trace = World_QSR_Trace(qsr_type=qsr_type)
     for world_qsr_trace in world_qsr_traces:
@@ -28,10 +28,17 @@ def merge_world_qsr_traces(world_qsr_traces, qsr_type=""):
     return ret_world_qsr_trace
 
 def isnan(x):
+    """Check if nan.
+
+    :param x: The value to be checked.
+    :type x: int or float
+    :return: Whether nan or not.
+    :rtype: bool
+    """
     return numpy.isnan(x)
 
 def flatten_list(l):
-    """Flattens an irregular list, i.e. a list containing a mixture of iteratable and non-iteratable items, returning a generator object.
+    """Flatten an irregular list, i.e. a list containing a mixture of iteratable and non-iteratable items, returning a generator object.
 
     :param l: The list to flatten.
     :type l: list or tuple
@@ -46,5 +53,11 @@ def flatten_list(l):
             yield el
 
 def load_dynamic_args_from_file(path):
+    """Load `dynamic_args` from a yaml file.
+
+    :param path: The filename including its path.
+    :type path: str
+    :return:
+    """
     with open(path, "r") as f:
         return yaml.load(f)
