@@ -1,3 +1,0 @@
-<launch>
-  <test test-name="coneDir_tester" pkg="qsr_lib" type="coneDir_tester.py" />
-</launch>

@@ -46,7 +46,7 @@ if __name__ == "__main__":
 
     #### WORLD_QSR_TRACE DBG
     # which_qsr = "rcc2"
-    which_qsr = ["mos", "rcc2", "coneDir"]
+    which_qsr = ["mos", "rcc2", "car_dir"]
     qsrlib = QSRlib()
     qsrlib_request_message = QSRlib_Request_Message(which_qsr, world)
     qsrlib_response_message = qsrlib.request_qsrs(qsrlib_request_message)
