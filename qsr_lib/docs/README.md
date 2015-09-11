@@ -22,6 +22,7 @@ make html
 pandoc --from=markdown --to=rst --output=qsrs.rst qsrs.md
 ```
 
-If pandoc converts "\`" to "\`\`" the do two string replacements:
+If pandoc converts "\`" to "\`\`" then do two string replacements:
+
 1. "\`\`" to "\`"
 2. "\` " to "\`   ", i.e 'backtilt+1 space' to 'backtilt+3 spaces'
