@@ -18,7 +18,7 @@ class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractcl
     """
     def __init__(self):
         super(QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
-        self._unique_id = "car_dir"
+        self._unique_id = "cardir"
         self._all_possible_relations = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
         self._dtype = "bounding_boxes"
 

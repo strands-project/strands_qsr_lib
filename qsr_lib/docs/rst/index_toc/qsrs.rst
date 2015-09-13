@@ -10,7 +10,7 @@ Currently, the following QSRs are supported:
 +--------------------------------------------------------------------+---------------------------------------------------+------+----------------+
 | :any:`argprobd <QSR_Arg_Relations_Abstractclass>`                  | Qualitative Argument Probabilistic Distances      | ?    | ?              |
 +--------------------------------------------------------------------+---------------------------------------------------+------+----------------+
-| :any:`car_dir <QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D>` | Cardinal Directions                               |  NO  | [Andrew1991]   |
+| :any:`cardir <QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D>`  | Cardinal Directions                               |  NO  | [Andrew1991]   |
 +--------------------------------------------------------------------+---------------------------------------------------+------+----------------+
 | :any:`mos <QSR_Moving_or_Stationary>`                              | Moving or Stationary                              | ?    | ?              |
 +--------------------------------------------------------------------+---------------------------------------------------+------+----------------+

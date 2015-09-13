@@ -1,3 +1,0 @@
-<launch>
-  <test test-name="car_dir_tester" pkg="qsr_lib" type="car_dir_tester.py" />
-</launch>
