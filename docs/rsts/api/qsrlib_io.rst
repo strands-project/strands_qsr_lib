@@ -6,8 +6,8 @@ Submodules
 
 .. toctree::
 
-   qsrlib_io.world_qsr_trace
    qsrlib_io.world_trace
+   qsrlib_io.world_qsr_trace
 
 Module contents
 ---------------
