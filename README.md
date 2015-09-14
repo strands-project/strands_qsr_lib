@@ -1,4 +1,6 @@
-strands_qsr_lib
-===============
+QSRlib
+======
 
-Qualitative spatial reasoning tools
+A library for Qualitative Spatial Relations and Reasoning.
+
+[Read the docs.](http://qsrlib.readthedocs.org)
