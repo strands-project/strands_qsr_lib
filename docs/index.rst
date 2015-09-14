@@ -8,20 +8,20 @@
 Welcome to QSRlib's documentation!
 ==================================
 
-QSRlib is a library that allows computation of [Qualitative Spatial Relations](#qsrs_survey) (QSRs),
-as well as a rapid and dynamic framework for interested developers to write and integrate their own QSRs in the library.
+QSRlib is a library that allows computation of Qualitative Spatial Relations,
+as well as a development framework for rapid implementation of new QSRs.
 
 Contents:
 
 .. toctree::
    :maxdepth: 1
 
-   rst/index_toc/authors
-   rst/index_toc/install
-   rst/index_toc/usage
-   rst/index_toc/qsrs
-   rst/index_toc/for_developers
-   rst/modules
+   rsts/handwritten/authors
+   rsts/handwritten/install
+   rsts/handwritten/usage
+   rsts/handwritten/qsrs
+   rsts/handwritten/for_developers
+   rsts/api/modules
 
 
 Indices and tables
