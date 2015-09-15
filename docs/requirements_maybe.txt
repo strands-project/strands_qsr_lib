@@ -1,0 +1,5 @@
+Not sure if needed, but if run into problems maybe add that in the requirements.txt
+catkin_pkg
+
+- To use the ROS theme add the following in the requirements.txt and also don't forget the necessary changes in conf.py
+catkin_sphinx
