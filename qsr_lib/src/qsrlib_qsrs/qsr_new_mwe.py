@@ -13,21 +13,22 @@ class QSR_MWE(QSR_Dyadic_1t_Abstractclass):
 
     Some explanation about the QSR. Maybe a reference if it exists.
     """
+
+    _unique_id = "mwe"
+    """str: Unique identifier name of the QSR."""
+
+    _all_possible_relations = ("left", "together", "right")
+    """tuple: All possible relations of the QSR."""
+
+    _dtype = "points"
+    """str: On what kind of data the QSR works with."""
+
     def __init__(self):
         """Constructor.
 
         :return:
         """
         super(QSR_MWE, self).__init__()
-
-        self._unique_id = "mwe"
-        """str: Unique identifier name of the QSR."""
-
-        self._all_possible_relations = ("left", "together", "right")
-        """tuple: All possible relations of the QSR."""
-
-        self._dtype = "points"
-        """str: On what kind of data the QSR works with."""
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Compute QSR value.

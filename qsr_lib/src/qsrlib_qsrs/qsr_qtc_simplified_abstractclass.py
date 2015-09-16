@@ -30,9 +30,12 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
     __global_unique_id = "qtcs"
     __no_state__ = 9.
 
+    _unique_id = ""
+    _all_possible_relations = ()
+    _dtype = "points"
+
     def __init__(self):
         super(QSR_QTC_Simplified_Abstractclass, self).__init__()
-        self._unique_id = ""
         self.qtc_type = ""
 
         self.__qsr_params_defaults= {
@@ -116,9 +119,9 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             for j1 in xrange(0, len(qtc[i,:])-1):
                 for j2 in xrange(j1+1, len(insert)):
                     if np.sum(np.abs(qtc[i-1,[j1,j2]])) == 1 \
-                    and np.sum(np.abs(insert[[j1,j2]])) == 1:
+                            and np.sum(np.abs(insert[[j1,j2]])) == 1:
                         if np.nanmax(np.abs(qtc[i-1,[j1,j2]] - insert[[j1,j2]])) > 0 \
-                        and np.sum(qtc[i-1,[j1,j2]] - insert[[j1,j2]]) != 1:
+                                and np.sum(qtc[i-1,[j1,j2]] - insert[[j1,j2]]) != 1:
                             insert[[j1,j2]] = 0
 
             #print insert
@@ -222,16 +225,16 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             self._test_constraint(
                 pos_l,
                 np.array([ # Needs to be turned around to determine correct side
-                    [trans_RL_l[1,0],trans_RL_l[1,1]],
-                    [trans_RL_l[0,0],trans_RL_l[0,1]]
-                ]),
+                           [trans_RL_l[1,0],trans_RL_l[1,1]],
+                           [trans_RL_l[0,0],trans_RL_l[0,1]]
+                           ]),
                 quantisation_factor=quantisation_factor),
             self._test_constraint(
                 pos_l,
                 np.array([ # Needs to be turned around to determine correct side
-                    [RL_ext[1,0],RL_ext[1,1]],
-                    [RL_ext[0,0],RL_ext[0,1]]
-                ]),
+                           [RL_ext[1,0],RL_ext[1,1]],
+                           [RL_ext[0,0],RL_ext[0,1]]
+                           ]),
                 quantisation_factor=quantisation_factor,
                 constraint="side")
         )
@@ -426,11 +429,11 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
             return World_QSR_Trace(
                 qsr_type=world_qsr_trace.qsr_type,
                 trace={t: world_qsr_trace.trace[tqtc]
-                    for t, tqtc in zip(
-                        world_trace.get_sorted_timestamps()[1:],
-                        world_qsr_trace.get_sorted_timestamps()
-                    )
-                }
+                       for t, tqtc in zip(
+                    world_trace.get_sorted_timestamps()[1:],
+                    world_qsr_trace.get_sorted_timestamps()
+                )
+                       }
             )
         else:
             return world_qsr_trace

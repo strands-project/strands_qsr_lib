@@ -8,12 +8,13 @@ class QSR_Moving_or_Stationary(QSR_Monadic_2t_Abstractclass):
     """Computes moving or stationary relations: 'm': moving, 's': stationary
 
     """
+
+    _unique_id = "mos"
+    _all_possible_relations = ("m", "s")
+    _dtype = "points"
+
     def __init__(self):
         super(QSR_Moving_or_Stationary, self).__init__()
-        self._unique_id = "mos"
-        self._all_possible_relations = ("m", "s")
-        self._dtype = "points"
-
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):

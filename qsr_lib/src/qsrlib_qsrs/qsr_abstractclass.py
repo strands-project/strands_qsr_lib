@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta, abstractmethod, abstractproperty
 
 
 class QSR_Abstractclass(object):
@@ -9,26 +9,29 @@ class QSR_Abstractclass(object):
     """
     __metaclass__ = ABCMeta
 
+    _common_dynamic_args = ["qsrs_for"]
+    """tuple: Common across all QSRs arguments of `dynamic_args`."""
+
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
-        self._unique_id = ""
-        """str: The unique identifier of each QSR."""
-
-        self._all_possible_relations = ()
-        """tuple: All possible relations of a QSR."""
-
-        self._dtype = ""
-        """str: On what kind of data the QSR operates with, e.g. 'points' or 'bboxes'"""
-
-        self._common_dynamic_args = ["qsrs_for"]
-        """tuple: Common across all QSRs arguments of `dynamic_args`."""
-
+        """Constructor."""
         self._dtype_map = {"points": self._return_points,
                            "bounding_boxes_2d": self._return_bounding_boxes_2d}
         """dict: Mapping of _dtype to methods."""
+
+    @abstractproperty
+    def _unique_id(self):
+        """str: The unique identifier of each QSR."""
+        pass
+
+    @abstractproperty
+    def _all_possible_relations(self):
+        """tuple: All possible relations of a QSR."""
+        pass
+
+    @abstractproperty
+    def _dtype(self):
+        """str: On what kind of data the QSR operates with, see self._dtype_map for possible values"""
+        pass
 
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):

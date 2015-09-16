@@ -10,10 +10,11 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
     """
     __metaclass__ = ABCMeta
 
+    _dtype = "bounding_boxes_2d"
+
     def __init__(self):
         super(QSR_RCC_Abstractclass, self).__init__()
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
-        self._dtype = "bounding_boxes_2d"
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
@@ -63,7 +64,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         # Cond2. If A's right edge is to the left of the B's left edge, - then A is Totally to left Of B
         # Cond3. If A's top edge is below B's bottom edge, - then A is Totally below B
         # Cond4. If A's bottom edge is above B's top edge, - then A is Totally above B
-        
+
         #    Cond1           Cond2          Cond3         Cond4
         if (ax-q > dx+q) or (bx+q < cx-q) or (ay-q > dy+q) or (by+q < cy-q):
             return self._convert_to_requested_rcc_type("dc")
@@ -75,7 +76,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         # Do objects share an X or Y (but are not necessarily touching)
         sameX = (abs(ax - cx)<=q) or (abs(ax - dx)<=q) or (abs(bx - cx)<=q) or (abs(bx - dx)<=q)
         sameY = (abs(ay - cy)<=q) or (abs(ay - dy)<=q) or (abs(by - cy)<=q) or (abs(by - dy)<=q)
-        
+
         if AinsideB and (sameX or sameY):
             return self._convert_to_requested_rcc_type("tpp")
 
@@ -97,9 +98,9 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         # If quantisation overlaps, but bounding boxes do not then edge connected,
         # include the objects edges, but do not include the quantisation edge
         if ((cx-q) <= (bx+q)) and ((cx-q) >= (bx)) or \
-           ((dx+q) >= (ax-q)) and ((dx+q) <= (ax)) or \
-           ((cy-q) <= (by+q)) and ((cy-q) >= (by)) or \
-           ((dy+q) >= (ay-q)) and ((dy+q) <= (ay)):
+                        ((dx+q) >= (ax-q)) and ((dx+q) <= (ax)) or \
+                        ((cy-q) <= (by+q)) and ((cy-q) >= (by)) or \
+                        ((dy+q) >= (ay-q)) and ((dy+q) <= (ay)):
             return self._convert_to_requested_rcc_type("ec")
 
         # If none of the other conditions are met, the objects must be parially overlapping

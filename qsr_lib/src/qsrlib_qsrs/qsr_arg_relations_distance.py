@@ -7,12 +7,15 @@ from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
+
+    _unique_id = "argd"
+    _dtype = "points"
+    _all_possible_relations = ()
+
     def __init__(self):
         super(QSR_Arg_Relations_Distance, self).__init__()
-        self._unique_id = "argd"
         self.allowed_value_types = (int, float)
         self.value_sort_key = operator.itemgetter(1)  # Sort by threshold
-        self._dtype = "points"
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         try:
