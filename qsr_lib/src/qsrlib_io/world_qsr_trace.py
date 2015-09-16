@@ -105,9 +105,9 @@ class World_QSR_Trace(object):
 
     # todo it should work as it has worked so far but does it actually work for multiple?
     def add_qsr(self, qsr, timestamp):
-        """Add a QSR at timestamp.
+        """Add/Overwrite a QSR at timestamp.
 
-        :param qsr: The QSR value to be added.
+        :param qsr: The QSR object to be added.
         :type qsr: QSR
         :param timestamp: The timestamp of the QSR.
         :type timestamp: float
@@ -119,8 +119,9 @@ class World_QSR_Trace(object):
             world_qsr_state = World_QSR_State(timestamp=timestamp, qsrs={qsr.between: qsr})
             self.add_world_qsr_state(world_qsr_state)
 
+    # refactor to put_...
     def add_empty_world_qsr_state(self, timestamp):
-        """Add an empty World_QSR_State object at timestamp.
+        """Put an empty World_QSR_State object at timestamp.
 
         :param timestamp: Timestamp of where to add an empty World_QSR_State
         :type timestamp: float
