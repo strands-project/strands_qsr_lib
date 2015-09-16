@@ -15,7 +15,7 @@ class QSR_Abstractclass(object):
     _all_possible_relations = ()
     """tuple: All possible relations of a QSR."""
 
-    _allowed_parameters = ["qsrs_for"]  # todo refactor to _common_args and tuple it
+    _common_dynamic_args = ["qsrs_for"]
     """tuple: Common across all QSRs arguments of `dynamic_args`."""
 
     _dtype = ""
