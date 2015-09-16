@@ -108,11 +108,11 @@ class QSRlib(object):
                 qsrs[o._unique_id] = o
         return qsrs
 
-    # todo turn this into a property get method
-    def get_qsrs_registry(self):
-        """Getter method.
+    @property
+    def qsrs_registry(self):
+        """Getter.
 
-        :return: The `self.__qsrs_registry` containing the mapping of the unique names of the QSRs and their corresponding generated objects.
+        :return: self.__qsrs_registry
         :rtype: dict
         """
         return self.__qsrs_registry
