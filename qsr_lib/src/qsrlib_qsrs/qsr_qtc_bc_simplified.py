@@ -33,7 +33,7 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
             world_state_now = world_trace.trace[t]
             world_state_previous = world_trace.trace[tp]
             if set(world_state_now.objects.keys()) != set(world_state_previous.objects.keys()):
-                ret.add_empty_world_qsr_state(t)
+                ret.put_empty_world_qsr_state(t)
                 continue # Objects have to be present in both timestamps
             qsrs_for = self._process_qsrs_for(world_state_now.objects.keys(), req_params["dynamic_args"])
             for o1_name, o2_name in qsrs_for:

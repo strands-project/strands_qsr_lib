@@ -119,8 +119,7 @@ class World_QSR_Trace(object):
             world_qsr_state = World_QSR_State(timestamp=timestamp, qsrs={qsr.between: qsr})
             self.add_world_qsr_state(world_qsr_state)
 
-    # refactor to put_...
-    def add_empty_world_qsr_state(self, timestamp):
+    def put_empty_world_qsr_state(self, timestamp):
         """Put an empty World_QSR_State object at timestamp.
 
         :param timestamp: Timestamp of where to add an empty World_QSR_State
