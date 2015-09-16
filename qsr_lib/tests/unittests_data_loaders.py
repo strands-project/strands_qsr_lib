@@ -16,16 +16,16 @@ def load_input_data1():
                 timestamp=idx+1,
                 x=float(row['x1']),
                 y=float(row['y1']),
-                width=float(row['w1']),
-                length=float(row['l1'])
+                xsize=float(row['w1']),
+                ysize=float(row['l1'])
             ))
             ob.append(Object_State(
                 name=row['o2'],
                 timestamp=idx+1,
                 x=float(row['x2']),
                 y=float(row['y2']),
-                width=float(row["w2"]),
-                length=float(row["l2"])
+                xsize=float(row["w2"]),
+                ysize=float(row["l2"])
             ))
 
     world.add_object_state_series(ob)
@@ -44,24 +44,24 @@ def load_input_data2():
                 timestamp=idx+1,
                 x=float(row['x1']),
                 y=float(row['y1']),
-                width=float(row['w1']),
-                length=float(row['l1'])
+                xsize=float(row['w1']),
+                ysize=float(row['l1'])
             ))
             ob.append(Object_State(
                 name=row['o2'],
                 timestamp=idx+1,
                 x=float(row['x2']),
                 y=float(row['y2']),
-                width=float(row["w2"]),
-                length=float(row["l2"])
+                xsize=float(row["w2"]),
+                ysize=float(row["l2"])
             ))
             ob.append(Object_State(
                 name=row['o3'],
                 timestamp=idx+1,
                 x=float(row['x3']),
                 y=float(row['y3']),
-                width=float(row["w3"]),
-                length=float(row["l3"])
+                xsize=float(row["w3"]),
+                ysize=float(row["l3"])
             ))
 
     world.add_object_state_series(ob)
@@ -110,24 +110,24 @@ def load_input_data4():
                 timestamp=idx+1,
                 x=float(row['x1']),
                 y=float(row['y1']),
-                width=float(row['w1']),
-                length=float(row['l1'])
+                xsize=float(row['w1']),
+                ysize=float(row['l1'])
             ))
             ob.append(Object_State(
                 name=row['o2'],
                 timestamp=idx+1,
                 x=float(row['x2']),
                 y=float(row['y2']),
-                width=float(row["w2"]),
-                length=float(row["l2"])
+                xsize=float(row["w2"]),
+                ysize=float(row["l2"])
             ))
             ob.append(Object_State(
                 name=row['o3'],
                 timestamp=idx+1,
                 x=float(row['x3']),
                 y=float(row['y3']),
-                width=float(row["w3"]),
-                length=float(row["l3"])
+                xsize=float(row["w3"]),
+                ysize=float(row["l3"])
             ))
 
     world.add_object_state_series(ob)

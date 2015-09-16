@@ -5,20 +5,20 @@ from matplotlib import pyplot as plt
 from matplotlib.patches import Rectangle
 
 
-def return_bounding_box_2d(x, y, width, length):
+def return_bounding_box_2d(x, y, xsize, ysize):
     """Return the bounding box
 
         :param x: x center
         :param y: y center
-        :param width: x size
-        :param length: y size
+        :param xsize: x size
+        :param ysize: y size
         :return: list(x1, y1, x2, y2) where (x1, y1) and (x2, y2) are the coordinates of the diagonal points of the
                 bounding box depending on your coordinates frame
         """
-    if width <= 0 or length <= 0:
-        print("ERROR: can't compute bounding box, width or height has no positive value")
+    if xsize <= 0 or ysize <= 0:
+        print("ERROR: can't compute bounding box, xsize or height has no positive value")
         return []
-    return [x-width/2, y-length/2, x+width/2, y+length/2]
+    return [x-xsize/2, y-ysize/2, x+xsize/2, y+ysize/2]
 
 
 def compute_qsr(bb1, bb2):
@@ -120,18 +120,18 @@ def plot_bbs(bb1, bb2):
     plt.show()
 
 
-    #     o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-    #           Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-    #           Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.)]
+    #     o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
+    #           Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.),
+    #           Object_State(name="o1", timestamp=2, x=1., y=3., xsize=5., ysize=8.)]
     #
-    #     o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-    #           Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
-    #           Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
-    #           Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.)]
+    #     o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
+    #           Object_State(name="o2", timestamp=1, x=11., y=2., xsize=5., ysize=8.),
+    #           Object_State(name="o2", timestamp=2, x=11., y=3., xsize=5., ysize=8.),
+    #           Object_State(name="o2", timestamp=3, x=11., y=4., xsize=5., ysize=8.)]
     #
-    #     o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., width=5., length=8.),
-    #           Object_State(name="o3", timestamp=1, x=2., y=11., width=5., length=8.),
-    #           Object_State(name="o3", timestamp=2, x=3., y=11., width=5., length=8.)]
+    #     o3 = [Object_State(name="o3", timestamp=0, x=1., y=11., xsize=5., ysize=8.),
+    #           Object_State(name="o3", timestamp=1, x=2., y=11., xsize=5., ysize=8.),
+    #           Object_State(name="o3", timestamp=2, x=3., y=11., xsize=5., ysize=8.)]
 
 o1 = (2.0, 2.0, 2., 2.)
 o2 = (4.0, 3.0, 1., 1.)

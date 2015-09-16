@@ -16,11 +16,13 @@ class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractcl
 
         where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
     """
+
+    _unique_id = "cardir"
+    _all_possible_relations = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
+    _dtype = "bounding_boxes_2d"
+
     def __init__(self):
         super(QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
-        self._unique_id = "cardir"
-        self._all_possible_relations = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
-        self._dtype = "bounding_boxes"
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Cardinal direction relation

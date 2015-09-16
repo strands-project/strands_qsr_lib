@@ -1,34 +1,37 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
-from abc import ABCMeta, abstractmethod
-# todo remove following dependencies that seem to be no longer needed
-import yaml
-import os
+from abc import ABCMeta, abstractmethod, abstractproperty
 
 
-# todo consider refactoring QSR_Abstractclass to Abstractclass_QSR, rename file accordingly to and do for all abstractclasses
 class QSR_Abstractclass(object):
     """Root abstract class of the QSR implementators.
 
     """
     __metaclass__ = ABCMeta
 
+    _common_dynamic_args = ["qsrs_for"]
+    """tuple: Common across all QSRs arguments of `dynamic_args`."""
+
     def __init__(self):
-        """Constructor.
+        """Constructor."""
+        self._dtype_map = {"points": self._return_points,
+                           "bounding_boxes_2d": self._return_bounding_boxes_2d}
+        """dict: Mapping of _dtype to methods."""
 
-        :return:
-        """
-        self._unique_id = ""
+    @abstractproperty
+    def _unique_id(self):
         """str: The unique identifier of each QSR."""
+        pass
 
-        self._all_possible_relations = []  # todo make it empty tuple
+    @abstractproperty
+    def _all_possible_relations(self):
         """tuple: All possible relations of a QSR."""
+        pass
 
-        self._allowed_parameters = ["qsrs_for"]  # todo refactor to _common_args and tuple it
-        """tuple: Common across all QSRs arguments of `dynamic_args`."""
-
-        self._dtype = ""
-        """str: On what kind of data the QSR operates with, e.g. 'points' or 'bboxes'"""
+    @abstractproperty
+    def _dtype(self):
+        """str: On what kind of data the QSR operates with, see self._dtype_map for possible values"""
+        pass
 
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
@@ -85,18 +88,34 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for
 
-    # todo convert to property get method
-    def get_unique_id(self):
-        """Return the unique identifier of the QSR.
+    @abstractmethod
+    def _return_points(self):
+        """Return the arguments as they are in their point form.
+
+        :return: The arguments as they are in their point form.
+        """
+        return
+
+    @abstractmethod
+    def _return_bounding_boxes_2d(self):
+        """Return the 2D bounding boxes of the arguments.
+
+        :return: The 2D bounding boxes of the arguments.
+        """
+        return
+
+    @property
+    def unique_id(self):
+        """Getter for self._unique_id.
 
         :return: The unique identifier of the QSR.
         :rtype: str
         """
         return self._unique_id
 
-    # todo convert to property get method
-    def get_all_possible_relations(self):
-        """Return all the possible relations of the QSR.
+    @property
+    def all_possible_relations(self):
+        """Getter for self._all_possible_relations.
 
         :return: All the possible relations of the QSR.
         :rtype: tuple
@@ -146,14 +165,13 @@ class QSR_Abstractclass(object):
         self._custom_checks_world_trace(world_trace, qsr_params)
         return world_trace, world_trace.get_sorted_timestamps()
 
-    # todo objects_names are they again at world state? they should be in which case I need to refactor.
-    def _process_qsrs_for(self, objects_names, dynamic_args, **kwargs):
+    def _process_qsrs_for(self, objects_names_of_world_state, dynamic_args, **kwargs):
         """Parse `dynamic_args` and generate valid `qsrs_for`.
 
         It parses the `dynamic_args` to see if the user has specified `qsrs_for` and then validates them, or uses
-        default `qsrs_for` generation if user has not speficied anything.
+        default `qsrs_for` generation if user has not specified anything.
 
-        :param objects_names: The object names in a world state.
+        :param objects_names_of_world_state: The object names in a world state.
         :param dynamic_args: The dynamic arguments passed with the request.
         :type dynamic_args: dict
         :param kwargs: Optional extra arguments.
@@ -161,19 +179,19 @@ class QSR_Abstractclass(object):
         :rtype: list
         :raises: TypeError: When no valid `qsrs_for` can be generated.
         """
-        if isinstance(objects_names[0], str):
+        if isinstance(objects_names_of_world_state[0], str):
             try:
-                return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
                                                                        dynamic_args[self._unique_id]["qsrs_for"])
             except KeyError:
                 try:
-                    return self.__check_qsrs_for_data_exist_at_world_state(objects_names,
+                    return self.__check_qsrs_for_data_exist_at_world_state(objects_names_of_world_state,
                                                                            dynamic_args["for_all_qsrs"]["qsrs_for"])
                 except KeyError:
-                    return self._init_qsrs_for_default(objects_names)
-        elif isinstance(objects_names[0], (list, tuple)):
+                    return self._init_qsrs_for_default(objects_names_of_world_state)
+        elif isinstance(objects_names_of_world_state[0], (list, tuple)):
             qsrs_for_list = []
-            for objects_names_i in objects_names:
+            for objects_names_i in objects_names_of_world_state:
                 try:
                     qsrs_for_list.append(self.__check_qsrs_for_data_exist_at_world_state(objects_names_i,
                                                                                          dynamic_args[self._unique_id]["qsrs_for"]))
@@ -186,7 +204,7 @@ class QSR_Abstractclass(object):
 
             return list(set(qsrs_for_list[0]).intersection(*qsrs_for_list))
         else:
-            raise TypeError("objects_names must be a list of str or list of lists")
+            raise TypeError("the objects names must be a list of str or list of lists")
 
     def __check_qsrs_for_data_exist_at_world_state(self, objects_names_of_world_state, qsrs_for):
         """Check that the entities in `qsrs_for` exist in the world state.
@@ -220,14 +238,13 @@ class QSR_Abstractclass(object):
         qsrs_for_ret = self._validate_qsrs_for(qsrs_for_ret)
         return qsrs_for_ret
 
-    # todo is req_params different from dynamic_args, and if yes what is its type?
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         """Set the QSR specific parameters from the request parameters.
 
         Overwrite as needed.
 
         :param req_params: The request parameters.
-        :type req_params: ?
+        :type req_params: dict
         :param kwargs: Optional extra arguments
         :return:
         """

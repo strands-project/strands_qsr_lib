@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     # ****************************************************************************************************
     # parse command line arguments
-    options = sorted(qsrlib.get_qsrs_registry().keys())
+    options = sorted(qsrlib.qsrs_registry.keys())
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
     args = parser.parse_args()
@@ -37,11 +37,11 @@ if __name__ == "__main__":
     # ****************************************************************************************************
     # make some input data
     world = World_Trace()
-    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-          Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.)]
+    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
 
-    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-          Object_State(name="o2", timestamp=1, x=1., y=2., width=5., length=8.)]
+    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
     world.add_object_state_series(o1)
     world.add_object_state_series(o2)
 

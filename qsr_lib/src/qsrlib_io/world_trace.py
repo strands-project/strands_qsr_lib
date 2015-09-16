@@ -4,16 +4,14 @@ from numpy import isnan
 import copy
 
 
-# todo issue #105, probably the easiest is to refactor width, length, height to xsize, ysize, zsize
-# todo also deprecate roll, pitch, yaw and use quartenions?
 class Object_State(object):
     """Data class structure that is holding various information about an object.
 
     """
     def __init__(self, name, timestamp,
                  x=float('nan'), y=float('nan'), z=float('nan'),
-                 roll=float('nan'), pitch=float('nan'), yaw=float('nan'),
-                 length=float('nan'), width=float('nan'), height=float('nan'),
+                 xsize=float('nan'), ysize=float('nan'), zsize=float('nan'),
+                 rotation=(),
                  *args, **kwargs):
         """Constructor.
 
@@ -27,18 +25,14 @@ class Object_State(object):
         :type y: float or int
         :param z: The z-coordinate of the center point.
         :type z: float or int
-        :param roll: Roll of the object.
-        :type roll: float or int
-        :param pitch: Pitch of the object.
-        :type pitch: float or int
-        :param yaw: Yaw of the object.
-        :type yaw: float or int
-        :param length: Total y-size of the object.
-        :type length: float or int
-        :param width: Total x-size of the object.
-        :type width: float or int
-        :param height: Total z-size of the object.
-        :type height: float or int
+        :param xsize: Total x-size.
+        :type xsize: float or int
+        :param ysize: Total y-size.
+        :type ysize: float or int
+        :param zsize: Total z-size.
+        :type zsize: float or int
+        :param rotation: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one.
+        :type rotation: tuple or list of floats
         :param args: Other optional args.
         :param kwargs: Other optional kwargs.
         :return:
@@ -50,68 +44,96 @@ class Object_State(object):
         """float: The timestamp of the object state, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
 
         self.x = x
-        """int or float: The x-coordinate of the center point."""
+        """int or float: x-coordinate of the center point."""
 
         self.y = y
-        """int or float: The y-coordinate of the center point."""
+        """int or float: y-coordinate of the center point."""
 
         self.z = z
-        """int or float: The z-coordinate of the center point."""
+        """int or float: z-coordinate of the center point."""
 
-        self.set_length_width_height(length=length, width=width, height=height)
-        """int or float: The length (total y-size), width (total x-size) and height (total z-size) of the object."""
+        self.xsize = xsize
+        """positive int or float: Total x-size"""
 
-        self.roll = roll
-        """int or float: The roll of the object."""
+        self.ysize = ysize
+        """positive int or float: Total y-size"""
 
-        self.pitch = pitch
-        """int or float: The pitch of the object."""
+        self.zsize = zsize
+        """positive int or float: Total z-size"""
 
-        self.yaw = yaw
-        """int or float: The yaw of the object."""
+        self.rotation = rotation
+        """tuple or list of floats: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one."""
 
         self.args = args
         self.kwargs = kwargs
 
-    # todo turn this into three separate setter methods
-    def set_length_width_height(self, length=float('nan'), width=float('nan'), height=float('nan')):
-        """Setter method for length, width, height.
+    @property
+    def xsize(self):
+        """Getter.
 
-        :param length: Total y-size of the object.
-        :type length: int or float
-        :param width: Total x-size of the object.
-        :type width: int or float
-        :param height: Total z-size of the object.
-        :type height: int or float
+        :return: Total x-size.
+        :rtype: int or float
+        """
+        return self.__xsize
+
+    @xsize.setter
+    def xsize(self, v):
+        """Setter.
+
+        :param v: xsize new value.
+        :type v: positive int or float
         :return:
         """
-        if length < 0 or width < 0 or height < 0:
-            raise ValueError("Object length, width and height cannot be negative; leave them to default values if unset")
+        if v < 0:
+            raise ValueError("xsize cannot be negative")
         else:
-            self.width = width  # x size
-            """Total x-size of the object."""
+            self.__xsize = v
 
-            self.length = length  # y size
-            """Total y-size of the object."""
+    @property
+    def ysize(self):
+        return self.__ysize
 
-            self.height = height  # z size
-            """Total z-size of the object."""
+    @ysize.setter
+    def ysize(self, v):
+        if v < 0:
+            raise ValueError("ysize cannot be negative")
+        else:
+            self.__ysize = v
 
-    def return_bounding_box_2d(self, minimal_width=0, minimal_length=0):
+    @property
+    def zsize(self):
+        return self.__zsize
+
+    @zsize.setter
+    def zsize(self, v):
+        if v < 0:
+            raise ValueError("zsize cannot be negative")
+        else:
+            self.__zsize = v
+
+    @property
+    def rotation(self):
+        return self.__rotation
+
+    @rotation.setter
+    def rotation(self, v):
+        if not v or len(v) == 3 or len(v) == 4:
+            self.__rotation = v
+        else:
+            raise ValueError("invalid length of rotation, it must be given as a tuple in roll-pitch-yaw form (3 floats) or quaternion one (4 floats: x,y,z,w) or empty")
+
+    def return_bounding_box_2d(self, xsize_minimal=0, ysize_minimal=0):
         """Compute the 2D bounding box of the object.
 
-        :param minimal_width: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
-        :type minimal_width: int or float
-        :param minimal_length: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
+        :param xsize_minimal: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
+        :type xsize_minimal: int or float
+        :param ysize_minimal: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
         :return: The coordinates of the upper-left and bottom-right corners of the bounding box.
         :rtype: list
         """
-        if self.width < 0 or self.length < 0:
-            raise ValueError("Object width and length cannot be negative")
-        # todo need to add a check that minimal width and length are both not < 0
-        width = minimal_width if isnan(self.width) else self.width
-        length = minimal_length if isnan(self.length) else self.length
-        return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
+        xsize = xsize_minimal if isnan(self.xsize) else self.xsize
+        ysize = ysize_minimal if isnan(self.ysize) else self.ysize
+        return [self.x-xsize/2, self.y-ysize/2, self.x+xsize/2, self.y+ysize/2]
 
 
 class World_State(object):
@@ -134,9 +156,8 @@ class World_State(object):
         """dict: Holds the state of the objects that exist in this world state, i.e. a dict of objects of type Object_State
         with the keys being the objects names."""
 
-    # todo maybe add overwrite protection, add argument overwrite=False; I think it was removed for efficiency
     def add_object_state(self, object_state):
-        """Add an object state.
+        """Add/Overwrite an object state.
 
         :param object_state: Object state to be added in the world state.
         :type object_state: Object_State
@@ -149,23 +170,17 @@ class World_Trace(object):
     """Data class structure that is holding a time series of the world states.
 
     """
-    # todo deprecate last_updated
-    def __init__(self, description="", last_updated=False, trace=None):
+    def __init__(self, description="", trace=None):
         """Constructor.
 
         :param description: Optional description of the world.
         :type description: str
-        :param last_updated: to be deprecated
         :param trace: A time series of world states, i.e. a dict of objects of type World_State with the keys being the timestamps.
         :type trace: dict
         :return:
         """
         self.description = description
         """str: Optional description of the world."""
-
-        # todo decide what to do with this, probably deprecate as it has never been used anywhere before
-        self.last_updated = last_updated
-        """to be deprecated"""
 
         self.trace = trace if trace else {}
         """dict: A time series of world states, i.e. a dict of objects of type World_State with the keys being the timestamps."""
@@ -179,7 +194,6 @@ class World_Trace(object):
         return sorted(self.trace.keys())
 
     # *** data adders
-    # todo refactor to add_object_track_from_list or better have internal methods that handle lengths 2, 3, 4, 6
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
 
@@ -197,21 +211,20 @@ class World_Trace(object):
             x = v[0]
             y = v[1]
             try:
-                width = v[2]
+                xsize = v[2]
             except IndexError:
-                width = float('nan')
+                xsize = float('nan')
             try:
-                length = v[3]
+                ysize = v[3]
             except IndexError:
-                length = float('nan')
+                ysize = float('nan')
             object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
-                                                    x=x, y=y, width=width, length=length,
+                                                    x=x, y=y, xsize=xsize, ysize=ysize,
                                                     **kwargs))
         self.add_object_state_series(object_state_series)
 
-    # todo refactor to add_object_state
-    def add_object_state_to_trace(self, object_state, timestamp=None):
-        """Add an Object_State object.
+    def add_object_state(self, object_state, timestamp=None):
+        """Add/Overwrite an Object_State object.
 
         :param object_state: The object state.
         :type object_state: Object_State
@@ -225,7 +238,6 @@ class World_Trace(object):
         except KeyError:
             world_state = World_State(timestamp=timestamp, objects={object_state.name: object_state})
             self.trace[timestamp] = world_state
-        self.last_updated = timestamp
 
     def add_object_state_series(self, object_states):
         """Add a series of object states.
@@ -235,7 +247,7 @@ class World_Trace(object):
         :return:
         """
         for s in object_states:
-            self.add_object_state_to_trace(object_state=s)
+            self.add_object_state(object_state=s)
     # *** end of data adders
 
     def get_last_state(self, copy_by_reference=False):
@@ -276,7 +288,7 @@ class World_Trace(object):
         if istart > ifinish:
             raise ValueError("start cannot be after finish")
         timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
-        ret = World_Trace(last_updated=self.last_updated)
+        ret = World_Trace()
         for t in timestamps:
             ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
         return ret
@@ -291,16 +303,15 @@ class World_Trace(object):
         :return: A subsample for the requested objects.
         :rtype: World_Trace
         """
-        ret = World_Trace(last_updated=self.last_updated)
+        ret = World_Trace()
         for t, state in self.trace.items():
             for oname in objects_names:
                 if copy_by_reference:
-                    ret.add_object_state_to_trace(state.objects[oname], t)
+                    ret.add_object_state(state.objects[oname], t)
                 else:
-                    ret.add_object_state_to_trace(copy.deepcopy(state.objects[oname]), t)
+                    ret.add_object_state(copy.deepcopy(state.objects[oname]), t)
         return ret
 
-    # todo allow finish=None
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
                                            copy_by_reference=False, include_finish=True, time_slicing_first=True):
         """Return a subsample for requested objects between start and finish timestamps.

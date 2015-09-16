@@ -86,6 +86,15 @@ class QSRlib(object):
         if help:
             self.help()
 
+    @property
+    def qsrs_registry(self):
+        """Getter.
+
+        :return: self.__qsrs_registry
+        :rtype: dict
+        """
+        return self.__qsrs_registry
+
     @staticmethod
     def __check_and_activate_qsrs(qsrs_registry):
         """Checks for uniqueness of the QSRs _unique_id and their corresponding class names and then return a dictionary
@@ -107,15 +116,6 @@ class QSRlib(object):
             else:
                 qsrs[o._unique_id] = o
         return qsrs
-
-    # todo turn this into a property get method
-    def get_qsrs_registry(self):
-        """Getter method.
-
-        :return: The `self.__qsrs_registry` containing the mapping of the unique names of the QSRs and their corresponding generated objects.
-        :rtype: dict
-        """
-        return self.__qsrs_registry
 
     def help(self):
         """stdout help message about QSRlib"""

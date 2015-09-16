@@ -12,7 +12,7 @@ from random import uniform
 
 
 class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
-    def __init__(self, config=None):
+    def __init__(self):
         super(QSR_Arg_Prob_Relations_Distance, self).__init__()
         self._unique_id = "argprobd"
         self.allowed_value_types = (tuple, list)

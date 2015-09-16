@@ -18,11 +18,6 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         """
         super(QSR_Monadic_Abstractclass, self).__init__()
 
-        # todo should discriminate maybe between points_2d, points_3d, bounding_boxes_2d, bounding_boxes_3d and could possibly go in the QSR_Abstractclass; also maybe refactor to a better name
-        self._allowed_dtype = {"points": self.__return_points,
-                               "bounding_boxes": self.__return_bounding_boxes}
-        """dict: With what data the QSR works with, e.g. with points or with bounding boxes."""
-
     def _init_qsrs_for_default(self, objects_names_of_world_state):
         """The default list of entities for which QSRs are to be computed for.
 
@@ -44,8 +39,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         """
         return [p for p in qsrs_for if isinstance(p, str)]
 
-    # todo possibly move to QSR_Abstractclass
-    def __return_points(self, data1, data2):
+    def _return_points(self, data1, data2):
         """Return the arguments as they are in their point form.
 
         :param data1: Object data at first timestamp.
@@ -57,9 +51,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         """
         return data1, data2
 
-    # todo refactor to __return_bounding_boxes_2d
-    # todo possibly move to QSR_Abstractclass
-    def __return_bounding_boxes(self, data1, data2):
+    def _return_bounding_boxes_2d(self, data1, data2):
         """Return the 2D bounding boxes of the arguments.
 
         :param data1: Object data at first timestamp.
@@ -125,10 +117,10 @@ class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
                                               req_params["dynamic_args"])
             for object_name in qsrs_for:
                 try:
-                    data1, data2 = self._allowed_dtype[self._dtype](world_state_now.objects[object_name],
-                                                              world_state_previous.objects[object_name])
+                    data1, data2 = self._dtype_map[self._dtype](world_state_now.objects[object_name],
+                                                                world_state_previous.objects[object_name])
                 except KeyError:
-                    raise KeyError("%s is not a valid value, should be one of %s" % (self._dtype, self._allowed_dtype.keys()))
+                    raise KeyError("%s is not a valid value, should be one of %s" % (self._dtype, self._dtype_map.keys()))
                 ret.add_qsr(QSR(timestamp=t, between=object_name,
                                 qsr=self._format_qsr(self._compute_qsr(data1, data2, qsr_params, **kwargs))),
                             t)

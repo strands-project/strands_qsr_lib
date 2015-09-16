@@ -38,8 +38,8 @@ class qsr_gui():
         
         qsrlib = QSRlib()
         world = World_Trace()
-        world.add_object_state_series([Object_State(name="red", timestamp=0, x=((ax+bx)/2.0), y=((ay+by)/2.0), width=abs(bx-ax), length=abs(by-ay)),
-            Object_State(name="yellow", timestamp=0, x=((cx+dx)/2.0), y=((cy+dy)/2.0), width=abs(dx-cx), length=abs(dy-cy))])
+        world.add_object_state_series([Object_State(name="red", timestamp=0, x=((ax+bx)/2.0), y=((ay+by)/2.0), xsize=abs(bx-ax), ysize=abs(by-ay)),
+            Object_State(name="yellow", timestamp=0, x=((cx+dx)/2.0), y=((cy+dy)/2.0), xsize=abs(dx-cx), ysize=abs(dy-cy))])
         dynamic_args = {"argd": {"qsr_relations_and_values": self.distance}}
         qsrlib_request_message = QSRlib_Request_Message(which_qsr=self.qsr, input_data=world, dynamic_args=dynamic_args)
         qsrlib_response_message = qsrlib.request_qsrs(req_msg=qsrlib_request_message)

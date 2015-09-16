@@ -10,10 +10,12 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
         # 'po'     bb1 partially overlaps bb2
         # 'o'      bb1 is occluded or part of bb2
     """
+
+    _unique_id = "rcc3"
+    _all_possible_relations = ("dc", "po", "o")
+
     def __init__(self):
         super(QSR_RCC3_Rectangle_Bounding_Boxes_2D, self).__init__()
-        self._unique_id = "rcc3"
-        self._all_possible_relations = ("dc", "po", "o")
 
     def _convert_to_requested_rcc_type(self, qsr):
         qsr = qsr.replace("ec", "po")

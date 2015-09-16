@@ -48,7 +48,7 @@ MWE source code:
 
         # ****************************************************************************************************
         # parse command line arguments
-        options = sorted(qsrlib.get_qsrs_registry().keys())
+        options = sorted(qsrlib.qsrs_registry.keys())
         parser = argparse.ArgumentParser()
         parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
         args = parser.parse_args()

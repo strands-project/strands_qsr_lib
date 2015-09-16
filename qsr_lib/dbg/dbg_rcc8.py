@@ -8,20 +8,20 @@ class Dbg(object):
     def __init__(self):
         pass
 
-    def return_bounding_box_2d(self, x, y, width, length):
+    def return_bounding_box_2d(self, x, y, xsize, ysize):
         """Return the bounding box
 
         :param x: x center
         :param y: y center
-        :param width: x size
-        :param length: y size
+        :param xsize: x size
+        :param ysize: y size
         :return: list(x1, y1, x2, y2) where (x1, y1) and (x2, y2) are the coordinates of the diagonal points of the
                 bounding box depending on your coordinates frame
         """
-        if width <= 0 or length <= 0:
-            print("ERROR: can't compute bounding box, width or height has no positive value")
+        if xsize <= 0 or ysize <= 0:
+            print("ERROR: can't compute bounding box, xsize or height has no positive value")
             return []
-        return [x-width/2, y-length/2, x+width/2, y+length/2]
+        return [x-xsize/2, y-ysize/2, x+xsize/2, y+ysize/2]
 
 
     def compute_qsr(self, bb1, bb2):
@@ -160,7 +160,7 @@ if __name__ == '__main__':
          +-------------+         +-------------+
     """
 
-    # Play with these to test (x_center, y_center, width(i.e. x-size), length(i.e. y-size))
+    # Play with these to test (x_center, y_center, xsize(i.e. x-size), ysize(i.e. y-size))
     o1 = (3., 3., 2., 2.)
     o2 = (3., 2., 1., 1.)
 
