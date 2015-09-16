@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
 from abc import ABCMeta, abstractmethod
-# todo remove following dependencies that seem to be no longer needed
-import yaml
-import os
 
 
 # todo consider refactoring QSR_Abstractclass to Abstractclass_QSR, rename file accordingly to and do for all abstractclasses
