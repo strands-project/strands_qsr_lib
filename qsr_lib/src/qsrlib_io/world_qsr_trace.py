@@ -56,9 +56,8 @@ class World_QSR_State(object):
         """dict: Holds the QSRs that exist in this world QSR state, i.e. a dict of objects of type QSR with the keys
         being the object(s) names that these QSR are for."""
 
-    # todo maybe add overwrite protection, add argument overwrite=False; I think it was removed for efficiency
     def add_qsr(self, qsr):
-        """Add a QSR object to the state.
+        """Add/Overwrite a QSR object to the state.
 
         :param qsr: QSR to be added in the world QSR state.
         :type qsr: QSR
@@ -95,41 +94,14 @@ class World_QSR_Trace(object):
         # self.trace.keys() should be floats just like World_Trace.trace.keys(), no casting for better performance
         return sorted(self.trace.keys())
 
-    def __add_world_qsr_state(self, world_qsr_state):
-        """Add a world QSR state.
+    def add_world_qsr_state(self, world_qsr_state):
+        """Add/Overwrite a world QSR state.
 
         :param world_qsr_state: The world QSR state to be added.
         :type world_qsr_state: World_QSR_State
         :return:
         """
         self.trace[world_qsr_state.timestamp] = world_qsr_state
-        # todo what is this commented out code?
-        # if world_qsr_state.timestamp not in self.timestamps:
-        #     self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
-
-    # todo this could be cleaned up a bit
-    def add_world_qsr_state(self, world_qsr_state, overwrite=False):
-        """Add a world QSR state.
-
-        :param world_qsr_state: The world QSR state to be added.
-        :type world_qsr_state: World_QSR_State
-        :param overwrite: Allow overwriting or not.
-        :type overwrite: bool
-        :return:
-        :raises: KeyError: When overwriting is disabled and `self.trace` already contains an entry for `world_qsr_state.timestamp`.
-        """
-        # # should be something like as follows:
-        # if not overwrite and world_qsr_state.timestamp in self.trace:
-        #     raise KeyError("%f already exists and overwriting is disabled" % world_qsr_state.timestamp)
-        # else:
-        #     self.__add_world_qsr_state(world_qsr_state)
-        if world_qsr_state.timestamp in self.trace:
-            print("Warning: state already exists")
-            if overwrite:
-                print("Overwrite is enabled, overwriting...")
-                self.__add_world_qsr_state(world_qsr_state)
-        else:
-            self.__add_world_qsr_state(world_qsr_state)
 
     # todo it should work as it has worked so far but does it actually work for multiple?
     def add_qsr(self, qsr, timestamp):
