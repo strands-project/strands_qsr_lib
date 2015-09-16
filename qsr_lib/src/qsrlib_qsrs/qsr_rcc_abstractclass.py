@@ -88,10 +88,6 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         if BinsideA:
             return self._convert_to_requested_rcc_type("ntppi")
 
-        # todo: code inspection says similarX and similarY are unused
-        similarX = (abs(ax - cx)<q) or (abs(ax - dx)<q) or (abs(bx - cx)<q) or (abs(bx - dx)<q)
-        similarY = (abs(ay - cy)<q) or (abs(ay - dy)<q) or (abs(by - cy)<q) or (abs(by - dy)<q)
-
         # Are objects touching?
         # Cond1. If A's left edge is equal to B's right edge, - then A is to the right of B and touching
         # Cond2. If A's right edge is qual to B's left edge, - then A is to the left of B and touching
