@@ -103,7 +103,6 @@ class World_QSR_Trace(object):
         """
         self.trace[world_qsr_state.timestamp] = world_qsr_state
 
-    # todo it should work as it has worked so far but does it actually work for multiple?
     def add_qsr(self, qsr, timestamp):
         """Add/Overwrite a QSR at timestamp.
 
