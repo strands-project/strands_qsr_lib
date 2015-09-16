@@ -21,6 +21,15 @@ class QSR_Abstractclass(object):
     _dtype = ""
     """str: On what kind of data the QSR operates with, e.g. 'points' or 'bboxes'"""
 
+    def __init__(self):
+        """Constructor.
+
+        :return:
+        """
+        self._dtype_map = {"points": self._return_points,
+                           "bounding_boxes_2d": self._return_bounding_boxes_2d}
+        """dict: Mapping of _dtype to methods."""
+
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """The main function that generates the world QSR trace.
@@ -75,6 +84,22 @@ class QSR_Abstractclass(object):
         :rtype: list
         """
         return qsrs_for
+
+    @abstractmethod
+    def _return_points(self):
+        """Return the arguments as they are in their point form.
+
+        :return: The arguments as they are in their point form.
+        """
+        return
+
+    @abstractmethod
+    def _return_bounding_boxes_2d(self):
+        """Return the 2D bounding boxes of the arguments.
+
+        :return: The 2D bounding boxes of the arguments.
+        """
+        return
 
     @property
     def unique_id(self):
@@ -142,7 +167,7 @@ class QSR_Abstractclass(object):
         """Parse `dynamic_args` and generate valid `qsrs_for`.
 
         It parses the `dynamic_args` to see if the user has specified `qsrs_for` and then validates them, or uses
-        default `qsrs_for` generation if user has not speficied anything.
+        default `qsrs_for` generation if user has not specified anything.
 
         :param objects_names: The object names in a world state.
         :param dynamic_args: The dynamic arguments passed with the request.

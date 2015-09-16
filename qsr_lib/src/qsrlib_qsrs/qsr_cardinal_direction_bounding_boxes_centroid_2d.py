@@ -20,7 +20,7 @@ class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractcl
         super(QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
         self._unique_id = "cardir"
         self._all_possible_relations = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
-        self._dtype = "bounding_boxes"
+        self._dtype = "bounding_boxes_2d"
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Cardinal direction relation

@@ -13,7 +13,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
     def __init__(self):
         super(QSR_RCC_Abstractclass, self).__init__()
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
-        self._dtype = "bounding_boxes"
+        self._dtype = "bounding_boxes_2d"
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()
