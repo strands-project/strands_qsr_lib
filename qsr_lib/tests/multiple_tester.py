@@ -13,7 +13,6 @@ class Multiple_Test(AbstractClass_UnitTest):
         super(Multiple_Test, self).__init__(*args)
         self._unique_id = "multiple"
         self.__which_qsr = sorted(self._qsrlib.get_qsrs_registry().keys())
-        # todo: qtcs is giving a warning message
         self.__seed = 100
         self.__dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0,
                                                                      "far": 30.0, "veryfar": 40.0}},

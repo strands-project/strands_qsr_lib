@@ -46,7 +46,6 @@ if __name__ == "__main__":
         which_qsr = args.qsr
     elif args.qsr == "multiple":
         which_qsr = options[:]
-        # todo: qtcs is giving a warning message
     else:
         raise ValueError("qsr not found, keywords: %s" % options)
     if args.input not in load_by_world_name:
