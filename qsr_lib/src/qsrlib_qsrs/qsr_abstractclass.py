@@ -78,7 +78,7 @@ class QSR_Abstractclass(object):
 
     @property
     def unique_id(self):
-        """Return the unique identifier of the QSR.
+        """Getter for self._unique_id.
 
         :return: The unique identifier of the QSR.
         :rtype: str
@@ -87,7 +87,7 @@ class QSR_Abstractclass(object):
 
     @property
     def all_possible_relations(self):
-        """Return all the possible relations of the QSR.
+        """Getter for self._all_possible_relations.
 
         :return: All the possible relations of the QSR.
         :rtype: tuple

@@ -71,10 +71,21 @@ class Object_State(object):
 
     @property
     def xsize(self):
+        """Getter.
+
+        :return: Total x-size.
+        :rtype: int or float
+        """
         return self.__xsize
 
     @xsize.setter
     def xsize(self, v):
+        """Setter.
+
+        :param v: xsize new value.
+        :type v: positive int or float
+        :return:
+        """
         if v < 0:
             raise ValueError("xsize cannot be negative")
         else:
