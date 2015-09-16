@@ -203,8 +203,7 @@ class World_Trace(object):
                                                     **kwargs))
         self.add_object_state_series(object_state_series)
 
-    # todo refactor to add_object_state
-    def add_object_state_to_trace(self, object_state, timestamp=None):
+    def add_object_state(self, object_state, timestamp=None):
         """Add an Object_State object.
 
         :param object_state: The object state.
@@ -228,7 +227,7 @@ class World_Trace(object):
         :return:
         """
         for s in object_states:
-            self.add_object_state_to_trace(object_state=s)
+            self.add_object_state(object_state=s)
     # *** end of data adders
 
     def get_last_state(self, copy_by_reference=False):
@@ -288,12 +287,11 @@ class World_Trace(object):
         for t, state in self.trace.items():
             for oname in objects_names:
                 if copy_by_reference:
-                    ret.add_object_state_to_trace(state.objects[oname], t)
+                    ret.add_object_state(state.objects[oname], t)
                 else:
-                    ret.add_object_state_to_trace(copy.deepcopy(state.objects[oname]), t)
+                    ret.add_object_state(copy.deepcopy(state.objects[oname]), t)
         return ret
 
-    # todo allow finish=None
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
                                            copy_by_reference=False, include_finish=True, time_slicing_first=True):
         """Return a subsample for requested objects between start and finish timestamps.

@@ -223,7 +223,6 @@ class World_QSR_Trace(object):
                         raise e
         return ret
 
-    # todo allow finish=None
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
                                            copy_by_reference=False, include_finish=True, time_slicing_first=True):
         """Return a subsample for requested objects between start and finish timestamps.
