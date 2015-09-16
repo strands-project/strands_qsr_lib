@@ -27,8 +27,7 @@ class QSRlib_ROS_Server(object):
         self.node_name = node_name
         """str: The QSRlib ROS server node name."""
 
-        # todo no need for self.node as rospy.init_node returns None
-        self.node = rospy.init_node(self.node_name)
+        rospy.init_node(self.node_name)
 
         self.service_topic_names = {"request": self.node_name+"/request"}
         """dict: Holds the service topic names."""
