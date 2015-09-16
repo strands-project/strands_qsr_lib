@@ -77,8 +77,8 @@ class QSR_Abstractclass(object):
         """
         return qsrs_for
 
-    # todo convert to property get method
-    def get_unique_id(self):
+    @property
+    def unique_id(self):
         """Return the unique identifier of the QSR.
 
         :return: The unique identifier of the QSR.
@@ -86,8 +86,8 @@ class QSR_Abstractclass(object):
         """
         return self._unique_id
 
-    # todo convert to property get method
-    def get_all_possible_relations(self):
+    @property
+    def all_possible_relations(self):
         """Return all the possible relations of the QSR.
 
         :return: All the possible relations of the QSR.
