@@ -10,7 +10,7 @@ Submodules
    qsrlib_qsrs.qsr_arg_prob_relations_distance
    qsrlib_qsrs.qsr_arg_relations_abstractclass
    qsrlib_qsrs.qsr_arg_relations_distance
-   qsrlib_qsrs.qsr_cone_direction_bounding_boxes_centroid_2d
+   qsrlib_qsrs.qsr_cardinal_direction_bounding_boxes_centroid_2d
    qsrlib_qsrs.qsr_dyadic_abstractclass
    qsrlib_qsrs.qsr_monadic_abstractclass
    qsrlib_qsrs.qsr_moving_or_stationary

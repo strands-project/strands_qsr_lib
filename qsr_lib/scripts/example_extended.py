@@ -27,7 +27,7 @@ def pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message):
 
 
 if __name__ == "__main__":
-    options = ["rcc2", "rcc3", "rcc8", "coneDir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
+    options = ["rcc2", "rcc3", "rcc8", "cardir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
     multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
 
     parser = argparse.ArgumentParser()
@@ -128,7 +128,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
 
-    elif which_qsr == "coneDir":
+    elif which_qsr == "cardir":
         o1 = [Object_State(name="o1", timestamp=0, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=1, x=5., y=5., width=2., length=2.),
               Object_State(name="o1", timestamp=2, x=5., y=5., width=2., length=2.)]

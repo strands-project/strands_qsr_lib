@@ -6,7 +6,7 @@ Currently, the following QSRs are supported:
 |:---:|:---:|:---:|:---:|:---:|
 | :any:`argd <QSR_Arg_Relations_Distance>` | Qualitative Argument Distances | ? | ? |
 | :any:`argprobd <QSR_Arg_Relations_Abstractclass>` | Qualitative Argument Probabilistic Distances | ? | ? |
-| :any:`coneDir <QSR_Cone_Direction_Bounding_Boxes_Centroid_2D>` | Cardinal Directions | | \[Andrew1991\] |
+| :any:`cardir <QSR_Cardial_Direction_Bounding_Boxes_Centroid_2D>` | Cardinal Directions | | \[Andrew1991\] |
 | :any:`mos <QSR_Moving_or_Stationary>` | Moving or Stationary | ? | ? |
 | :any:`qtcbcs <QSR_QTC_BC_Simplified>` | Qualitative Trajectory Calculus *bc* Simplified| ? | ? |
 | :any:`qtcbs <QSR_QTC_B_Simplified>` | Qualitative Trajectory Calculus *b* Simplified | ? | ? |
