@@ -10,22 +10,17 @@ class QSR_Abstractclass(object):
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self):
-        """Constructor.
+    _unique_id = ""
+    """str: The unique identifier of each QSR."""
 
-        :return:
-        """
-        self._unique_id = ""
-        """str: The unique identifier of each QSR."""
+    _all_possible_relations = ()
+    """tuple: All possible relations of a QSR."""
 
-        self._all_possible_relations = ()
-        """tuple: All possible relations of a QSR."""
+    _allowed_parameters = ["qsrs_for"]  # todo refactor to _common_args and tuple it
+    """tuple: Common across all QSRs arguments of `dynamic_args`."""
 
-        self._allowed_parameters = ["qsrs_for"]  # todo refactor to _common_args and tuple it
-        """tuple: Common across all QSRs arguments of `dynamic_args`."""
-
-        self._dtype = ""
-        """str: On what kind of data the QSR operates with, e.g. 'points' or 'bboxes'"""
+    _dtype = ""
+    """str: On what kind of data the QSR operates with, e.g. 'points' or 'bboxes'"""
 
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
