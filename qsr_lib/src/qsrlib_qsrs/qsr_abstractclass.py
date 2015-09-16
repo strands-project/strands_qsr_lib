@@ -18,7 +18,7 @@ class QSR_Abstractclass(object):
         self._unique_id = ""
         """str: The unique identifier of each QSR."""
 
-        self._all_possible_relations = []  # todo make it empty tuple
+        self._all_possible_relations = ()
         """tuple: All possible relations of a QSR."""
 
         self._allowed_parameters = ["qsrs_for"]  # todo refactor to _common_args and tuple it
