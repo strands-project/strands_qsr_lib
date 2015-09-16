@@ -3,7 +3,6 @@ from __future__ import print_function, division
 from abc import ABCMeta, abstractmethod
 
 
-# todo consider refactoring QSR_Abstractclass to Abstractclass_QSR, rename file accordingly to and do for all abstractclasses
 class QSR_Abstractclass(object):
     """Root abstract class of the QSR implementators.
 

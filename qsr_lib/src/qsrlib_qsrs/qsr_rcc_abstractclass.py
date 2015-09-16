@@ -88,7 +88,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         if BinsideA:
             return self._convert_to_requested_rcc_type("ntppi")
 
-        # todo: code inspection says similarX and similarY are unused
+        # todo: #176 code inspection says similarX and similarY are unused
         similarX = (abs(ax - cx)<q) or (abs(ax - dx)<q) or (abs(bx - cx)<q) or (abs(bx - dx)<q)
         similarY = (abs(ay - cy)<q) or (abs(ay - dy)<q) or (abs(by - cy)<q) or (abs(by - dy)<q)
 

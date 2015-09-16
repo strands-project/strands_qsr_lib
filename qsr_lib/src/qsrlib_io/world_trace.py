@@ -4,8 +4,8 @@ from numpy import isnan
 import copy
 
 
-# todo issue #105, probably the easiest is to refactor width, length, height to xsize, ysize, zsize
-# todo also deprecate roll, pitch, yaw and use quartenions?
+# todo issue #105 and #173
+# todo #issue 174
 class Object_State(object):
     """Data class structure that is holding various information about an object.
 
@@ -73,7 +73,6 @@ class Object_State(object):
         self.args = args
         self.kwargs = kwargs
 
-    # todo turn this into three separate setter methods
     def set_length_width_height(self, length=float('nan'), width=float('nan'), height=float('nan')):
         """Setter method for length, width, height.
 
@@ -108,7 +107,6 @@ class Object_State(object):
         """
         if self.width < 0 or self.length < 0:
             raise ValueError("Object width and length cannot be negative")
-        # todo need to add a check that minimal width and length are both not < 0
         width = minimal_width if isnan(self.width) else self.width
         length = minimal_length if isnan(self.length) else self.length
         return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
@@ -134,9 +132,8 @@ class World_State(object):
         """dict: Holds the state of the objects that exist in this world state, i.e. a dict of objects of type Object_State
         with the keys being the objects names."""
 
-    # todo maybe add overwrite protection, add argument overwrite=False; I think it was removed for efficiency
     def add_object_state(self, object_state):
-        """Add an object state.
+        """Add/Overwrite an object state.
 
         :param object_state: Object state to be added in the world state.
         :type object_state: Object_State
@@ -173,7 +170,7 @@ class World_Trace(object):
         return sorted(self.trace.keys())
 
     # *** data adders
-    # todo refactor to add_object_track_from_list or better have internal methods that handle lengths 2, 3, 4, 6
+    # todo #175
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
 
@@ -204,7 +201,7 @@ class World_Trace(object):
         self.add_object_state_series(object_state_series)
 
     def add_object_state(self, object_state, timestamp=None):
-        """Add an Object_State object.
+        """Add/Overwrite an Object_State object.
 
         :param object_state: The object state.
         :type object_state: Object_State
