@@ -12,8 +12,8 @@ class Object_State(object):
     """
     def __init__(self, name, timestamp,
                  x=float('nan'), y=float('nan'), z=float('nan'),
-                 roll=float('nan'), pitch=float('nan'), yaw=float('nan'),
-                 length=float('nan'), width=float('nan'), height=float('nan'),
+                 xsize=float('nan'), ysize=float('nan'), zsize=float('nan'),
+                 rotation=(),
                  *args, **kwargs):
         """Constructor.
 
@@ -27,18 +27,14 @@ class Object_State(object):
         :type y: float or int
         :param z: The z-coordinate of the center point.
         :type z: float or int
-        :param roll: Roll of the object.
-        :type roll: float or int
-        :param pitch: Pitch of the object.
-        :type pitch: float or int
-        :param yaw: Yaw of the object.
-        :type yaw: float or int
-        :param length: Total y-size of the object.
-        :type length: float or int
-        :param width: Total x-size of the object.
-        :type width: float or int
-        :param height: Total z-size of the object.
-        :type height: float or int
+        :param xsize: Total x-size.
+        :type xsize: float or int
+        :param ysize: Total y-size.
+        :type ysize: float or int
+        :param zsize: Total z-size.
+        :type zsize: float or int
+        :param rotation: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one.
+        :type rotation: tuple or list of floats
         :param args: Other optional args.
         :param kwargs: Other optional kwargs.
         :return:
@@ -50,66 +46,85 @@ class Object_State(object):
         """float: The timestamp of the object state, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
 
         self.x = x
-        """int or float: The x-coordinate of the center point."""
+        """int or float: x-coordinate of the center point."""
 
         self.y = y
-        """int or float: The y-coordinate of the center point."""
+        """int or float: y-coordinate of the center point."""
 
         self.z = z
-        """int or float: The z-coordinate of the center point."""
+        """int or float: z-coordinate of the center point."""
 
-        self.set_length_width_height(length=length, width=width, height=height)
-        """int or float: The length (total y-size), width (total x-size) and height (total z-size) of the object."""
+        self.xsize = xsize
+        """positive int or float: Total x-size"""
 
-        self.roll = roll
-        """int or float: The roll of the object."""
+        self.ysize = ysize
+        """positive int or float: Total y-size"""
 
-        self.pitch = pitch
-        """int or float: The pitch of the object."""
+        self.zsize = zsize
+        """positive int or float: Total z-size"""
 
-        self.yaw = yaw
-        """int or float: The yaw of the object."""
+        self.rotation = rotation
+        """tuple or list of floats: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one."""
 
         self.args = args
         self.kwargs = kwargs
 
-    def set_length_width_height(self, length=float('nan'), width=float('nan'), height=float('nan')):
-        """Setter method for length, width, height.
+    @property
+    def xsize(self):
+        return self.__xsize
 
-        :param length: Total y-size of the object.
-        :type length: int or float
-        :param width: Total x-size of the object.
-        :type width: int or float
-        :param height: Total z-size of the object.
-        :type height: int or float
-        :return:
-        """
-        if length < 0 or width < 0 or height < 0:
-            raise ValueError("Object length, width and height cannot be negative; leave them to default values if unset")
+    @xsize.setter
+    def xsize(self, v):
+        if v < 0:
+            raise ValueError("xsize cannot be negative")
         else:
-            self.width = width  # x size
-            """Total x-size of the object."""
+            self.__xsize = v
 
-            self.length = length  # y size
-            """Total y-size of the object."""
+    @property
+    def ysize(self):
+        return self.__ysize
 
-            self.height = height  # z size
-            """Total z-size of the object."""
+    @ysize.setter
+    def ysize(self, v):
+        if v < 0:
+            raise ValueError("ysize cannot be negative")
+        else:
+            self.__ysize = v
 
-    def return_bounding_box_2d(self, minimal_width=0, minimal_length=0):
+    @property
+    def zsize(self):
+        return self.__zsize
+
+    @zsize.setter
+    def zsize(self, v):
+        if v < 0:
+            raise ValueError("zsize cannot be negative")
+        else:
+            self.__zsize = v
+
+    @property
+    def rotation(self):
+        return self.__rotation
+
+    @rotation.setter
+    def rotation(self, v):
+        if not v or len(v) == 3 or len(v) == 4:
+            self.__rotation = v
+        else:
+            raise ValueError("invalid length of rotation, it must be given as a tuple in roll-pitch-yaw form (3 floats) or quaternion one (4 floats: x,y,z,w) or empty")
+
+    def return_bounding_box_2d(self, xsize_minimal=0, ysize_minimal=0):
         """Compute the 2D bounding box of the object.
 
-        :param minimal_width: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
-        :type minimal_width: int or float
-        :param minimal_length: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
+        :param xsize_minimal: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
+        :type xsize_minimal: int or float
+        :param ysize_minimal: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
         :return: The coordinates of the upper-left and bottom-right corners of the bounding box.
         :rtype: list
         """
-        if self.width < 0 or self.length < 0:
-            raise ValueError("Object width and length cannot be negative")
-        width = minimal_width if isnan(self.width) else self.width
-        length = minimal_length if isnan(self.length) else self.length
-        return [self.x-width/2, self.y-length/2, self.x+width/2, self.y+length/2]
+        xsize = xsize_minimal if isnan(self.xsize) else self.xsize
+        ysize = ysize_minimal if isnan(self.ysize) else self.ysize
+        return [self.x-xsize/2, self.y-ysize/2, self.x+xsize/2, self.y+ysize/2]
 
 
 class World_State(object):
@@ -188,15 +203,15 @@ class World_Trace(object):
             x = v[0]
             y = v[1]
             try:
-                width = v[2]
+                xsize = v[2]
             except IndexError:
-                width = float('nan')
+                xsize = float('nan')
             try:
-                length = v[3]
+                ysize = v[3]
             except IndexError:
-                length = float('nan')
+                ysize = float('nan')
             object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
-                                                    x=x, y=y, width=width, length=length,
+                                                    x=x, y=y, xsize=xsize, ysize=ysize,
                                                     **kwargs))
         self.add_object_state_series(object_state_series)
 

@@ -8,25 +8,25 @@ def print_world_trace(world_trace):
     for t in world_trace.get_sorted_timestamps():
         print("-t:", t)
         for oname, o in world_trace.trace[t].objects.items():
-            print("%s\t%f\t%f\t%f\t%f\t%f\t%f" % (oname, o.x, o.y, o.z, o.width, o.length, o.width))
+            print("%s\t%f\t%f\t%f\t%f\t%f\t%f" % (oname, o.x, o.y, o.z, o.xsize, o.ysize, o.xsize))
 
 def print_world_state(world_state):
     for oname, o in world_state.objects.items():
-            print("%s\t%f\t%f\t%f\t%f\t%f\t%f" % (oname, o.x, o.y, o.z, o.width, o.length, o.width))
+            print("%s\t%f\t%f\t%f\t%f\t%f\t%f" % (oname, o.x, o.y, o.z, o.xsize, o.ysize, o.xsize))
 
 if __name__ == "__main__":
     world = World_Trace()
-    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., width=5., length=8.),
-          Object_State(name="o1", timestamp=1, x=1., y=2., width=5., length=8.),
-          Object_State(name="o1", timestamp=2, x=1., y=3., width=5., length=8.),
-          Object_State(name="o1", timestamp=3, x=1., y=4., width=5., length=8.),
-          Object_State(name="o1", timestamp=4, x=1., y=5., width=5., length=8.)]
+    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=2, x=1., y=3., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=3, x=1., y=4., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=4, x=1., y=5., xsize=5., ysize=8.)]
 
-    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., width=5., length=8.),
-          Object_State(name="o2", timestamp=1, x=11., y=2., width=5., length=8.),
-          Object_State(name="o2", timestamp=2, x=11., y=3., width=5., length=8.),
-          Object_State(name="o2", timestamp=3, x=11., y=4., width=5., length=8.),
-          Object_State(name="o2", timestamp=4, x=11., y=5., width=5., length=8.)]
+    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=1, x=11., y=2., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=2, x=11., y=3., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=3, x=11., y=4., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=4, x=11., y=5., xsize=5., ysize=8.)]
     world.add_object_state_series(o1)
     world.add_object_state_series(o2)
 
