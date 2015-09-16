@@ -4,8 +4,6 @@ from numpy import isnan
 import copy
 
 
-# todo issue #105 and #173
-# todo #issue 174
 class Object_State(object):
     """Data class structure that is holding various information about an object.
 
@@ -196,7 +194,6 @@ class World_Trace(object):
         return sorted(self.trace.keys())
 
     # *** data adders
-    # todo #175
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
 
