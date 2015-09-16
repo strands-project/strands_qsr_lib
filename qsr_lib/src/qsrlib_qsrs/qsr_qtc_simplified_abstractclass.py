@@ -425,7 +425,6 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         if qsr_params["no_collapse"] and not qsr_params["validate"]:
             return World_QSR_Trace(
                 qsr_type=world_qsr_trace.qsr_type,
-                last_updated=world_qsr_trace.last_updated,
                 trace={t: world_qsr_trace.trace[tqtc]
                     for t, tqtc in zip(
                         world_trace.get_sorted_timestamps()[1:],

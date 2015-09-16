@@ -71,22 +71,17 @@ class World_QSR_Trace(object):
     """Data class structure that is holding a time series of the world QSR states.
 
     """
-    # todo deprecate last_updated
-    def __init__(self, qsr_type, last_updated=False, trace=None):
+    def __init__(self, qsr_type, trace=None):
         """Constructor.
 
         :param qsr_type: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string.
-        :type str:
-        :param last_updated: to be deprecated.
+        :type qsr_type: str
         :param trace: A time series of world QSR states, i.e. a dict of objects of type World_QSR_State with the keys being the timestamps.
         :type trace: dict
         :return:
         """
         self.qsr_type = qsr_type
         """str: The name of the QSR. For multiple QSRs it is usually a sorted comma separated string."""
-
-        self.last_updated = last_updated
-        """to be deprecated"""
 
         self.trace = trace if trace else {}
         """dict: A time series of world QSR states, i.e. a dict of objects of type World_QSR_State with the keys being the timestamps."""
@@ -111,7 +106,6 @@ class World_QSR_Trace(object):
         # todo what is this commented out code?
         # if world_qsr_state.timestamp not in self.timestamps:
         #     self.insert_timestamp(timestamp=world_qsr_state.timestamp, append=False)
-        self.last_updated = world_qsr_state.timestamp
 
     # todo this could be cleaned up a bit
     def add_world_qsr_state(self, world_qsr_state, overwrite=False):
@@ -152,7 +146,6 @@ class World_QSR_Trace(object):
         except KeyError:
             world_qsr_state = World_QSR_State(timestamp=timestamp, qsrs={qsr.between: qsr})
             self.add_world_qsr_state(world_qsr_state)
-        self.last_updated = timestamp
 
     def add_empty_world_qsr_state(self, timestamp):
         """Add an empty World_QSR_State object at timestamp.
@@ -201,7 +194,7 @@ class World_QSR_Trace(object):
         if istart > ifinish:
             raise ValueError("start cannot be after finish")
         timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
-        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        ret = World_QSR_Trace(self.qsr_type)
         for t in timestamps:
             ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
         return ret
@@ -216,7 +209,7 @@ class World_QSR_Trace(object):
         :return: A subsample for the requested objects.
         :rtype: World_QSR_Trace
         """
-        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        ret = World_QSR_Trace(self.qsr_type)
         all_objects = set([oname for t in self.get_sorted_timestamps() for oname in self.trace[t].qsrs])
         for t, state in self.trace.items():
             for oname in objects_names:
@@ -265,7 +258,7 @@ class World_QSR_Trace(object):
         :return: A subsample for the requested QSRs.
         :rtype: World_QSR_Trace
         """
-        ret = World_QSR_Trace(self.qsr_type, self.last_updated)
+        ret = World_QSR_Trace(self.qsr_type)
         for t, state in self.trace.items():
             for oname, qsrs in state.qsrs.items():
                 qsr = {}

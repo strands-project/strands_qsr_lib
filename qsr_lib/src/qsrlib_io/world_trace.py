@@ -149,23 +149,17 @@ class World_Trace(object):
     """Data class structure that is holding a time series of the world states.
 
     """
-    # todo deprecate last_updated
-    def __init__(self, description="", last_updated=False, trace=None):
+    def __init__(self, description="", trace=None):
         """Constructor.
 
         :param description: Optional description of the world.
         :type description: str
-        :param last_updated: to be deprecated
         :param trace: A time series of world states, i.e. a dict of objects of type World_State with the keys being the timestamps.
         :type trace: dict
         :return:
         """
         self.description = description
         """str: Optional description of the world."""
-
-        # todo decide what to do with this, probably deprecate as it has never been used anywhere before
-        self.last_updated = last_updated
-        """to be deprecated"""
 
         self.trace = trace if trace else {}
         """dict: A time series of world states, i.e. a dict of objects of type World_State with the keys being the timestamps."""
@@ -225,7 +219,6 @@ class World_Trace(object):
         except KeyError:
             world_state = World_State(timestamp=timestamp, objects={object_state.name: object_state})
             self.trace[timestamp] = world_state
-        self.last_updated = timestamp
 
     def add_object_state_series(self, object_states):
         """Add a series of object states.
@@ -276,7 +269,7 @@ class World_Trace(object):
         if istart > ifinish:
             raise ValueError("start cannot be after finish")
         timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
-        ret = World_Trace(last_updated=self.last_updated)
+        ret = World_Trace()
         for t in timestamps:
             ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
         return ret
@@ -291,7 +284,7 @@ class World_Trace(object):
         :return: A subsample for the requested objects.
         :rtype: World_Trace
         """
-        ret = World_Trace(last_updated=self.last_updated)
+        ret = World_Trace()
         for t, state in self.trace.items():
             for oname in objects_names:
                 if copy_by_reference:
