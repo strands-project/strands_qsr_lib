@@ -4,32 +4,37 @@ from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 import math
 
 class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractclass):
-    """Cardinal direction relations
-        # 's'      south
-        # 'sw'     south-west
-        # 'w'      west
-        # 'nw'     north-west
-        # 'n'      north
-        # 'ne'     north-east
-        # 'e'      east
-        # 'se'     south-east
+    """Cardinal direction relations.
 
-        where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
+    Values of the abstract properties
+        * **_unique_id** = "cardir"
+        * **_all_possible_relations** = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
+        * **_dtype** = "bounding_boxes_2d"
+
+    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
     """
 
     _unique_id = "cardir"
+    """str: Unique identifier name of the QSR."""
+
     _all_possible_relations = ("n", "ne", "e", "se", "s", "sw", "w", "nw", "eq")
+    """tuple: All possible relations of the QSR."""
+
     _dtype = "bounding_boxes_2d"
+    """str: On what kind of data the QSR works with."""
 
     def __init__(self):
+        """Constructor."""
         super(QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
-        """Cardinal direction relation
+        """Compute QSR relation.
 
-        :param data1: diagonal points coordinates of first bounding box (x1, y1, x2, y2)
-        :param data2: diagonal points coordinates of second bounding box (x1, y1, x2, y2)
-        :return: cardinal direction relation: 'n', 'ne', 'e', 'se', 's', 'sw', 'w', 'nw', 'eq'
+        :param data1: Bounding box.
+        :type data1: list or tuple of int or floats
+        :param data2: Bounding box.
+        :type data2: list or tuple of int or floats
+        :return: QSR relation.
         :rtype: str
         """
         # Finds the differnece between the centres of each object
@@ -53,7 +58,9 @@ class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractcl
         """Switch Statement convert number into region label.
 
         :param x:
-        :return:
+        :type x:
+        :return: QSR relation.
+        :rtype: str
         """
         return {
             0: 's',

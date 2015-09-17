@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from __future__ import print_function, division
 from abc import ABCMeta, abstractmethod, abstractproperty
 
@@ -6,7 +7,20 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 class QSR_Abstractclass(object):
     """Root abstract class of the QSR implementators.
 
+    Abstract properties
+        * **_unique_id** (*str*): Unique identifier of a QSR.
+        * **_all_possible_relations** (*tuple*): All possible relations of a QSR.
+        * **_dtype** (*str*): Kind of data the QSR operates with, see self._dtype_map for possible values.
+
+    Members
+        * **_dtype_map** (*dict*): Mapping of _dtype to methods. It contains:
+
+            * "points": self._return_points
+            * "bounding_boxes": self._return_bounding_boxes_2d
+            * "bounding_boxes_2d": self._return_bounding_boxes_2d
+
     """
+
     __metaclass__ = ABCMeta
 
     _common_dynamic_args = ["qsrs_for"]
@@ -20,7 +34,7 @@ class QSR_Abstractclass(object):
 
     @abstractproperty
     def _unique_id(self):
-        """str: The unique identifier of each QSR."""
+        """str: Unique identifier of a QSR."""
         pass
 
     @abstractproperty
@@ -30,30 +44,34 @@ class QSR_Abstractclass(object):
 
     @abstractproperty
     def _dtype(self):
-        """str: On what kind of data the QSR operates with, see self._dtype_map for possible values"""
+        """str: Kind of data the QSR operates with, see self._dtype_map for possible values."""
         pass
 
     @abstractmethod
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """The main function that generates the world QSR trace.
 
-        QSR classes inheriting from the general purpose meta-abstract classes (e.g.  `QSR_Monadic_Abstractclass`,
-        `QSR_Dyadic_Abstractclass`, etc.) need to provide this function.
-        When inheriting from one of the special case meta-abstract classes (e.g. `QSR_Monadic_2t_Abstractclass`,
-        QSR_Dyadic_1t_Abstractclass, etc.) then usually there is no need to do so; check with the documentation of these
-        special cases to see if they already implement one.
+        * QSR classes inheriting from the general purpose meta-abstract classes \
+        (e.g. :class:`QSR_Monadic_Abstractclass <qsrlib_qsrs.qsr_monadic_abstractclass.QSR_Monadic_Abstractclass>`, \
+        :class:`QSR_Dyadic_Abstractclass <qsrlib_qsrs.qsr_dyadic_abstractclass.QSR_Dyadic_Abstractclass>` , etc.) \
+        need to provide this function.
+        * When inheriting from one of the special case meta-abstract classes \
+        (e.g. :class:`QSR_Monadic_2t_Abstractclass <qsrlib_qsrs.qsr_monadic_abstractclass.QSR_Monadic_2t_Abstractclass>`, \
+        :class:`QSR_Dyadic_1t_Abstractclass <qsrlib_qsrs.qsr_dyadic_abstractclass.QSR_Dyadic_1t_Abstractclass>`, etc.) \
+        then usually there is no need to do so; check with the documentation of these special cases to see if they \
+        already implement one.
 
-        :param world_trace: The input data.
-        :type world_trace: qsrlib_io.world_trace.World_Trace
+        :param world_trace: Input data.
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
         :param timestamps: List of sorted timestamps of `world_trace`.
         :type timestamps: list
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param dynamic_args: The dynamic arguments passed with the request.
+        :param dynamic_args: Dynamic arguments passed with the request.
         :type dynamic_args: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed world QSR trace.
-        :rtype: qsrlib_io.world_qsr_trace.World_QSR_Trace
+        :param kwargs: kwargs arguments.
+        :return: Computed world QSR trace.
+        :rtype: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`
         """
         return
 
@@ -81,7 +99,7 @@ class QSR_Abstractclass(object):
         Usually this is provided by a parent abstract class and there is no need for the QSRs to implement it,
         unless they want to override the parent's default method.
 
-        :param qsrs_for: The list of entities to be validated and processed.
+        :param qsrs_for: List of entities to be validated and processed.
         :type qsrs_for: list
         :return: Validated list.
         :rtype: list
@@ -100,24 +118,24 @@ class QSR_Abstractclass(object):
     def _return_bounding_boxes_2d(self):
         """Return the 2D bounding boxes of the arguments.
 
-        :return: The 2D bounding boxes of the arguments.
+        :return: 2D bounding boxes of the arguments.
         """
         return
 
     @property
     def unique_id(self):
-        """Getter for self._unique_id.
+        """Getter for the unique identifier of a QSR.
 
-        :return: The unique identifier of the QSR.
+        :return: `self._unique_id`
         :rtype: str
         """
         return self._unique_id
 
     @property
     def all_possible_relations(self):
-        """Getter for self._all_possible_relations.
+        """Getter for all the possible relations of a QSR.
 
-        :return: All the possible relations of the QSR.
+        :return: `self._all_possible_relations`
         :rtype: tuple
         """
         return self._all_possible_relations
@@ -127,10 +145,10 @@ class QSR_Abstractclass(object):
 
         This method is called from QSRlib so no need to call it directly from anywhere else.
 
-        :param req_params: The request parameters.
+        :param req_params: Request parameters.
         :type req_params: dict
         :return: Computed world qsr trace.
-        :rtype: qsrlib_io.world_qsr_trace.World_QSR_Trace
+        :rtype: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`
         """
         qsr_params = self._process_qsr_parameters_from_request_parameters(req_params)
         world_trace, timestamps = self._set_input_world_trace(req_params["input_data"], qsr_params)
@@ -144,7 +162,7 @@ class QSR_Abstractclass(object):
         If a QSR needs to overwrite this then it should raise appropriate exceptions.
 
         :param world_trace: The input data.
-        :type world_trace: qsrlib_io.world_trace.World_Trace
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
         :return: False for no problems.
         :rtype: bool
         :raises: Depends on the QSR.
@@ -155,11 +173,11 @@ class QSR_Abstractclass(object):
         """Check the input data and return both the input data and the sorted timestamps it.
 
         :param world_trace: The input data.
-        :type world_trace: qsrlib_io.world_trace.World_Trace
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
         :param qsr_params: QSR specific parameters.
         :type qsr_params: dict
         :return: The input data and its sorted timestamps if all well.
-        :rtype: (qsrlib_io.world_trace.World_Trace, list)
+        :rtype: (:class:`World_Trace <qsrlib_io.world_trace.World_Trace>`, list)
         :raises: Depends on `self._custom_checks_world_trace` method.
         """
         self._custom_checks_world_trace(world_trace, qsr_params)
@@ -239,14 +257,15 @@ class QSR_Abstractclass(object):
         return qsrs_for_ret
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
-        """Set the QSR specific parameters from the request parameters.
+        """Get the QSR specific parameters from the request parameters.
 
         Overwrite as needed.
 
-        :param req_params: The request parameters.
+        :param req_params: Request parameters.
         :type req_params: dict
-        :param kwargs: Optional extra arguments
-        :return:
+        :param kwargs: kwargs arguments.
+        :return: QSR specific parameters.
+        :rtype: dict
         """
         return {}
 

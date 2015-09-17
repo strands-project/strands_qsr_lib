@@ -9,11 +9,11 @@ def merge_world_qsr_traces(world_qsr_traces, qsr_type=""):
     """Merge a list of traces into one world_qsr_trace. It offers no protection versus overwriting previously
     existing relations.
 
-    :param world_qsr_traces: The World_QSR_Trace objects to be merged.
-    :type world_qsr_traces: list or tuple
+    :param world_qsr_traces:  World QSR traces to be merged.
+    :type world_qsr_traces: list or tuple of :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>` objects
     :param qsr_type: The QSR type of the merged object.
     :type qsr_type: str
-    :return: The merged `world_qsr_traces`.
+    :return: Merged World QSR trace.
     :rtype: World_QSR_Trace
     """
     ret_world_qsr_trace = World_QSR_Trace(qsr_type=qsr_type)
@@ -28,9 +28,13 @@ def merge_world_qsr_traces(world_qsr_traces, qsr_type=""):
     return ret_world_qsr_trace
 
 def isnan(x):
-    """Check if nan.
+    """.. warning::
+        Planned for removal. Use `numpy.isnan` method directly. Does not raise deprecation warning in case it
+        shadows numpy's method.
 
-    :param x: The value to be checked.
+    Check if nan. Uses `numpy.isnan` so can be omitted.
+
+    :param x: Value to be checked.
     :type x: int or float
     :return: Whether nan or not.
     :rtype: bool
@@ -40,9 +44,12 @@ def isnan(x):
 def flatten_list(l):
     """Flatten an irregular list, i.e. a list containing a mixture of iteratable and non-iteratable items, returning a generator object.
 
-    :param l: The list to flatten.
+    .. note::
+        Use `list(flatten_list(l))` to get a list back.
+
+    :param l: List to be flattened.
     :type l: list or tuple
-    :return: Flattened list as a generator. Use `list(flatten_list(l))` to get a list back.
+    :return: Flattened list as a generator.
     :rtype: generator
     """
     for el in l:
@@ -55,9 +62,10 @@ def flatten_list(l):
 def load_dynamic_args_from_file(path):
     """Load `dynamic_args` from a yaml file.
 
-    :param path: The filename including its path.
+    :param path: Filename including its path.
     :type path: str
-    :return:
+    :return: yaml document.
+    :rtype: dict
     """
     with open(path, "r") as f:
         return yaml.load(f)

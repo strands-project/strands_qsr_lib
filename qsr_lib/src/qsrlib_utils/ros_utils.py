@@ -8,7 +8,7 @@ def convert_pythondatetime_to_rostime(pythondatetime):
     """Convert datetime from python format to ROS format.
 
     :param pythondatetime: Python format datetime.
-    :type pythondatetime: datetime.datetime
+    :type pythondatetime: datetime
     :return: ROS time.
     :rtype: rospy.Time
     """
