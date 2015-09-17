@@ -27,7 +27,7 @@ def pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message):
 
 
 if __name__ == "__main__":
-    options = ["rcc2", "rcc3", "rcc8", "cardir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
+    options = sorted(QSRlib().qsrs_registry.keys()) + ["multiple"]
     multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
 
     parser = argparse.ArgumentParser()
@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     dynamic_args = {}
 
-    if which_qsr == "rcc3" or which_qsr == "rcc2":
+    if which_qsr in ["rcc2", "rcc3", "ra"]:
         dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.),

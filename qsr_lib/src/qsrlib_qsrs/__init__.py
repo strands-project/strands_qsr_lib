@@ -9,6 +9,7 @@ from qsr_arg_relations_distance import QSR_Arg_Relations_Distance
 from qsr_arg_prob_relations_distance import QSR_Arg_Prob_Relations_Distance
 from qsr_moving_or_stationary import QSR_Moving_or_Stationary
 from qsr_new_mwe import QSR_MWE
+from qsr_ra import QSR_RA
 
 # register new qsrs by class name below
 qsrs_registry = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
@@ -21,4 +22,5 @@ qsrs_registry = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
                  QSR_Arg_Relations_Distance,
                  QSR_Arg_Prob_Relations_Distance,
                  QSR_Moving_or_Stationary,
-                 QSR_MWE)
+                 QSR_MWE,
+                 QSR_RA)

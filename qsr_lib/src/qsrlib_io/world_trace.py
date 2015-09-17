@@ -128,7 +128,7 @@ class Object_State(object):
         :param xsize_minimal: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
         :type xsize_minimal: int or float
         :param ysize_minimal: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
-        :return: The coordinates of the upper-left and bottom-right corners of the bounding box.
+        :return: The coordinates of the first and third corner of the bounding box.
         :rtype: list
         """
         xsize = xsize_minimal if isnan(self.xsize) else self.xsize

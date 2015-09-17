@@ -15,6 +15,7 @@ class QSR_Abstractclass(object):
     def __init__(self):
         """Constructor."""
         self._dtype_map = {"points": self._return_points,
+                           "bounding_boxes": self._return_bounding_boxes_2d,  # todo this is to handle 2D/3D and needs its own function
                            "bounding_boxes_2d": self._return_bounding_boxes_2d}
         """dict: Mapping of _dtype to methods."""
 
