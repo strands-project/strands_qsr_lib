@@ -8,13 +8,14 @@ from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
 from qsrlib_utils.utils import merge_world_qsr_traces
 from qsrlib_qsrs import *
+from qsrlib_qstag.qstag import Activity_Graph
 
 
 class QSRlib_Response_Message(object):
     """The response message of QSRlib containing the QSRs and time processing information.
 
     """
-    def __init__(self, qsrs, req_made_at, req_received_at, req_finished_at):
+    def __init__(self, qsrs, qstag, req_made_at, req_received_at, req_finished_at):
         """Constructor.
 
         :param qsrs: The computed QSRs in World_QSR_Trace format.
@@ -26,6 +27,9 @@ class QSRlib_Response_Message(object):
         """
         self.qsrs = qsrs
         """World_QSR_Trace: Holds the QSRs."""
+
+        self.qstag = qstag
+        """Activity_Graph: Qualitative Spatio-Temporal Activity Graph"""
 
         self.req_made_at = req_made_at
         """datetime.datetime : Time the request was made."""
@@ -155,6 +159,7 @@ class QSRlib(object):
             world_qsr_trace = None
 
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
+                                                  qstag=Activity_Graph(req_msg.input_data, world_qsr_trace,  req_msg.dynamic_args["qstag"]["object_types"] if "object_types" in req_msg.dynamic_args["qstag"] else {}) if "qstag" in req_msg.dynamic_args  else None,
                                                   req_made_at=req_msg.made_at,
                                                   req_received_at=req_received_at,
                                                   req_finished_at=datetime.now())
