@@ -6,25 +6,21 @@ from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_Monadic_Abstractclass(QSR_Abstractclass):
-    """Abstract class of monadic QSRs, i.e. QSRs that are computed over a single object.
+    """Abstract class of monadic QSRs, i.e. QSRs that are computed over a single object."""
 
-    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_Monadic_Abstractclass, self).__init__()
 
     def _init_qsrs_for_default(self, objects_names_of_world_state):
-        """The default list of entities for which QSRs are to be computed for.
+        """Default list of entities for which QSRs are to be computed for.
 
-        :param objects_names_of_world_state: The objects names at a world state.
+        :param objects_names_of_world_state: Objects names at a world state.
         :type objects_names_of_world_state: list
         :return: The object names in the world state, i.e. return the argument as passed.
-        :rtype: list
+        :rtype: list of str
         """
         return objects_names_of_world_state
 
@@ -43,11 +39,11 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         """Return the arguments as they are in their point form.
 
         :param data1: Object data at first timestamp.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Object data at second timestamp.
-        :type data2: qsrlib_io.world_trace.Object_State        :type data2: qsrlib_io.world_trace.Object_State
-        :return: Return the arguments as they are in their point form.
-        :rtype: qsrlib_io.world_trace.Object_State, qsrlib_io.world_trace.Object_State
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :return: `data1`, `data2`
+        :rtype: :class:`Object_State <qsrlib_io.world_trace.Object_State>`, :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         """
         return data1, data2
 
@@ -58,24 +54,19 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         :type data1: qsrlib_io.world_trace.Object_State
         :param data2: Object data at second timestamp.
         :type data2: qsrlib_io.world_trace.Object_State
-        :return: Return the 2D bounding boxes of the arguments.
-        :rtype: list, list
+        :return: `bbox1`, `bbox2`
+        :rtype: list of floats, list of floats
         """
         raise data1.return_bounding_box_2d(), data2.return_bounding_box_2d()
 
 
 class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
-    """Special case abstract class of monadic QSRs.
+    """Special case abstract class of monadic QSRs. Works with monadic QSRs that require data over two timestamps."""
 
-    Works with monadic QSRs that require data over two timestamps.
-    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_Monadic_2t_Abstractclass, self).__init__()
 
     @abstractmethod
@@ -83,13 +74,13 @@ class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
         """Compute QSR value.
 
         :param data1: Object data at first timestamp.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Object data at second timestamp.
-        :type data2: qsrlib_io.world_trace.Object_State
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed QSR value.
+        :param kwargs: kwargs arguments.
+        :return: Computed QSR value.
         :rtype: str
         """
         return
@@ -97,17 +88,17 @@ class QSR_Monadic_2t_Abstractclass(QSR_Monadic_Abstractclass):
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """Compute the world QSR trace from the arguments.
 
-        :param world_trace: The input data.
-        :type world_trace: qsrlib_io.world_trace.World_Trace
+        :param world_trace: Input data.
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
         :param timestamps: List of sorted timestamps of `world_trace`.
         :type timestamps: list
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param dynamic_args: The dynamic arguments passed with the request.
-        :type dynamic_args: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed world QSR trace.
-        :rtype: qsrlib_io.world_qsr_trace.World_QSR_Trace
+        :param req_params: Request parameters.
+        :type req_params: dict
+        :param kwargs: kwargs arguments.
+        :return: Computed world QSR trace.
+        :rtype: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`
         """
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t, tp in zip(timestamps[1:], timestamps):

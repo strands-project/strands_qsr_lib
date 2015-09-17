@@ -2,10 +2,9 @@ Usage
 =====
 
 Minimal Working Example
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
-Compute QSRs with the MWE script `mwe.py` in
-`strands_qsr_lib/qsr_lib/scripts/`:
+Compute QSRs with the MWE script `mwe.py` in `strands_qsr_lib/qsr_lib/scripts/`:
 
 .. code:: bash
 
@@ -80,19 +79,22 @@ MWE source code:
         # print out your QSRs
         pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message)
 
-Usage in more detail
-~~~~~~~~~~~~~~~~~~~~
 
-Basically the above code consists of the following simple steps: \*
-Create a `QSRlib` object \* Convert your data in to QSRlib standard
-input format \* Make a request to QSRlib \* Parse the QSRlib response
+Line-by-line explanation
+------------------------
+
+Basically the above code consists of the following simple steps:
+* Create a `QSRlib` object
+* Convert your data in to QSRlib standard input format
+* Make a request to QSRlib
+* Parse the QSRlib response
 
 With the first three being the necessary ones and the parsing step
 provided as an example to give you insight on the QSRlib response data
 structure.
 
 Create a `QSRlib` object
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -101,7 +103,7 @@ Create a `QSRlib` object
 *Note:* This step can be omitted if you want to use QSRlib with ROS.
 
 Convert your data in to QSRlib standard input format
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -117,7 +119,7 @@ Convert your data in to QSRlib standard input format
         world.add_object_state_series(o2)
 
 Make a request to QSRlib
-^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -127,7 +129,7 @@ Make a request to QSRlib
         qsrlib_response_message = qsrlib.request_qsrs(request_message=qsrlib_request_message)
 
 Make a request to QSRlib using ROS
-''''''''''''''''''''''''''''''''''
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you want to use ROS then you need to firstly run the QSRlib ROS
 server as follows:
@@ -157,7 +159,7 @@ and the request is slightly different:
         qsrlib_response_message = pickle.loads(res.data)
 
 Parse the QSRlib response
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -173,3 +175,4 @@ Parse the QSRlib response
                             qsrlib_response_message.qsrs.trace[t].qsrs.values()):
                 foo += str(k) + ":" + str(v.qsr) + "; "
             print(foo)
+

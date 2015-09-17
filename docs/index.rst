@@ -19,7 +19,7 @@ Contents:
    rsts/handwritten/authors
    rsts/handwritten/install
    rsts/handwritten/usage
-   rsts/handwritten/qsrs
+   rsts/handwritten/qsrs/qsrs
    rsts/handwritten/for_developers
    rsts/api/modules
 
