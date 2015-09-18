@@ -11,7 +11,7 @@ class QSR_MWE(QSR_Dyadic_1t_Abstractclass):
         * **_all_possible_relations** = ("left", "together", "right")
         * **_dtype** = "points"
 
-    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    .. seealso:: For further details about this QSR's concept, refer to its :doc:`description. <../handwritten/qsrs/mwe>`
     """
 
     _unique_id = "mwe"
