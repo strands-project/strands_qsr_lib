@@ -21,11 +21,11 @@ class QSR_QTC_B_Simplified(QSR_QTC_Simplified_Abstractclass):
         self._unique_id = "qtcbs"
         """str: Unique identifier name of the QSR."""
 
+        self.qtc_type = "b"
+        """?"""
+
         self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
         """tuple: All possible relations of the QSR."""
-
-        self.qtc_type = "b"  # todo should be private
-        """?"""
 
     def qtc_to_output_format(self, qtc):
         """Return QTCBS specific from QTCCS.

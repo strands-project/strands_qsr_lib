@@ -23,11 +23,11 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         self._unique_id = "qtcbcs"
         """str: Unique identifier name of the QSR."""
 
+        self.qtc_type = "bc"
+        """str: QTC specific type."""
+
         self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
         """tuple: All possible relations of the QSR."""
-
-        self.qtc_type = "bc"  # todo should be private
-        """str: QTC specific type."""
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """Compute the world QSR trace from the arguments.

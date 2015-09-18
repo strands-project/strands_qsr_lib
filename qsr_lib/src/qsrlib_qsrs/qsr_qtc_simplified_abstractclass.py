@@ -47,7 +47,8 @@ class QSR_QTC_Simplified_Abstractclass(QSR_Dyadic_Abstractclass):
         """Constructor."""
         super(QSR_QTC_Simplified_Abstractclass, self).__init__()
 
-        self.qtc_type = ""  # abstractproperty and private?
+        # todo should be private abstractproperty
+        self.qtc_type = ""
         """?"""
 
         # todo commenting for following could go in the class docstring
