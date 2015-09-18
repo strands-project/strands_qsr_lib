@@ -1,32 +1,48 @@
 Supported QSRs
 ==============
 
+.. toctree::
+    :hidden:
+
+    argd
+    argprobd
+    cardir
+    mos
+    mwe
+    qtcbs
+    qtccs
+    qtcbcs
+    rcc2
+    rcc3
+    rcc8
+
+
 Currently, the following QSRs are supported:
 
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | ID             | Name                                              | Links                                                                                                   | Reference      |
 +================+===================================================+=========================================================================================================+================+
-| **argd**       | Qualitative Argument Distances                    | :doc:`doc <argd>` \| :mod:`api <qsrlib_qsrs.qsr_arg_relations_abstractclass>`                           | ?              |
+| **argd**       | Qualitative Argument Distances                    | :doc:`descr. <argd>` \| :mod:`api <qsrlib_qsrs.qsr_arg_relations_abstractclass>`                        | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **argprobd**   | Qualitative Argument Probabilistic Distances      | :doc:`doc <argprobd>` \| :mod:`api <qsrlib_qsrs.qsr_arg_prob_relations_distance>`                       | ?              |
+| **argprobd**   | Qualitative Argument Probabilistic Distances      | :doc:`descr. <argprobd>` \| :mod:`api <qsrlib_qsrs.qsr_arg_prob_relations_distance>`                    | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **cardir**     | Cardinal Directions                               | :doc:`doc <cardir>` \| :mod:`api <qsrlib_qsrs.qsr_cardinal_direction_bounding_boxes_centroid_2d>`       | [Andrew1991]   |
+| **cardir**     | Cardinal Directions                               | :doc:`descr. <cardir>` \| :mod:`api <qsrlib_qsrs.qsr_cardinal_direction_bounding_boxes_centroid_2d>`    | [Andrew1991]   |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **mos**        | Moving or Stationary                              | :doc:`doc <mos>` \| :mod:`api <qsrlib_qsrs.qsr_moving_or_stationary>`                                   | ?              |
+| **mos**        | Moving or Stationary                              | :doc:`descr. <mos>` \| :mod:`api <qsrlib_qsrs.qsr_moving_or_stationary>`                                | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **mwe**        | Minimal Working Example                           | :doc:`doc <mwe>` \| :mod:`api <qsrlib_qsrs.qsr_new_mwe>`                                                | n/a            |
+| **mwe**        | Minimal Working Example                           | :doc:`descr. <mwe>` \| :mod:`api <qsrlib_qsrs.qsr_new_mwe>`                                             | n/a            |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **qtcbs**      | Qualitative Trajectory Calculus *b* Simplified    | :doc:`doc <qtcbs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_b_simplified>`                                     | ?              |
+| **qtcbs**      | Qualitative Trajectory Calculus *b* Simplified    | :doc:`descr. <qtcbs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_b_simplified>`                                  | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **qtccs**      | Qualitative Trajectory Calculus *c* Simplified    | :doc:`doc <qtccs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_c_simplified>`                                     | ?              |
+| **qtccs**      | Qualitative Trajectory Calculus *c* Simplified    | :doc:`descr. <qtccs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_c_simplified>`                                  | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **qtcbcs**     | Qualitative Trajectory Calculus *bc* Simplified   | :doc:`doc <qtcbcs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_bc_simplified>`                                   | ?              |
+| **qtcbcs**     | Qualitative Trajectory Calculus *bc* Simplified   | :doc:`descr. <qtcbcs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_bc_simplified>`                                | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc2**       | Region Connection Calculus 2                      | :doc:`doc <rcc2>` \| :mod:`api <qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d>`                      | ?              |
+| **rcc2**       | Region Connection Calculus 2                      | :doc:`descr. <rcc2>` \| :mod:`api <qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d>`                   | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc3**       | Region Connection Calculus 3                      | :doc:`doc <rcc3>` \| :mod:`api <qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d>`                      | ?              |
+| **rcc3**       | Region Connection Calculus 3                      | :doc:`descr. <rcc3>` \| :mod:`api <qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d>`                   | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc8**       | Region Connection Calculus 8                      | :doc:`doc <rcc8>` \| :mod:`api <qsrlib_qsrs.qsr_rcc8_rectangle_bounding_boxes_2d>`                      | ?              |
+| **rcc8**       | Region Connection Calculus 8                      | :doc:`descr. <rcc8>` \| :mod:`api <qsrlib_qsrs.qsr_rcc8_rectangle_bounding_boxes_2d>`                   | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 
 
