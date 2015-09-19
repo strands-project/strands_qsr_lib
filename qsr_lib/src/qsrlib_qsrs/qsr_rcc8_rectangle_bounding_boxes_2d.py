@@ -11,7 +11,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
         * **_all_possible_relations** = ("dc", "ec", "po", "eq", "tpp", "ntpp", "tppi", "ntppi")
         * **_dtype** = "bounding_boxes_2d"
 
-    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    .. seealso:: For further details about RCC8, refer to its :doc:`description. <../handwritten/qsrs/rcc8>`
     """
 
     """RCC8

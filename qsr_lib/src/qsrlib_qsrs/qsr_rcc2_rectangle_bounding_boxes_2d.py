@@ -11,7 +11,7 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
         * **_all_possible_relations** = ("dc", "c")
         * **_dtype** = "bounding_boxes_2d"
 
-    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    .. seealso:: For further details about RCC2, refer to its :doc:`description. <../handwritten/qsrs/rcc2>`
     """
 
     _unique_id = "rcc2"
