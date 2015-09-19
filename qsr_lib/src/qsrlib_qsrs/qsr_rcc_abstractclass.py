@@ -4,17 +4,28 @@ from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 
 
 class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
-    """Abstract class for the QSR makers
+    """Abstract class of RCC relations.
 
-        where,\nx1, y2: the xy-coords of the top-left corner of the rectangle\nx2, y2: the xy-coords of the bottom-right corner of the rectangle
+    Values of the abstract properties
+        * **_unique_id** = defined by the RCC variant.
+        * **_all_possible_relations** = defined by the RCC variant.
+        * **_dtype** = "bounding_boxes_2d"
+
+    QSR specific parameters
+        * **quantisation_factor** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
     """
+
     __metaclass__ = ABCMeta
 
     _dtype = "bounding_boxes_2d"
+    """str: On what kind of data the QSR works with."""
 
     def __init__(self):
+        """Constructor."""
         super(QSR_RCC_Abstractclass, self).__init__()
+
         self.__qsr_params_defaults = {"quantisation_factor": 0.0}
+        """float: ?"""
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         qsr_params = self.__qsr_params_defaults.copy()

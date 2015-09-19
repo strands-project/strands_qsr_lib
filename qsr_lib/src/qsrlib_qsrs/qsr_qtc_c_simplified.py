@@ -1,36 +1,38 @@
 # -*- coding: utf-8 -*-
-"""Example that shows how to implement QSR makers.
-
-:Author: Christan Dondrup <cdondrup@lincoln.ac.uk>
-:Organization: University of Lincoln
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-:Notes: future extension to handle polygons, to do that use matplotlib.path.Path.contains_points
-        although might want to have a read on the following also...
-        http://matplotlib.1069221.n5.nabble.com/How-to-properly-use-path-Path-contains-point-td40718.html
-"""
-
 from __future__ import print_function, division
 from qsrlib_qsrs.qsr_qtc_simplified_abstractclass import QSR_QTC_Simplified_Abstractclass
 
 
 class QSR_QTC_C_Simplified(QSR_QTC_Simplified_Abstractclass):
-    """Make default QSRs and provide an example for others"""
+    """QTCB simplified relations.
+
+    Values of the abstract properties
+        * **_unique_id** = "qtccs"
+        * **_all_possible_relations** = ?
+        * **_dtype** = "points"
+
+    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    """
+
     def __init__(self):
+        """Constructor"""
         super(QSR_QTC_C_Simplified, self).__init__()
+
         self._unique_id = "qtccs"
+        """str: Unique identifier name of the QSR."""
+
         self.qtc_type = "c"
+        """str: QTC specific type."""
+
         self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
+        """tuple: All possible relations of the QSR."""
 
     def qtc_to_output_format(self, qtc):
-        """Overwrite this for the different QTC veriants to select only the parts
-        from the QTCC tuple that you would like to return.
-        Example for QTCB: return qtc[0:2]
+        """Return QTCCS.
 
-        :param qtc: The full QTCC tuple [q1,q2,q4,q5]
-
-        :return: "q1,q2,q4,q5" or {"qtccs": "q1,q2,q4,q5"} if future is True
+        :param qtc: Full QTCC tuple [q1,q2,q4,q5].
+        :type qtc: list or tuple
+        :return: {"qtccs": "q1,q2,q4,q5"}
+        :rtype: dict
         """
         return self._format_qsr(self.create_qtc_string(qtc))

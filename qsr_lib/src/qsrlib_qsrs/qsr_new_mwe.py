@@ -6,12 +6,12 @@ from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 class QSR_MWE(QSR_Dyadic_1t_Abstractclass):
     """Minimal Working Example (MWE) of making a new QSR.
 
-    Members:
-        * _unique_id: "mwe"
-        * _all_possible_relations: ("left", "together", "right")
-        * _dtype: "points"
+    Values of the abstract properties
+        * **_unique_id** = "mwe"
+        * **_all_possible_relations** = ("left", "together", "right")
+        * **_dtype** = "points"
 
-    Some explanation about the QSR. Maybe a reference if it exists.
+    .. seealso:: For further details about MWE, refer to its :doc:`description. <../handwritten/qsrs/mwe>`
     """
 
     _unique_id = "mwe"
@@ -24,23 +24,20 @@ class QSR_MWE(QSR_Dyadic_1t_Abstractclass):
     """str: On what kind of data the QSR works with."""
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_MWE, self).__init__()
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Compute QSR value.
 
         :param data1: First object data.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Second object data.
-        :type data2: qsrlib_io.world_trace.Object_State
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed QSR value.
+        :param kwargs: kwargs arguments.
+        :return: Computed QSR value.
         :rtype: str
         """
         return {

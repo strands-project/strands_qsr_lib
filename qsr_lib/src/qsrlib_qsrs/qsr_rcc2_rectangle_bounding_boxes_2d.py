@@ -6,8 +6,12 @@ from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
     """RCC2 relations.
 
-    	# 'dc'     bb1 is disconnected from bb2
-		# 'c'      bb1 is connected to bb2
+    Values of the abstract properties
+        * **_unique_id** = "rcc2"
+        * **_all_possible_relations** = ("dc", "c")
+        * **_dtype** = "bounding_boxes_2d"
+
+    .. seealso:: For further details about RCC2, refer to its :doc:`description. <../handwritten/qsrs/rcc2>`
     """
 
     _unique_id = "rcc2"
@@ -17,7 +21,14 @@ class QSR_RCC2_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
     """tuple: All possible relations of the QSR."""
 
     def __init__(self):
+        """Constructor."""
         super(QSR_RCC2_Rectangle_Bounding_Boxes_2D, self).__init__()
 
     def _convert_to_requested_rcc_type(self, qsr):
+        """Remap QSR values from RCC8 to RCC2.
+
+        :param qsr: RCC8 value.
+        :return: RCC2 value.
+        :rtype: str
+        """
         return qsr if qsr == "dc" else "c"

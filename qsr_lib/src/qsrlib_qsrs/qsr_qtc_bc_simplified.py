@@ -1,17 +1,4 @@
 # -*- coding: utf-8 -*-
-"""Example that shows how to implement QSR makers.
-
-:Author: Christan Dondrup <cdondrup@lincoln.ac.uk>
-:Organization: University of Lincoln
-:Date: 10 September 2014
-:Version: 0.1
-:Status: Development
-:Copyright: STRANDS default
-:Notes: future extension to handle polygons, to do that use matplotlib.path.Path.contains_points
-        although might want to have a read on the following also...
-        http://matplotlib.1069221.n5.nabble.com/How-to-properly-use-path-Path-contains-point-td40718.html
-"""
-
 from __future__ import division
 from qsrlib_qsrs.qsr_qtc_simplified_abstractclass import QSR_QTC_Simplified_Abstractclass
 import numpy as np
@@ -19,14 +6,44 @@ from qsrlib_io.world_qsr_trace import *
 
 
 class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
-    """Make default QSRs and provide an example for others"""
+    """QTCBC simplified relations.
+
+    Values of the abstract properties
+        * **_unique_id** = "qtcbcs"
+        * **_all_possible_relations** = ?
+        * **_dtype** = "points"
+
+    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    """
+
     def __init__(self):
+        """Constructor."""
         super(QSR_QTC_BC_Simplified, self).__init__()
+
         self._unique_id = "qtcbcs"
+        """str: Unique identifier name of the QSR."""
+
         self.qtc_type = "bc"
+        """str: QTC specific type."""
+
         self._all_possible_relations = tuple(self.return_all_possible_state_combinations()[0])
+        """tuple: All possible relations of the QSR."""
 
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
+        """Compute the world QSR trace from the arguments.
+
+        :param world_trace: Input data.
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
+        :param timestamps: List of sorted timestamps of `world_trace`.
+        :type timestamps: list
+        :param qsr_params: QSR specific parameters passed in `dynamic_args`.
+        :type qsr_params: dict
+        :param req_params: Dynamic arguments passed with the request.
+        :type dynamic_args: dict
+        :param kwargs: kwargs arguments.
+        :return: Computed world QSR trace.
+        :rtype: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`
+        """
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         qtc_sequence = {}
         for t, tp in zip(timestamps[1:], timestamps):
@@ -91,6 +108,17 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         return ret
 
     def _create_bc_chain(self, qtc, distances, distance_threshold):
+        """
+
+        :param qtc:
+        :type qtc:
+        :param distances:
+        :type distances:
+        :param distance_threshold:
+        :type distance_threshold:
+        :return:
+        :rtype:
+        """
         ret = np.array([])
         if len(qtc.shape) == 1:
             qtc = [qtc]
@@ -102,23 +130,25 @@ class QSR_QTC_BC_Simplified(QSR_QTC_Simplified_Abstractclass):
         return ret.reshape(-1,4)
 
     def qtc_to_output_format(self, qtc):
-        """Overwrite this for the different QTC veriants to select only the parts
-        from the QTCC tuple that you would like to return.
-        Example for QTCB: return qtc[0:2]
+        """Overwrite this for the different QTC variants to select only the parts from the QTCCS tuple that you would
+        like to return. Example for QTCBS: return `qtc[0:2]`.
 
-        :param qtc: The full QTCC tuple [q1,q2,q4,q5]
-
-        :return: "q1,q2,q4,q5" or {"qtcbcs": "q1,q2,q4,q5"} if future is True
+        :param qtc: Full QTCC tuple [q1,q2,q4,q5].
+        :type qtc: list or tuple
+        :return: {"qtcbcs": "q1,q2,q4,q5"}
+        :rtype: dict
         """
         s = self.create_qtc_string(qtc) if not np.isnan(qtc[2]) else self.create_qtc_string(qtc[0:2])
         return self._format_qsr(s)
 
     def _get_euclidean_distance(self, p, q):
-        """Calculate the Euclidean distance between points p and q
+        """Calculate the Euclidean distance between points `p` and `q`.
 
-        :param p: tuple of x,y coordinates
-        :param q: tuple of x,y coordinates
-
-        :return: the euclidean distance between p and q
+        :param p: x,y coordinates.
+        :type p: tuple
+        :param q: x,y coordinates.
+        :type q: tuple
+        :return: Euclidean distance between `p` and `q`.
+        :rtype: float
         """
         return np.sqrt(np.power((float(p[0])-float(q[0])),2)+np.power((float(p[1])-float(q[1])),2))
