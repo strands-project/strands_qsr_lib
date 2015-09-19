@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 import math
 
-class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractclass):
+class QSR_Cardinal_Direction(QSR_Dyadic_1t_Abstractclass):
     """Cardinal direction relations.
 
     Values of the abstract properties
@@ -25,7 +25,7 @@ class QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D(QSR_Dyadic_1t_Abstractcl
 
     def __init__(self):
         """Constructor."""
-        super(QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D, self).__init__()
+        super(QSR_Cardinal_Direction, self).__init__()
 
     def _compute_qsr(self, data1, data2, qsr_params, **kwargs):
         """Compute QSR relation.

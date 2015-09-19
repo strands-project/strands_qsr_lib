@@ -3,7 +3,7 @@ from __future__ import print_function, division
 from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 
 
-class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
+class QSR_RCC8(QSR_RCC_Abstractclass):
     """RCC8 relations.
 
     Values of the abstract properties
@@ -14,18 +14,6 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
     .. seealso:: For further details about RCC8, refer to its :doc:`description. <../handwritten/qsrs/rcc8>`
     """
 
-    """RCC8
-
-        # 'dc'     bb1 is disconnected from bb2
-        # 'ec'     bb1 is externally connected with bb2
-        # 'po'     bb1 partially overlaps bb2
-        # 'eq'     bb1 equals bb2
-        # 'tpp'    bb1 is a tangential proper part of bb2
-        # 'ntpp'   bb1 is a non-tangential proper part of bb2
-        # 'tppi'   bb2 is a tangential proper part of bb1
-        # 'ntppi'  bb2 is a non-tangential proper part of bb1
-    """
-
     _unique_id = "rcc8"
     """str: Unique identifier name of the QSR."""
 
@@ -34,7 +22,7 @@ class QSR_RCC8_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
 
     def __init__(self):
         """Constructor."""
-        super(QSR_RCC8_Rectangle_Bounding_Boxes_2D, self).__init__()
+        super(QSR_RCC8, self).__init__()
 
     def _convert_to_requested_rcc_type(self, qsr):
         """No need for remapping.
