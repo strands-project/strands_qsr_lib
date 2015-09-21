@@ -1,4 +1,5 @@
 from qsr_rcc2_rectangle_bounding_boxes_2d import QSR_RCC2_Rectangle_Bounding_Boxes_2D
+from qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
 from qsr_rcc4 import QSR_RCC4
 from qsr_rcc8_rectangle_bounding_boxes_2d import QSR_RCC8_Rectangle_Bounding_Boxes_2D
 from qsr_cardinal_direction_bounding_boxes_centroid_2d import QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D
@@ -12,6 +13,7 @@ from qsr_new_mwe import QSR_MWE
 
 # register new qsrs by class name below
 qsrs_registry = (QSR_RCC2_Rectangle_Bounding_Boxes_2D,
+                 QSR_RCC3_Rectangle_Bounding_Boxes_2D,
                  QSR_RCC4,
                  QSR_RCC8_Rectangle_Bounding_Boxes_2D,
                  QSR_Cardinal_Direction_Bounding_Boxes_Centroid_2D,

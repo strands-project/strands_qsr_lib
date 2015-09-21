@@ -1,4 +1,4 @@
-Region Connection Calculus 5
+Region Connection Calculus 4
 ============================
 
 The Region Connection Calculus (RCC) [1]_ [2]_ is intended to serve for qualitative spatial representation and reasoning.
@@ -6,23 +6,23 @@ RCC abstractly describes regions (in Euclidean space, or in a topological space)
 each other.
 
 RCC5 consists of 5 basic relations that are possible between two regions; it is a stripped down version
-of :doc:`RCC8 <rcc8>`. The mapping from RCC8 to RCC5 can be seen below:
+of :doc:`RCC8 <rcc8>`. The mapping from RCC8 to RCC4 can be seen below:
 
 
 +------------+------------+
-| RCC8       | RCC5       +
+| RCC8       | RCC4       +
 +============+============+
-| dc         | dc         |
-+------------+------------+
-| ec         | po         |
+| dc         |  dr        |
 +------------+            +
-| po         |            |
+| ec         |            |
 +------------+------------+
-| tpp        | pp         |
+| po         | po         |
++------------+------------+
+| tpp        |  pp        |
 +------------+            +
 | ntpp       |            |
-+------------+            +
-| eq         |            |
++------------+------------+
+| eq         | eq         |
 +------------+------------+
 | tppi       |  ppi       |
 +------------+            +
@@ -38,17 +38,17 @@ All the possible RCC5 relations between a blue object X and a red object Y are:
 +-------------------+------------------------------------------------+-------------------------------------------------+
 | Relation          | Illustration                                   | Interpretation                                  +
 +===================+================================================+=================================================+
-| X **dr** Y        | .. image:: ../images/rcc8_dc.png               | X is disconnected from Y.                       |
-+-------------------+------------------------------------------------+-------------------------------------------------+
-| X **po** Y        | .. image:: ../images/rcc8_ec.png               | X is partially overlapping Y.                   |
+| X **dr** Y        | .. image:: ../images/rcc8_dc.png               | X is discrete from Y.                           |
 +                   +------------------------------------------------+                                                 +
-|                   | .. image:: ../images/rcc8_po.png               |                                                 |
+|                   | .. image:: ../images/rcc8_ec.png               |                                                 |
++-------------------+------------------------------------------------+-------------------------------------------------+
+| X **po** Y        | .. image:: ../images/rcc8_po.png               | X is partially overlapping Y.                   |
 +-------------------+------------------------------------------------+-------------------------------------------------+
 | X **pp** Y        | .. image:: ../images/rcc8_tpp.png              | X is a proper part of Y.                        |
 +                   +------------------------------------------------+                                                 +
 |                   | .. image:: ../images/rcc8_ntpp.png             |                                                 |
-+                   +------------------------------------------------+                                                 +
-|                   | .. image:: ../images/rcc8_eq.png               |                                                 |
++-------------------+------------------------------------------------+-------------------------------------------------+
+| X **eq** Y        | .. image:: ../images/rcc8_eq.png               | X is equal to Y.                                |
 +-------------------+------------------------------------------------+-------------------------------------------------+
 | X **ppi** Y       | .. image:: ../images/rcc8_tppi.png             | X is a proper part inverse of Y.                |
 +                   +------------------------------------------------+                                                 +
@@ -59,7 +59,7 @@ All the possible RCC5 relations between a blue object X and a red object Y are:
 API
 ---
 
-The API can be found :mod:`here <qsrlib_qsrs.qsr_rcc4>`.
+The API can be found :mod:`here <qsrlib_qsrs.qsr_rcc5_rectangle_bounding_boxes_2d>`.
 
 
 References

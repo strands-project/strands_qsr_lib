@@ -1,0 +1,3 @@
+<launch>
+  <test test-name="rcc3_tester" pkg="qsr_lib" type="rcc3_tester.py" />
+</launch>
