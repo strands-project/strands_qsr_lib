@@ -27,7 +27,7 @@ Currently, the following QSRs are supported:
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **argprobd**   | Qualitative Argument Probabilistic Distances      | :doc:`descr. <argprobd>` \| :mod:`api <qsrlib_qsrs.qsr_arg_prob_relations_distance>`                    | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **cardir**     | Cardinal Directions                               | :doc:`descr. <cardir>` \| :mod:`api <qsrlib_qsrs.qsr_cardinal_direction_bounding_boxes_centroid_2d>`    | [1]_           |
+| **cardir**     | Cardinal Directions                               | :doc:`descr. <cardir>` \| :mod:`api <qsrlib_qsrs.qsr_cardinal_direction>`                               | [1]_           |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **mos**        | Moving or Stationary                              | :doc:`descr. <mos>` \| :mod:`api <qsrlib_qsrs.qsr_moving_or_stationary>`                                |                |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
@@ -39,13 +39,13 @@ Currently, the following QSRs are supported:
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **qtcbcs**     | Qualitative Trajectory Calculus *bc* Simplified   | :doc:`descr. <qtcbcs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_bc_simplified>`                                | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc2**       | Region Connection Calculus 2                      | :doc:`descr. <rcc2>` \| :mod:`api <qsrlib_qsrs.qsr_rcc2_rectangle_bounding_boxes_2d>`                   | [2]_ [3]_      |
+| **rcc2**       | Region Connection Calculus 2                      | :doc:`descr. <rcc2>` \| :mod:`api <qsrlib_qsrs.qsr_rcc2>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc3**       | Region Connection Calculus 3                      | :doc:`descr. <rcc3>` \| :mod:`api <qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d>`                   | [2]_ [3]_      |
+| **rcc3**       | Region Connection Calculus 3                      | :doc:`descr. <rcc3>` \| :mod:`api <qsrlib_qsrs.qsr_rcc3>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc5**       | Region Connection Calculus 5                      | :doc:`descr. <rcc5>` \| :mod:`api <qsrlib_qsrs.qsr_rcc5_rectangle_bounding_boxes_2d>`                   | [2]_ [3]_      |
+| **rcc5**       | Region Connection Calculus 5                      | :doc:`descr. <rcc5>` \| :mod:`api <qsrlib_qsrs.qsr_rcc5>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
-| **rcc8**       | Region Connection Calculus 8                      | :doc:`descr. <rcc8>` \| :mod:`api <qsrlib_qsrs.qsr_rcc8_rectangle_bounding_boxes_2d>`                   | [2]_ [3]_      |
+| **rcc8**       | Region Connection Calculus 8                      | :doc:`descr. <rcc8>` \| :mod:`api <qsrlib_qsrs.qsr_rcc8>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 
 

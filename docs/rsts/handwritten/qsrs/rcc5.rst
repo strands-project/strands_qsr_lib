@@ -59,7 +59,7 @@ All the possible RCC5 relations between a blue object X and a red object Y are:
 API
 ---
 
-The API can be found :mod:`here <qsrlib_qsrs.qsr_rcc5_rectangle_bounding_boxes_2d>`.
+The API can be found :mod:`here <qsrlib_qsrs.qsr_rcc5>`.
 
 
 References
