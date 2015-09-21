@@ -6,6 +6,9 @@ from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
     """RCC3 relations.
 
+    .. warning::
+        RCC3 is deprecated. Use RCC4 instead.
+
     Values of the abstract properties
         * **_unique_id** = "rcc3"
         * **_all_possible_relations** = ("dc", "po", "o")
