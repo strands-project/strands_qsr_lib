@@ -6,26 +6,22 @@ from qsrlib_utils.combinations_and_permutations import *
 from qsrlib_io.world_qsr_trace import *
 
 class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
-    """Abstract class of dyadic QSRs, i.e. QSRs that are computed over two objects.
+    """Abstract class of dyadic QSRs, i.e. QSRs that are computed over two objects."""
 
-    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_Dyadic_Abstractclass, self).__init__()
 
     def _init_qsrs_for_default(self, objects_names_of_world_state):
-        """The default list of entities for which QSRs are to be computed for.
+        """Default list of entities for which QSRs are to be computed for.
 
-        :param objects_names_of_world_state: The objects names at a world state.
-        :type objects_names_of_world_state: list
+        :param objects_names_of_world_state: Objects names at a world state.
+        :type objects_names_of_world_state: list of str
         :return: The permutations, i.e. all possible pairs including mirrors, of the list of names passed in the
         arguments. E.g. for `objects_names_of_world_state = ['a', 'b']` return `[('a', 'b'), ('b', 'a')]`.
-        :rtype: list
+        :rtype: list of tuples of str
         """
         return possible_pairs(objects_names_of_world_state)
 
@@ -34,7 +30,7 @@ class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
 
         :param qsrs_for: The original `qsrs_for` that needs validation.
         :type qsrs_for: list
-        :return: A list of string objects names to make QSRs, which might be the same as the argument `qsrs_for` or a
+        :return: List of string objects names to make QSRs, which might be the same as the argument `qsrs_for` or a
         subset of it with elements that passed the validation test, i.e. the elements of the list must be tuples of
         two strings.
         :rtype: list
@@ -45,10 +41,10 @@ class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
         """Return the arguments as they are in their point form.
 
         :param data1: First object data.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Second object data.
-        :type data2: qsrlib_io.world_trace.Object_State
-        :return: Return the arguments as they are in their point form.
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :return: `data1`, `data2`
         :rtype: qsrlib_io.world_trace.Object_State, qsrlib_io.world_trace.Object_State
         """
         return data1, data2
@@ -57,27 +53,22 @@ class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
         """Return the 2D bounding boxes of the arguments.
 
         :param data1: First object data.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Second object data.
-        :type data2: qsrlib_io.world_trace.Object_State
-        :return: Return the 2D bounding boxes of the arguments.
-        :rtype: list, list
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :return: `bbox1`, `bbox2`
+        :rtype: list of floats, list of floats
         """
         return data1.return_bounding_box_2d(), data2.return_bounding_box_2d()
 
 
 class QSR_Dyadic_1t_Abstractclass(QSR_Dyadic_Abstractclass):
-    """Special case abstract class of dyadic QSRs.
+    """Special case abstract class of dyadic QSRs. Works with dyadic QSRs that require data over one timestamp."""
 
-    Works with dyadic QSRs that require data over one timestamp.
-    """
     __metaclass__ = ABCMeta
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_Dyadic_1t_Abstractclass, self).__init__()
 
     @abstractmethod
@@ -85,13 +76,13 @@ class QSR_Dyadic_1t_Abstractclass(QSR_Dyadic_Abstractclass):
         """Compute QSR value.
 
         :param data1: First object data.
-        :type data1: qsrlib_io.world_trace.Object_State
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param data2: Second object data.
-        :type data2: qsrlib_io.world_trace.Object_State
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed QSR value.
+        :param kwargs: kwargs arguments.
+        :return: Computed QSR value.
         :rtype: str
         """
         return
@@ -99,17 +90,17 @@ class QSR_Dyadic_1t_Abstractclass(QSR_Dyadic_Abstractclass):
     def make_world_qsr_trace(self, world_trace, timestamps, qsr_params, req_params, **kwargs):
         """Compute the world QSR trace from the arguments.
 
-        :param world_trace: The input data.
-        :type world_trace: qsrlib_io.world_trace.World_Trace
+        :param world_trace: Input data.
+        :type world_trace: :class:`World_Trace <qsrlib_io.world_trace.World_Trace>`
         :param timestamps: List of sorted timestamps of `world_trace`.
         :type timestamps: list
         :param qsr_params: QSR specific parameters passed in `dynamic_args`.
         :type qsr_params: dict
-        :param dynamic_args: The dynamic arguments passed with the request.
-        :type dynamic_args: dict
-        :param kwargs: Optional further arguments.
-        :return: The computed world QSR trace.
-        :rtype: qsrlib_io.world_qsr_trace.World_QSR_Trace
+        :param req_params: Request parameters.
+        :type req_params: dict
+        :param kwargs: kwargs arguments.
+        :return: Computed world QSR trace.
+        :rtype: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`
         """
         ret = World_QSR_Trace(qsr_type=self._unique_id)
         for t in timestamps:

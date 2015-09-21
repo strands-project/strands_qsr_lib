@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""QSRlib module.
-
-"""
 
 from __future__ import print_function, division
 from datetime import datetime
@@ -11,53 +8,55 @@ from qsrlib_qsrs import *
 
 
 class QSRlib_Response_Message(object):
-    """The response message of QSRlib containing the QSRs and time processing information.
+    """The response message of QSRlib containing the QSRs and time processing information."""
 
-    """
     def __init__(self, qsrs, req_made_at, req_received_at, req_finished_at):
         """Constructor.
 
-        :param qsrs: The computed QSRs in World_QSR_Trace format.
-        :type qsrs: World_QSR_Trace
+        :param qsrs: Computed QSRs in World_QSR_Trace format.
+        :type qsrs: qsrlib_io.world_qsr_trace.World_QSR_Trace
         :param req_made_at: Time the request was made.
+        :type req_made_at: datetime
         :param req_received_at: Time the request was received.
+        :type req_received_at: datetime
         :param req_finished_at: Time the request was finished.
-        :return:
+        :type req_finished_at: datetime
         """
         self.qsrs = qsrs
-        """World_QSR_Trace: Holds the QSRs."""
+        """:class:`World_QSR_Trace <qsrlib_io.world_qsr_trace.World_QSR_Trace>`: Holds the QSRs."""
 
         self.req_made_at = req_made_at
-        """datetime.datetime : Time the request was made."""
+        """datetime: Time the request was made."""
 
         self.req_received_at = req_received_at
-        """datetime.datetime : Time the request was received in QSRlib."""
+        """datetime: Time the request was received in QSRlib."""
 
         self.req_finished_at = req_finished_at
-        """datetime.datetime : Time the QSRlib finished processing the request."""
+        """datetime : Time the QSRlib finished processing the request."""
 
 
 class QSRlib_Request_Message(object):
-    """Input to QSRlib request calls containing all the necessary data."""
+    """Message passed in the request call containing all the necessary data."""
+
     def __init__(self, which_qsr, input_data, dynamic_args={}, req_made_at=None):
         """Constructor.
 
-        :param which_qsr: The name(s) of the wanted QSR(s) to be computed.
-        :type which_qsr: str or list
-        :param input_data: The input data.
-        :type input_data: World_Trace
+        :param which_qsr: Name(s) of the wanted QSR(s) to be computed.
+        :type which_qsr: str or list of str
+        :param input_data: Input data.
+        :type input_data: qsrlib_io.world_trace.World_Trace
         :param dynamic_args: User args passed dynamically during the request.
         :type dynamic_args: dict
         :param req_made_at: Time the request was made.
-        :type req_made_at: datetime.datetime
-        :return:
+        :type req_made_at: datetime
         """
+        # todo need to write somewhere about dynamic_args and link to above.
         self.which_qsr = which_qsr
-        """str or list: The name(s) of the wanted QSR(s) to be computed."""
+        """str or list of str: Name(s) of the wanted QSR(s) to be computed."""
 
         if isinstance(input_data, World_Trace):
             self.input_data = input_data
-            """World_Trace: The input data."""
+            """:class:`World_Trace <qsrlib_io.world_trace.World_Trace>`: The input data."""
         else:
             raise TypeError("input_data must be of type 'World_Trace'")
 
@@ -65,7 +64,7 @@ class QSRlib_Request_Message(object):
         """ dict: User args passed dynamically during the request."""
 
         self.made_at = req_made_at if req_made_at else datetime.now()
-        """datetime.datetime (`datetime.datetime.now()`): Time the request was made."""
+        """datetime: Time the request was made."""
 
 
 class QSRlib(object):
@@ -78,7 +77,6 @@ class QSRlib(object):
 
         :param help: Print helpful message at start.
         :type help: bool
-        :return:
         """
         self.__qsrs_registry = self.__check_and_activate_qsrs(qsrs_registry)
         """dict: The registry of the QSRs, a mapping between their unique names and their classes."""
@@ -90,7 +88,7 @@ class QSRlib(object):
     def qsrs_registry(self):
         """Getter.
 
-        :return: self.__qsrs_registry
+        :return: `self.__qsrs_registry`
         :rtype: dict
         """
         return self.__qsrs_registry
@@ -118,7 +116,7 @@ class QSRlib(object):
         return qsrs
 
     def help(self):
-        """stdout help message about QSRlib"""
+        """stdout help message about QSRlib."""
         self.__print_qsrs_available()
 
     def __print_qsrs_available(self):

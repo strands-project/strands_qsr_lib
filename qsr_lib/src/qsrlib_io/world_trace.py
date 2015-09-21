@@ -5,9 +5,8 @@ import copy
 
 
 class Object_State(object):
-    """Data class structure that is holding various information about an object.
+    """Data class structure that is holding various information about an object."""
 
-    """
     def __init__(self, name, timestamp,
                  x=float('nan'), y=float('nan'), z=float('nan'),
                  xsize=float('nan'), ysize=float('nan'), zsize=float('nan'),
@@ -33,15 +32,14 @@ class Object_State(object):
         :type zsize: float or int
         :param rotation: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one.
         :type rotation: tuple or list of floats
-        :param args: Other optional args.
-        :param kwargs: Other optional kwargs.
-        :return:
+        :param args: Optional args.
+        :param kwargs: Optional kwargs.
         """
         self.name = name
-        """str: The name of the object"""
+        """str: Name of the object."""
 
         self.timestamp = float(timestamp)
-        """float: The timestamp of the object state, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
+        """float: Timestamp of the object state, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
 
         self.x = x
         """int or float: x-coordinate of the center point."""
@@ -53,37 +51,29 @@ class Object_State(object):
         """int or float: z-coordinate of the center point."""
 
         self.xsize = xsize
-        """positive int or float: Total x-size"""
+        """positive int or float: Total x-size."""
 
         self.ysize = ysize
-        """positive int or float: Total y-size"""
+        """positive int or float: Total y-size."""
 
         self.zsize = zsize
-        """positive int or float: Total z-size"""
+        """positive int or float: Total z-size."""
 
         self.rotation = rotation
-        """tuple or list of floats: Rotation of the object in roll-pitch-yaw form or quaternion (x,y,z,w) one."""
+        """tuple or list of float: Rotation of the object in roll-pitch-yaw form (r,p,y) or quaternion (x,y,z,w) one."""
 
         self.args = args
+        """Optional args."""
+
         self.kwargs = kwargs
+        """Optional kwargs."""
 
     @property
     def xsize(self):
-        """Getter.
-
-        :return: Total x-size.
-        :rtype: int or float
-        """
         return self.__xsize
 
     @xsize.setter
     def xsize(self, v):
-        """Setter.
-
-        :param v: xsize new value.
-        :type v: positive int or float
-        :return:
-        """
         if v < 0:
             raise ValueError("xsize cannot be negative")
         else:
@@ -125,11 +115,12 @@ class Object_State(object):
     def return_bounding_box_2d(self, xsize_minimal=0, ysize_minimal=0):
         """Compute the 2D bounding box of the object.
 
-        :param xsize_minimal: If object has no x-size (i.e. simply a point) then compute bounding box based on this minimal x-size.
-        :type xsize_minimal: int or float
-        :param ysize_minimal: If object has no y-size (i.e. simply a point) then compute bounding box based on this minimal y-size.
-        :return: The coordinates of the first and third corner of the bounding box.
-        :rtype: list
+        :param xsize_minimal: If object has no x-size (i.e. a point) then compute bounding box based on this minimal x-size.
+        :type xsize_minimal: positive int or float
+        :param ysize_minimal: If object has no y-size (i.e. a point) then compute bounding box based on this minimal y-size.
+        :type ysize_minimal: positive int or float
+        :return: The 2D coordinates of the first (closest to origin) and third (farthest from origin) corners of the bounding box.
+        :rtype: list of 4 int or float
         """
         xsize = xsize_minimal if isnan(self.xsize) else self.xsize
         ysize = ysize_minimal if isnan(self.ysize) else self.ysize
@@ -137,9 +128,8 @@ class Object_State(object):
 
 
 class World_State(object):
-    """Data class structure that is holding various information about the world at a particular time.
+    """Data class structure that is holding various information about the world at a particular time."""
 
-    """
     def __init__(self, timestamp, objects=None):
         """Constructor.
 
@@ -147,29 +137,26 @@ class World_State(object):
         :type timestamp: int or float
         :param objects: A dictionary holding the state of the objects that exist in this world state, i.e. a dict of objects of type Object_State with the keys being the objects names.
         :type objects: dict
-        :return:
         """
         self.timestamp = float(timestamp)
-        """float: The timestamp of the object, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
+        """float: Timestamp of the object, which matches the corresponding key `t` in `World_Trace.trace[t]`."""
 
         self.objects = objects if objects else {}
-        """dict: Holds the state of the objects that exist in this world state, i.e. a dict of objects of type Object_State
-        with the keys being the objects names."""
+        """dict: Holds the state of the objects that exist in this world state, i.e. a dict of objects of type
+        :class:`Object_State` with the keys being the objects names."""
 
     def add_object_state(self, object_state):
         """Add/Overwrite an object state.
 
         :param object_state: Object state to be added in the world state.
         :type object_state: Object_State
-        :return:
         """
         self.objects[object_state.name] = object_state
 
 
 class World_Trace(object):
-    """Data class structure that is holding a time series of the world states.
+    """Data class structure that is holding a time series of the world states."""
 
-    """
     def __init__(self, description="", trace=None):
         """Constructor.
 
@@ -183,28 +170,28 @@ class World_Trace(object):
         """str: Optional description of the world."""
 
         self.trace = trace if trace else {}
-        """dict: A time series of world states, i.e. a dict of objects of type World_State with the keys being the timestamps."""
+        """dict: Time series of world states, i.e. a dict of objects of type :class:`World_State` with the keys being the timestamps."""
 
     def get_sorted_timestamps(self):
         """Return a sorted list of the timestamps.
 
-        :return: A sorted list of the timestamps.
+        :return: Sorted list of the timestamps.
         :rtype: list
         """
         return sorted(self.trace.keys())
 
     # *** data adders
+    # todo make to handle 3D as well, 2D points: len=2, 3D points: len=3, 2D bbs: len=4, 3D bbs: len=6
     def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values
 
-        :param obj_name: name of object
+        :param obj_name: Name of the object.
         :type obj_name: str
-        :param track:  List of values as [[x1, y1, w1, l1], [x2, y2, w2, l2], ...] or [[x1, y1], [x2, y2], ...].
-        :type track: list
+        :param track:  List of 2D points (len(o)=2) or 2D bounding boxes (len(o)=4). 3D points and bboxes not yet supported.
+        :type track: list or tuple of list(s) or tuple(s)
         :param t0: First timestamp to offset timestamps.
         :type t0: int or float
-        :param kwargs: Optional arguments.
-        :return:
+        :param kwargs: kwargs arguments.
         """
         object_state_series = []
         for t, v in enumerate(track):
@@ -224,13 +211,12 @@ class World_Trace(object):
         self.add_object_state_series(object_state_series)
 
     def add_object_state(self, object_state, timestamp=None):
-        """Add/Overwrite an Object_State object.
+        """Add/Overwrite an :class:`Object_State` object.
 
         :param object_state: The object state.
         :type object_state: Object_State
         :param timestamp: The timestamp where the object state is to be inserted, if not given it is added in the timestamp of the object state.
         :type timestamp: int or float
-        :return:
         """
         timestamp = float(timestamp) if timestamp else object_state.timestamp
         try:
@@ -242,9 +228,8 @@ class World_Trace(object):
     def add_object_state_series(self, object_states):
         """Add a series of object states.
 
-        :param object_states: The object states, i.e. a list of Object_State objects.
+        :param object_states: The object states, i.e. a list of :class:`Object_State` objects.
         :type object_states: list or tuple
-        :return:
         """
         for s in object_states:
             self.add_object_state(object_state=s)
@@ -253,9 +238,10 @@ class World_Trace(object):
     def get_last_state(self, copy_by_reference=False):
         """ Get the last world state.
 
-        :param copy_by_reference: Return by value or by reference.
+        :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
-        :return:
+        :return: The last state in `self.trace`.
+        :rtype: World_State
         """
         t = self.get_sorted_timestamps()[-1]
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
@@ -264,14 +250,14 @@ class World_Trace(object):
     def get_at_timestamp_range(self, start, finish=None, copy_by_reference=False, include_finish=True):
         """Return a subsample between start and finish timestamps.
 
-        :param start: The start timestamp.
+        :param start: Start timestamp.
         :type start: int or float
-        :param finish: The finish timestamp. If empty then finish is set to the last timestamp.
-        :param copy_by_reference: Return by value or by reference.
+        :param finish: Finish timestamp. If empty then finish is set to the last timestamp.
+        :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
         :param include_finish: Whether to include or not the world state at the finish timestamp.
         :type include_finish: bool
-        :return: A subsample between start and finish.
+        :return: Subsample between start and finish.
         :rtype: World_Trace
         """
         timestamps = self.get_sorted_timestamps()
@@ -296,11 +282,11 @@ class World_Trace(object):
     def get_for_objects(self, objects_names, copy_by_reference=False):
         """Return a subsample for requested objects.
 
-        :param objects_names: The requested objects names.
-        :type objects_names: list or tuple
-        :param copy_by_reference: Return by value or by reference.
+        :param objects_names: Requested objects names.
+        :type objects_names: list or tuple of str
+        :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
-        :return: A subsample for the requested objects.
+        :return: Subsample for the requested objects.
         :rtype: World_Trace
         """
         ret = World_Trace()
@@ -312,24 +298,30 @@ class World_Trace(object):
                     ret.add_object_state(copy.deepcopy(state.objects[oname]), t)
         return ret
 
+    # todo seems redundunt and overcomlicated, probably remove
     def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
                                            copy_by_reference=False, include_finish=True, time_slicing_first=True):
-        """Return a subsample for requested objects between start and finish timestamps.
+        """.. warning::
+            Planned for removal. Raises DeprecationWarning.
 
-        :param start: The start timestamp.
+        Return a subsample for requested objects between start and finish timestamps.
+
+        :param start: Start timestamp.
         :type start: int or float
-        :param finish: The finish timestamp.
+        :param finish: Finish timestamp.
         :type finish: bool
-        :param objects_names: The requested objects names.
-        :param copy_by_reference: Return by value or by reference.
+        :param objects_names: Requested objects names.
+        :type objects_names: list or tuple of str
+        :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
         :param include_finish: Whether to include or not the world state at the finish timestamp.
         :type include_finish: bool
         :param time_slicing_first: Perform time slicing first or object slicing, can be used to optimize the call.
         :type time_slicing_first: bool
-        :return: A subsample for the requested objects between start and finish timestamps.
+        :return: Subsample for the requested objects between start and finish timestamps.
         :rtype: World_Trace
         """
+        raise DeprecationWarning
         if time_slicing_first:
             ret = self.get_at_timestamp_range(start, finish, copy_by_reference, include_finish)
             ret = ret.get_for_objects(objects_names)
