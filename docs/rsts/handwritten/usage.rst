@@ -124,6 +124,8 @@ in QSRlib input format in the Section about the :ref:`io`.
         world.add_object_state_series(o1)
         world.add_object_state_series(o2)
 
+.. _mwe_request:
+
 Make a request to QSRlib
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -193,6 +195,8 @@ Advanced Topics
 I/O data structures
 ~~~~~~~~~~~~~~~~~~~
 
+.. _World_Trace:
+
 Input: `World_Trace`
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -219,8 +223,9 @@ object called ``world`` we would write:
     world.trace[4].objects['o1'].x
 
 .. note::
-    `World_Trace` should not be confused with the :ref:`QSRlib request message <req/res>`.
+    `World_Trace` should not be confused with the :ref:`QSRlib request message <req_msg>`.
 
+.. _World_QSR_Trace:
 
 Output: `World_QSR_Trace`
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -246,14 +251,40 @@ of a ``world_qsr`` object we would do:
 A number of convenience slicing functions exist in the :class:`class <qsrlib_io.world_qsr_trace.World_QSR_Trace>`.
 
 .. note::
-    `World_QSR_Trace` should not be confused with the :ref:`QSRlib response message <req/res>`.
+    `World_QSR_Trace` should not be confused with the :ref:`QSRlib response message <res_msg>`.
 
 
 
 .. _req/res:
 
-Request/Response
-~~~~~~~~~~~~~~~~
+Request/Response messages
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. _req_msg:
+
+Request message
+^^^^^^^^^^^^^^^
+Once we have our input data in the standard QSRlib input format, i.e. as a World_Trace_ object, the next step is
+to create a request message that is passed as argument in the QSRlib request call (as also explained in the
+:ref:`MWE example <mwe_request>`).
+
+The request message is an object of the class :class:`QSRlib_Request_Message <qsrlib.qsrlib.QSRlib_Request_Message>`.
+The compulsory arguments are `input_data` which is your `World_Trace` object that you created before and
+the `which_qsr` which is your requested QSR. If you want only one QSR to be computed it is a string, otherwise
+if you want to compute multiple QSRs in one call pass their names as a list. The optional argument `req_made_at`
+can be safely ignored. The second optional argument `dynamic_args` is in brief a dictionary with your call and QSR
+specific parameters. More about this argument can be found :ref:`later <dyn-args>`.
+
+.. _res_msg:
+
+Response message
+^^^^^^^^^^^^^^^^
+
+The response message of QSRlib is an object of the
+class :class:`QSRlib_Response_Message <qsrlib.qsrlib.QSRlib_Response_Message>`.
+The main field of it is the `qsrs` one that holds your computed QSRs as a World_QSR_Trace_ object.
+The remaining ones are simply timestamps of the process and can be safely ignored.
+
 
 .. _dyn-args:
 
