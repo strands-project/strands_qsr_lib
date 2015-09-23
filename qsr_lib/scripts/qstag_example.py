@@ -27,40 +27,40 @@ def pretty_print_world_qsr_trace(which_qsr, qsrlib_response_message):
 
 if __name__ == "__main__":
 
-    options = ["rcc2", "rcc3", "rcc8", "cardir", "qtcbs", "qtccs", "qtcbcs", "argd", "argprobd", "mos", "multiple"]
+    options = sorted(QSRlib().qsrs_registry.keys()) + ["multiple"]
+    multiple = options[:]; multiple.remove("multiple"); multiple.remove("argd"); multiple.remove("argprobd")
+    multiple.remove("ra"); multiple.remove("mwe");
 
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options, type=str, default='qtcbs')
     parser.add_argument("--ros", action="store_true", default=False, help="Use ROS eco-system")
-    #parser.add_argument("-i", "--input", help="file from which to read object states", type=str)
-    #parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true", default=False)
-    #parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float, default=0.01)
-    #parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true", default=True)
+
+    parser.add_argument("--validate", help="validate state chain. Only QTC", action="store_true", default=False)
+    parser.add_argument("--quantisation_factor", help="quantisation factor for 0-states in qtc, or 's'-states in mos", type=float, default=0.01)
+    parser.add_argument("--no_collapse", help="does not collapse similar adjacent states. Only QTC", action="store_true", default=True)
     #parser.add_argument("--distance_threshold", help="distance threshold for qtcb <-> qtcc transition. Only QTCBC", type=float)
-    #parser.add_argument("-c", "--config", help="config file", type=str)
 
     args = parser.parse_args()
-    args.validate = False
-    args.quantisation_factor = 0.01
-    args.no_collapse = True
-
     args.distance_threshold = {"touch":1, "near":3, "medium":5, "far":10}
 
     qtcbs_qsrs_for = [("o1", "o2"),("o1", "o3")]
     argd_qsrs_for = [("o1", "o2")]
-    mos_qsrs_for = [("o1"), ("o2")]
+    mos_qsrs_for = ["o1", "o2"]
 
     object_types = {"o1": "Human",
                     "o2": "Chair"}
 
     if args.qsr in options:
-        which_qsr = args.qsr
+        if args.qsr != "multiple":
+            which_qsr = args.qsr
+        else:
+            which_qsr = multiple
+    elif args.qsr == "hardcoded":
+        which_qsr = ["qtcbs", "argd", "mos"]
     else:
         raise ValueError("qsr not found, keywords: %s" % options)
 
     world = World_Trace()
-
-    which_qsr = ["qtcbs", "argd", "mos"]
 
     dynamic_args = {"qtcbs": {"quantisation_factor": args.quantisation_factor,
                               "validate": args.validate,

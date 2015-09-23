@@ -6,9 +6,11 @@ from __future__ import print_function
 import copy
 
 def compute_episodes(world_qsr):
-    """
-    Compute a long list of episodes with the format [(objects), {spatial relations}, (start, end)]
-    """
+    """Compute a long list of episodes with the format:
+       [(objects), {spatial relations}, (start_frame, end_frame)]
+
+       .. seealso:: For further details about QSR Episodes, refer to its :doc:`description. <../handwritten/qstag/>`
+       """
     episodes  = []
     obj_based_qsr_world = {}
     frames = world_qsr.get_sorted_timestamps()

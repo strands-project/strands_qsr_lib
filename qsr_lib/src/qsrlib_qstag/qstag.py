@@ -36,23 +36,44 @@ class Activity_Graph():
 
     #Protect the variables that are not needed from the outside
     def __init__(self, world, world_qsr, object_types={}):
+        """Constructor.
 
+        :param world: The World Trace object
+        :type world: :class:`World_Trace <qsrlib_io.world_trace>`
+        :param world_qsr: The QSR_World_Trace object (QSRlib_Response_Message)
+        :type world_qsr: :class:`World_QSR_Trace <qsrlib_io.world_qsr_trace>`
+        :param object_types: dictionary of object name to a generic object type
+        :type object_types: dict
+        """
 
         self.__episodes = compute_episodes(world_qsr)
+        """list: The list of QSR Episodes used to generate the QSTAG."""
         self.__spatial_obj_edges  = []
+        """list: A list of edges connecting the spatial nodes to the object nodes."""
         self.__temp_spatial_edges = []
-
+        """list: A list of edges connecting the spatial nodes to the temporal nodes."""
         self.__object_types = self.get_objects_types(object_types, world)
+        """dict: A dictionary containing the object names, and the generic object typese."""
         self.graph = self.get_activity_graph(self.__episodes)
-
+        """igraph.Graph: An igraph graph object containing all the object, spatial and temporal nodes."""
 
     @property
     def episodes(self):
+        """Getter.
+
+        :return: `self.__episodes`
+        :rtype: list
+        """
         return self.__episodes
 
 
     @property
     def abstract_graph(self):
+        """Getter.
+
+        :return: `self.abstract_graph`
+        :rtype: igraph.Graph
+        """
         #abstract_graph = Graph.copy(self.graph)
         abstract_graph = self
 
@@ -70,6 +91,11 @@ class Activity_Graph():
 
     @property
     def object_nodes(self):
+        """Getter.
+
+        :return: `object_nodes`
+        :rtype: list
+        """
         # Get object nodes from graph
         object_nodes = []
         for node in self.graph.vs():
@@ -79,6 +105,11 @@ class Activity_Graph():
 
     @property
     def abstract_object_nodes(self):
+        """Getter.
+
+        :return: `object_nodes` from abstract_graph
+        :rtype: list
+        """
         # Get object nodes from abstract graph
         object_nodes = []
         for node in self.abstract_graph.vs():
@@ -88,6 +119,11 @@ class Activity_Graph():
 
     @property
     def spatial_nodes(self):
+        """Getter.
+
+        :return: `spatial_nodes`
+        :rtype: list
+        """
         # Get spatial relation nodes from graph
         spatial_nodes = []
         for node in self.graph.vs():
@@ -97,6 +133,11 @@ class Activity_Graph():
 
     @property
     def temporal_nodes(self):
+        """Getter.
+
+        :return: `temporal_nodes`
+        :rtype: list
+        """
         # Get temporal relation nodes from graph
         temporal_nodes = []
         for node in self.graph.vs():
@@ -105,6 +146,17 @@ class Activity_Graph():
         return temporal_nodes
 
     def get_objects_types(self, objects_types, world):
+        """Generates a dictionary of object name and object type pairs
+        Using both the dynamic_args dictionary where key = `objects_types`, and the
+        **kwargs value [object_type] in the World Trace object
+
+        :param objects_types: Uses the dynamic_args dictionary  where key = `objects_types` if provided
+        :type objects_types: dictionary
+        :param world: Otherwise, looks at the **kwargs value [object_type] in the World Trace object
+        :type world: :class:`World_Trace <qsrlib_io.world_trace>`
+        :return: A dictionary with the object name as keys and the generic object type as value.
+        :rtype: dict
+        """
         for t, state in world.trace.items():
             for oname, odata in state.objects.items():
                 if oname not in objects_types:
@@ -115,8 +167,15 @@ class Activity_Graph():
         return objects_types
 
     def get_E_set(self, objects, spatial_data):
-        """returns the Starting episode set (E_s) and the Endding episode set (E_s)
+        """Returns the Starting episode set (E_s) and the Endding episode set (E_s)
         See Sridar_AAAI_2010 for more details
+
+        :param objects: object dictionary with name as key, and node ID as value
+        :type objects: dictionary
+        :param spatial_data: A list of tuples, where a tuple contains a list of objects, a spatial relation node ID, and a duration of time.
+        :type spatial_data: list
+        :return: A tuple containing two sets of QSR Episodes, where a temporal node does not hold beteen Episodes in the same set.
+        :rtype: tuple
         """
         objects_ids = objects.values()
         start, end = {}, {}
@@ -145,10 +204,13 @@ class Activity_Graph():
 
 
     def get_activity_graph(self, episodes):
-        """
-        Generates the qstag for a set of input episode QSRs.
-        """
+        """Generates the qstag for a set of input episode QSRs.
 
+        :param episodes: list of QSR Epiosdes generated using `compute_episodes(world_qsr)``
+        :type episodes: list
+        :return: igraph.Graph: An igraph graph object containing all the object, spatial and temporal nodes.
+        :rtype: igraph.Graph
+        """
 
         temporal_map = {'after': 'before',
                         'metby' : 'meets',
@@ -280,6 +342,12 @@ class Activity_Graph():
 
 
     def graph2dot(self, out_dot_file):
+        """To visualize the iGraph graph, this prints a dot file to the file location given
+
+        :param out_dot_file: file location to save the dot file
+        :type out_dot_file: string
+        """
+
         # Write the graph to dot file
         # Can generate a graph figure from this .dot file using the 'dot' command
         # dot -Tpng input.dot -o output.png
@@ -328,6 +396,13 @@ class Activity_Graph():
 
 
 def get_allen_relation(duration1, duration2):
+    """Generates an Allen interval algebra relation between two discrete durations of time
+
+    :param duration1: First duration of time (start_frame, end_frame)
+    :type duration1: tuple
+    :param duration2: Second duration of time (start_frame, end_frame)
+    :type duration2: tuple
+    """
 
     is1, ie1 = duration1
     is2, ie2 = duration2
