@@ -58,6 +58,7 @@ target/
 .idea/
 
 *~
+*.DS_Store*
 
 # DOC
 qsr_lib/docs/_build/

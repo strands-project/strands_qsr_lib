@@ -27,7 +27,12 @@ class ROSClient(object):
         """
         assert(issubclass(req.__class__, HMMRepRequestAbstractclass))
         s = rospy.ServiceProxy(self.services[req.__class__],QSRProbRep)
-        res = s(QSRProbRepRequest(qsr_type=req.kwargs.pop("qsr_type"), data=json.dumps(req.kwargs)))
+        try:
+            s.wait_for_service(timeout=10.)
+            res = s(QSRProbRepRequest(qsr_type=req.kwargs.pop("qsr_type"), data=json.dumps(req.kwargs)))
+        except (rospy.ROSException, rospy.ROSInterruptException, rospy.ServiceException) as e:
+            rospy.logerr(e)
+            return None
         try:
             data = json.loads(res.data)
         except ValueError:
