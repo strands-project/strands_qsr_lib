@@ -88,7 +88,7 @@ if __name__ == "__main__":
 
     #### dyadic (except argd and argprobd, see below for these two
     # dynamic_args = {"for_all_qsrs": {"qsrs_for": [("o2", "o1")]}}  # qsrs_for_global_namespace
-    # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
+    dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")]}}  # qsrs_for_qsr_namespace, qsrs_for_qsr_namespace_over_global_namespace
     # dynamic_args = {args.qsr: {"qsrs_for": [("o1", "o2")], "quantisation_factor": 2.0}}  # custom
 
     #### qtcs special case
