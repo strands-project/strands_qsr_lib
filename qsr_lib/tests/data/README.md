@@ -8,3 +8,23 @@ and random float width and length (`random.randint(3, 6)`) (i.e. bounding boxes 
  but no width and length are given (i.e. no bounding boxes are provided).
 * `data4.csv`: A set of 10K random float 2D-points (`random.uniform(0, 50)`) for 3 objects ("o1", "o2", "o3")
 and random float width and length (`random.randint(3, 6)`) (i.e. bounding boxes are provided).
+
+### Running the tests
+
+```bash
+rosrun qsr_lib unittests_generate_ground_truth.py -i <world name> -o <output filename> <qsr>
+```
+
+E.g.
+```bash
+rosrun qsr_lib unittests_generate_ground_truth.py -i data1 -o qsr_lib/tests/data/data1_rcc4_defaults.txt rcc4
+```
+
+`-i` options: data1 | data2 | data3 | data4
+
+#### Types of generated data
+
+* Defaults. E.g.
+```bash
+rosrun qsr_lib unittests_generate_ground_truth.py -i data1 -o qsr_lib/tests/data/data1_rcc4_defaults.txt rcc4
+```
