@@ -69,7 +69,7 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
 
-    elif which_qsr == "rcc8":
+    elif which_qsr == "rcc8" or which_qsr == "rcc5":
         # dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.),

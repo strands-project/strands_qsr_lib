@@ -1,5 +1,6 @@
 from qsr_rcc2 import QSR_RCC2
 from qsr_rcc3_rectangle_bounding_boxes_2d import QSR_RCC3_Rectangle_Bounding_Boxes_2D
+from qsr_rcc5 import QSR_RCC5
 from qsr_rcc8 import QSR_RCC8
 from qsr_cardinal_direction import QSR_Cardinal_Direction
 from qsr_qtc_b_simplified import QSR_QTC_B_Simplified
@@ -14,6 +15,7 @@ from qsr_ra import QSR_RA
 # register new qsrs by class name below
 qsrs_registry = (QSR_RCC2,
                  QSR_RCC3_Rectangle_Bounding_Boxes_2D,
+                 QSR_RCC5,
                  QSR_RCC8,
                  QSR_Cardinal_Direction,
                  QSR_QTC_B_Simplified,
