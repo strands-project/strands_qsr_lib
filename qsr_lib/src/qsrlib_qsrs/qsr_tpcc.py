@@ -71,8 +71,10 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
     .. seealso:: For further details about TPCC, see http://www.sfbtr8.spatial-cognition.de/project/r3/QualitativeCalculi/TPCC/index.html.
     """
     _unique_id = "tpcc"
-    _all_possible_relations = ("dlf,dfl,dsl,dbl,dlb,dsb,drb,dbr,dsr,dfr,drf,dsf,"
-                               "clf,cfl,csl,cbl,clb,csb,crb,cbr,csr,cfr,crf,csf,sam").split(",")
+    _all_possible_relations = ('dlf', 'dfl', 'dsl', 'dbl', 'dlb', 'dsb', 'drb', 'dbr',
+                               'dsr', 'dfr', 'drf', 'dsf', 'clf', 'cfl', 'csl', 'cbl',
+                               'clb', 'csb', 'crb', 'cbr', 'csr', 'cfr', 'crf', 'csf',
+                               'sam')
     _dtype = "points"
 
     def __init__(self):
