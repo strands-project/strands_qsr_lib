@@ -14,6 +14,7 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
                                'sam')
     _dtype = "points"
     __partition_names = ['bl','lb','lf','fl','fr','rf','rb','br']
+    __partition_size = 2 * math.pi / len(__partition_names)
 
     def __init__(self):
         """Constructor."""
@@ -28,7 +29,7 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
         relation = "d" if object_distance > base_distance else "c" # is it far or close: first letter
         
         angle = self._relative_angle(origin, relatum, objct)
-        partition = int(angle / 8) #TODO: the "*s*" relations
+        partition =   int(angle / self.__partition_size) #TODO: the "*s*" relations
         relation += self.__partition_names[partition]
         
         return relation
