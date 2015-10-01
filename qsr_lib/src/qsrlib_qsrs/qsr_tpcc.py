@@ -22,7 +22,7 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
     def _compute_qsr(self, origin, relatum, objct, qsr_params, **kwargs):
         base_distance = math.sqrt((origin.x-relatum.x)**2 + (origin.y-relatum.y)**2)
         object_distance  = math.sqrt((objct.x-relatum.x)**2 + (objct.y-relatum.y)**2)
-        if base_distance == object_distance:
+        if object_distance == 0:
             return "sam"
         
         relation = "d" if object_distance > base_distance else "c" # is it far or close: first letter
