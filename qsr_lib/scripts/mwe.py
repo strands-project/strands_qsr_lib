@@ -37,24 +37,18 @@ if __name__ == "__main__":
     # ****************************************************************************************************
     # make some input data
     world = World_Trace()
-    if which_qsr == "tpcc":
-        # Then we need three objects to do a test...
-        # Don't bother with more than one timestamp.
-        o1 = [Object_State(name="o1", timestamp=0, x=2., y=4., xsize=5., ysize=8.)]
-        o2 = [Object_State(name="o2", timestamp=0, x=6., y=5., xsize=5., ysize=8.)]
-        o3 = [Object_State(name="o3", timestamp=0, x=5., y=2., xsize=5.2, ysize=8.5)]
+    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
 
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
-        world.add_object_state_series(o3)
-    else:
-        o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
-              Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
+    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
 
-        o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
-              Object_State(name="o2", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
-        world.add_object_state_series(o1)
-        world.add_object_state_series(o2)
+    o3 = [Object_State(name="o3", timestamp=0, x=5., y=2., xsize=5.2, ysize=8.5),
+          Object_State(name="o3", timestamp=1, x=6., y=4., xsize=5.2, ysize=8.5)]
+
+    world.add_object_state_series(o1)
+    world.add_object_state_series(o2)
+    world.add_object_state_series(o3)
 
     # ****************************************************************************************************
     # make a QSRlib request message
