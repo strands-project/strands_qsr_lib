@@ -13,7 +13,7 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
                                'clb', 'csb', 'crb', 'cbr', 'csr', 'cfr', 'crf', 'csf',
                                'sam')
     _dtype = "points"
-    __partition_names = ['bl','lb','lf','fl','fr','rf','rb','br']
+    __partition_names = ['lb','bl','fl','lf','rf','fr','br','rb']
     __partition_size = 2 * math.pi / len(__partition_names)
 
     def __init__(self):
@@ -29,8 +29,12 @@ class QSR_TPCC(QSR_Triadic_1t_Abstractclass):
         relation = "d" if object_distance > base_distance else "c" # is it far or close: first letter
         
         angle = self._relative_angle(origin, relatum, objct)
-        partition =   int(angle / self.__partition_size) #TODO: the "*s*" relations
+        partition =   int(angle / self.__partition_size) 
         relation += self.__partition_names[partition]
+
+        sin_angle = math.fabs(math.sin(angle))
+        if sin_angle < 0.00001 or sin_angle > 0.99999:
+            relation = relation[0]+'s'+relation[2]
         
         return relation
 
