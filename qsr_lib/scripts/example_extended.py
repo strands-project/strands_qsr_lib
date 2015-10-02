@@ -326,9 +326,6 @@ if __name__ == "__main__":
     # print(dynamic_args["for_all_qsrs"]["qsrs_for"])
     # # DBG: eof
 
-    # dynamic_args[which_qsr]["qsrs_for"] = [("o1", "o2", "o3"), ("o1", "o3")]
-    dynamic_args = {"tpcc": {"qsrs_for":  [("o1", "o2", "o3"), ("o1", "o3")]}}
-
     qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
     if args.ros:
