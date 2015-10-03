@@ -39,3 +39,9 @@ def possible_pairs_between_two_lists(s1, s2, mirrors=True):
     """
     s1, s2 = set(s1), set(s2)
     return list(itertools.product(s1, s2)) + list(itertools.product(s2, s1)) if mirrors else list(itertools.product(s1, s2))
+
+def possible_triplets(s, mirrors=True):
+    """
+    Return the possible triplets from the list s.
+    """
+    return list(itertools.permutations(set(s), 3)) if mirrors else list(itertools.combinations(set(s), 3))

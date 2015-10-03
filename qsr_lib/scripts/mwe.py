@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # ****************************************************************************************************
     # parse command line arguments
     options = sorted(qsrlib.qsrs_registry.keys())
+    print(options)
     parser = argparse.ArgumentParser()
     parser.add_argument("qsr", help="choose qsr: %s" % options, type=str)
     args = parser.parse_args()
@@ -37,17 +38,30 @@ if __name__ == "__main__":
     # ****************************************************************************************************
     # make some input data
     world = World_Trace()
-    o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
-          Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
+    o1 = [Object_State(name="o1", timestamp=0, x=1., y=10., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=1, x=1., y=10., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=2, x=3., y=1., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=3, x=6., y=1., xsize=5., ysize=8.),
+          Object_State(name="o1", timestamp=4, x=6., y=1., xsize=5., ysize=8.)]
+    o2 = [Object_State(name="o2", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=1, x=2., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=2, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=3, x=1., y=1., xsize=5., ysize=8.),
+          Object_State(name="o2", timestamp=4, x=1., y=2., xsize=5., ysize=8.)]
+    o3 = [Object_State(name="o3", timestamp=0, x=5., y=2., xsize=5.2, ysize=8.5),
+          Object_State(name="o3", timestamp=1, x=6., y=4., xsize=5.2, ysize=8.5),
+          Object_State(name="o3", timestamp=2, x=2., y=4., xsize=5.2, ysize=8.5),
+          Object_State(name="o3", timestamp=3, x=1., y=4., xsize=5.2, ysize=8.5),
+          Object_State(name="o3", timestamp=4, x=0., y=4., xsize=5.2, ysize=8.5)]
 
-    o2 = [Object_State(name="o2", timestamp=0, x=11., y=1., xsize=5., ysize=8.),
-          Object_State(name="o2", timestamp=1, x=1., y=2., xsize=5., ysize=8.)]
     world.add_object_state_series(o1)
     world.add_object_state_series(o2)
+    world.add_object_state_series(o3)
 
     # ****************************************************************************************************
+    dynammic_args = {"qsr_relations_and_values" : {"Touch": 0.5, "Near": 1, "Far": 3}}
     # make a QSRlib request message
-    qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world)
+    qsrlib_request_message = QSRlib_Request_Message(which_qsr, world, dynammic_args["qsr_relations_and_values"])
     # request your QSRs
     qsrlib_response_message = qsrlib.request_qsrs(req_msg=qsrlib_request_message)
 

@@ -69,7 +69,18 @@ if __name__ == "__main__":
         world.add_object_state_series(o2)
         world.add_object_state_series(o3)
 
-    elif which_qsr == "rcc8":
+    elif which_qsr == "tpcc":
+        # Then we need three objects to do a test...
+        # Don't bother with more than one timestamp.
+        o1 = [Object_State(name="o1", timestamp=0, x=0., y=0., xsize=5., ysize=8.)]
+        o2 = [Object_State(name="o2", timestamp=0, x=5., y=0., xsize=5., ysize=8.)]
+        o3 = [Object_State(name="o3", timestamp=0, x=5., y=0., xsize=5., ysize=8.)]
+
+        world.add_object_state_series(o1)
+        world.add_object_state_series(o2)
+        world.add_object_state_series(o3)
+
+    elif which_qsr == "rcc8" or which_qsr == "rcc5":
         # dynamic_args = {which_qsr: {"quantisation_factor": args.quantisation_factor}}
         o1 = [Object_State(name="o1", timestamp=0, x=1., y=1., xsize=5., ysize=8.),
               Object_State(name="o1", timestamp=1, x=1., y=2., xsize=5., ysize=8.),
