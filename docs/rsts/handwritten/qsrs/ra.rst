@@ -1,7 +1,7 @@
 Regional Algebra
 ================
 
-The Regional Algebra ...
+The *Regional Algebra* (RA) ...
 
 Relations
 ---------
