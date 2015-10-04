@@ -4,19 +4,18 @@
    contain the root `toctree` directive.
 
 
-==================================
-Welcome to QSRlib's documentation!
-==================================
+=============
+QSRlib's docs
+=============
 
 QSRlib is a library that allows computation of Qualitative Spatial Relations,
 as well as a development framework for rapid implementation of new QSRs.
 
-Contents:
-
 .. toctree::
+   :hidden:
    :maxdepth: 1
 
-   rsts/handwritten/authors
+   rsts/handwritten/contribs
    rsts/handwritten/install
    rsts/handwritten/usage
    rsts/handwritten/qsrs/qsrs

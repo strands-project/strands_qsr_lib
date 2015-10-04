@@ -4,8 +4,15 @@ from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 
 
 class QSR_RCC4(QSR_RCC_Abstractclass):
-    """Computes symmetrical RCC4 relations"""
+    """Symmetrical RCC4 relations.
 
+    Values of the abstract properties
+        * **_unique_id** = "rcc4"
+        * **_all_possible_relations** = ("dc", "po", "pp", "ppi")
+        * **_dtype** = "bounding_boxes_2d"
+
+    .. seealso:: For further details about RCC4, refer to its :doc:`description. <../handwritten/qsrs/rcc4>`
+    """
     _unique_id = "rcc4"
 
     _all_possible_relations = ("dc", "po", "pp", "ppi")

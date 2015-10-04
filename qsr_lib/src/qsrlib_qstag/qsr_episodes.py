@@ -7,9 +7,9 @@ import copy
 
 def compute_episodes(world_qsr):
     """Compute a long list of episodes with the format:
-       [(objects), {spatial relations}, (start_frame, end_frame)]
+       `[(objects), {spatial relations}, (start_frame, end_frame)]`.
 
-       .. seealso:: For further details about QSR Episodes, refer to its :doc:`description. <../handwritten/qstag/>`
+       .. seealso:: For further details about QSR Episodes, refer to its :doc:`description. <../handwritten/qsrs/qstag/>`
        """
     episodes  = []
     obj_based_qsr_world = {}

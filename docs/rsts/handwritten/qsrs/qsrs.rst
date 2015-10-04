@@ -2,6 +2,7 @@ Supported QSRs
 ==============
 
 .. toctree::
+    :titlesonly:
     :hidden:
 
     argd
@@ -12,10 +13,13 @@ Supported QSRs
     qtcbs
     qtccs
     qtcbcs
+    ra
     rcc2
+    rcc3
     rcc4
     rcc5
     rcc8
+    tpcc
 
 
 Currently, the following QSRs are supported:
@@ -39,7 +43,11 @@ Currently, the following QSRs are supported:
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **qtcbcs**     | Qualitative Trajectory Calculus *bc* Simplified   | :doc:`descr. <qtcbcs>` \| :mod:`api <qsrlib_qsrs.qsr_qtc_bc_simplified>`                                | ?              |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
+| **ra**         | Regional Algebra                                  | :doc:`descr. <ra>` \| :mod:`api <qsrlib_qsrs.qsr_ra>`                                                   | ?              |
++----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **rcc2**       | Region Connection Calculus 2                      | :doc:`descr. <rcc2>` \| :mod:`api <qsrlib_qsrs.qsr_rcc2>`                                               | [2]_ [3]_      |
++----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
+| **rcc3**       | Region Connection Calculus 3                      | :doc:`descr. <rcc3>` \| :mod:`api <qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d>`                   | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **rcc4**       | Region Connection Calculus 4                      | :doc:`descr. <rcc4>` \| :mod:`api <qsrlib_qsrs.qsr_rcc4>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
@@ -47,7 +55,24 @@ Currently, the following QSRs are supported:
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 | **rcc8**       | Region Connection Calculus 8                      | :doc:`descr. <rcc8>` \| :mod:`api <qsrlib_qsrs.qsr_rcc8>`                                               | [2]_ [3]_      |
 +----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
+| **tpcc**       | Ternary Point Configuration Calculus              | :doc:`descr. <tpcc>` \| :mod:`api <qsrlib_qsrs.qsr_tpcc>`                                               | [4]_           |
++----------------+---------------------------------------------------+---------------------------------------------------------------------------------------------------------+----------------+
 
+
+Special Topics
+--------------
+
+.. toctree::
+    :titlesonly:
+    :hidden:
+
+    qstag
+
+**Qualitative Spatio-Temporal Activity Graphs**
+
+QSRlib provides also functionalities to represent time-series QSRs as a graph structure,
+called *Qualitative Spatio-Temporal Activity Graphs* (QSTAG).
+For details, please refer to its :doc:`documentation <qstag>`.
 
 
 References
@@ -56,3 +81,4 @@ References
 .. [1] Andrew, U. F. "Qualitative spatial reasoning about cardinal directions." Proc. of the 7th Austrian Conf. on Artificial Intelligence. Baltimore: Morgan Kaufmann. 1991.
 .. [2] Randell, D. A., Cui, Z. and Cohn, A. G.: A spatial logic based on regions and connection, Proc. 3rd Int. Conf. on Knowledge Representation and Reasoning, Morgan Kaufmann, San Mateo, pp. 165–176, 1992. `(link) <http://wenxion.net/ac/randell92spatial.pdf>`_
 .. [3] Anthony G. Cohn, Brandon Bennett, John Gooday, Micholas Mark Gotts: Qualitative Spatial Representation and Reasoning with the Region Connection Calculus. GeoInformatica, 1, 275–316, 1997.
+.. [4] Introduction to the Ternary Point Configuration Calculus (TPCC) http://www.sfbtr8.spatial-cognition.de/project/r3/QualitativeCalculi/TPCC/index.html

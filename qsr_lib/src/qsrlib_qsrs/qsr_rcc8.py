@@ -4,7 +4,7 @@ from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 
 
 class QSR_RCC8(QSR_RCC_Abstractclass):
-    """RCC8 relations.
+    """Symmetrical RCC5 relations.
 
     Values of the abstract properties
         * **_unique_id** = "rcc8"
