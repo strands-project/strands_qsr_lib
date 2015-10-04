@@ -43,7 +43,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         :param data2: Object data at second timestamp.
         :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :return: `data1`, `data2`
-        :rtype: :class:`Object_State <qsrlib_io.world_trace.Object_State>`, :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :rtype: two :class:`Object_State <qsrlib_io.world_trace.Object_State>` objects
         """
         return data1, data2
 
@@ -55,7 +55,7 @@ class QSR_Monadic_Abstractclass(QSR_Abstractclass):
         :param data2: Object data at second timestamp.
         :type data2: qsrlib_io.world_trace.Object_State
         :return: `bbox1`, `bbox2`
-        :rtype: list of floats, list of floats
+        :rtype: two lists of floats
         """
         raise data1.return_bounding_box_2d(), data2.return_bounding_box_2d()
 

@@ -47,7 +47,7 @@ class QSR_Triadic_Abstractclass(QSR_Abstractclass):
         :param data3: Third object data.
         :type data3: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :return: `data1`, `data2`, `data3`
-        :rtype: qsrlib_io.world_trace.Object_State, qsrlib_io.world_trace.Object_State
+        :rtype: three :class:`Object_State <qsrlib_io.world_trace.Object_State>` objects
         """
         return data1, data2, data3
 
@@ -61,7 +61,7 @@ class QSR_Triadic_Abstractclass(QSR_Abstractclass):
         :param data3: Third object data.
         :type data3: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
         :return: `bbox1`, `bbox2`, `bbox3`
-        :rtype: list of floats, list of floats
+        :rtype: three lists of floats
         """
         return data1.return_bounding_box_2d(), data2.return_bounding_box_2d(), data3.return_bounding_box_2d()
 

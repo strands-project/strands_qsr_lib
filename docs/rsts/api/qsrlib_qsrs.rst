@@ -19,12 +19,15 @@ Submodules
    qsrlib_qsrs.qsr_qtc_bc_simplified
    qsrlib_qsrs.qsr_qtc_c_simplified
    qsrlib_qsrs.qsr_qtc_simplified_abstractclass
+   qsrlib_qsrs.qsr_ra
    qsrlib_qsrs.qsr_rcc2
    qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d
    qsrlib_qsrs.qsr_rcc4
    qsrlib_qsrs.qsr_rcc5
    qsrlib_qsrs.qsr_rcc8
    qsrlib_qsrs.qsr_rcc_abstractclass
+   qsrlib_qsrs.qsr_tpcc
+   qsrlib_qsrs.qsr_triadic_abstractclass
 
 Module contents
 ---------------

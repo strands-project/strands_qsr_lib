@@ -291,6 +291,17 @@ The remaining ones are simply timestamps of the process and can be safely ignore
 QSR parameters & `dynamic_args`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+To be written.
+
+.. _qstag:
+
+Graph Representation
+~~~~~~~~~~~~~~~~~~~~
+
+QSRlib provides also functionalities to represent time-series QSRs as a graph structure,
+called *Qualitative Spatio-Temporal Activity Graphs* (QSTAG).
+For details, please refer to its :doc:`documentation <qsrs/qstag>`.
+
 .. _ros:
 
 ROS calls

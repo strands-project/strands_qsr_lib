@@ -4,7 +4,7 @@ from qsrlib_qsrs.qsr_rcc_abstractclass import QSR_RCC_Abstractclass
 
 
 class QSR_RCC2(QSR_RCC_Abstractclass):
-    """RCC2 relations.
+    """Symmetrical RCC2 relations.
 
     Values of the abstract properties
         * **_unique_id** = "rcc2"

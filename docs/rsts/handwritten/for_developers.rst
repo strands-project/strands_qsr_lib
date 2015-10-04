@@ -68,8 +68,9 @@ Then you need to write one function that computes the QSR.
 .. note::
     There are different types of parent classes that you
     can inherit from. You can see them in the
-    :mod:`qsr_monadic_abstractclass.py <qsrlib_qsrs.qsr_monadic_abstractclass>` and
-    :mod:`qsr_dyadic_abstractclass.py <qsrlib_qsrs.qsr_dyadic_abstractclass>`
+    :mod:`qsr_monadic_abstractclass.py <qsrlib_qsrs.qsr_monadic_abstractclass>`,
+    :mod:`qsr_dyadic_abstractclass.py <qsrlib_qsrs.qsr_dyadic_abstractclass>`, and,
+    :mod:`qsr_triadic_abstractclass.py <qsrlib_qsrs.qsr_triadic_abstractclass>`
     module files.
 
     If one of the "special case" classes like in this example the

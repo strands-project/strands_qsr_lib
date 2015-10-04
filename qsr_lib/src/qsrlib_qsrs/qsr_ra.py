@@ -12,7 +12,7 @@ class QSR_RA(QSR_Dyadic_1t_Abstractclass):
         * _all_possible_relations: ("<", ">", "m", "mi", "o", "oi", "s", "si", "d", "di", "f", "fi", "=")
         * _dtype: "bounding_boxes"
 
-    Some explanation about the QSR. Maybe a reference if it exists.
+    .. seealso:: For further details about RA, refer to its :doc:`description. <../handwritten/qsrs/ra>`
     """
 
     _unique_id = "ra"
