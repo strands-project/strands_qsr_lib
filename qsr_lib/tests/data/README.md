@@ -8,6 +8,9 @@ and random float width and length (`random.randint(3, 6)`) (i.e. bounding boxes 
  but no width and length are given (i.e. no bounding boxes are provided).
 * `data4.csv`: A set of 10K random float 2D-points (`random.uniform(0, 50)`) for 3 objects ("o1", "o2", "o3")
 and random float width and length (`random.randint(3, 6)`) (i.e. bounding boxes are provided).
+* `data2_first100.csv`: First 100 instances of data2.
+* `data3_first100.csv`: First 100 instances of data3.
+* `data4_first100.csv`: First 100 instances of data4.
 
 ### Running the tests
 

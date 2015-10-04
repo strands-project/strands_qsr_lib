@@ -27,7 +27,10 @@ if __name__ == "__main__":
     load_by_world_name = {"data1": load_input_data1,
                           "data2": load_input_data2,
                           "data3": load_input_data3,
-                          "data4": load_input_data4}
+                          "data4": load_input_data4,
+                          "data2_first100": load_input_data2_first100,
+                          "data3_first100": load_input_data3_first100,
+                          "data4_first100": load_input_data4_first100}
 
     # ****************************************************************************************************
     # create a QSRlib object if there isn't one already
@@ -122,18 +125,20 @@ if __name__ == "__main__":
 
     #### multiple
     # qsrs_for_global_namespace
-    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o2", "o1"), "o2"]}
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o3", "o2", "o1"), ("o2", "o1"), "o2"]}
     # qsrs_for_qsr_namespace - cherry pick
     # dynamic_args["rcc2"] = {"qsrs_for": [("o1", "o2")]}
     # dynamic_args["qtcbs"]["qsrs_for"] = [("o1", "o2")]
     # dynamic_args["mwe"] = {"qsrs_for": [("o1", "o2")]}
     # dynamic_args["mos"] = {"qsrs_for": ["o1"]}
+    # dynamic_args["tpcc"] = {"qsrs_for": [("o1", "o2", "o3")]}
     # qsrs_for_qsr_namespace_over_global - cherry pick
-    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o2", "o1"), "o2"]}
+    # dynamic_args["for_all_qsrs"] = {"qsrs_for": [("o3", "o2", "o1"), ("o2", "o1"), "o2"]}
     # dynamic_args["rcc2"] = {"qsrs_for": [("o1", "o2")]}
     # dynamic_args["qtcbs"]["qsrs_for"] = [("o1", "o2")]
     # dynamic_args["mwe"] = {"qsrs_for": [("o1", "o2")]}
     # dynamic_args["mos"] = {"qsrs_for": ["o1"]}
+    # dynamic_args["tpcc"] = {"qsrs_for": [("o1", "o2", "o3")]}
 
     print("> Computing QSRs", which_qsr, dynamic_args)
     qsrlib_request_message = QSRlib_Request_Message(which_qsr, world, dynamic_args)
@@ -158,9 +163,9 @@ if __name__ == "__main__":
     if qsrs_list != qsrs_list_r:
         raise RuntimeError("file written does not match the data, this should not have happened")
 
-    # q-factor makes a difference
-    foo = unittest_read_qsrs_as_one_long_list(args.output)
-    filename = os.path.join(os.path.split(args.output)[0], "_".join([args.input, which_qsr, "defaults"]) + ".txt")  # quantisation_factor
-    # filename = os.path.join(os.path.split(args.output)[0], "_".join(["data1", which_qsr, "qsrs_for_qsr_namespace"]) + ".txt")  # custom
-    bar = unittest_read_qsrs_as_one_long_list(filename)
-    print(foo == bar)
+    # # q-factor makes a difference
+    # foo = unittest_read_qsrs_as_one_long_list(args.output)
+    # filename = os.path.join(os.path.split(args.output)[0], "_".join([args.input, which_qsr, "defaults"]) + ".txt")  # quantisation_factor
+    # # filename = os.path.join(os.path.split(args.output)[0], "_".join(["data1", which_qsr, "qsrs_for_qsr_namespace"]) + ".txt")  # custom
+    # bar = unittest_read_qsrs_as_one_long_list(filename)
+    # print(foo == bar)
