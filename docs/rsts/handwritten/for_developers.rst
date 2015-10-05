@@ -116,4 +116,38 @@ Advanced Topics
 
 QSR specific parameters
 ~~~~~~~~~~~~~~~~~~~~~~~
-To be written.
+
+It is possible to change the behavior of a QSR via passing dynamically during the request call argument parameters in
+one of its fields that is called `dynamic_args`. It is recommended to read first the documentation on how it is used in
+:ref:`this page <dynamic_args>`.
+
+In order use QSR specific parameters you will have to overwrite the method
+``_process_qsr_parameters_from_request_parameters(self, req_params, **kwargs)`` in your QSR implementation.
+
+Below is an example on how to do it from
+:class:`MOS <qsrlib_qsrs.qsr_moving_or_stationary.QSR_Moving_or_Stationary>` QSR.
+
+.. code:: python
+
+    def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
+        """Extract QSR specific parameters from the QSRlib request call parameters.
+
+        :param req_params: QSRlib request call parameters.
+        :type req_params: dict
+        :param kwargs: kwargs arguments.
+        :return: QSR specific parameter settings.
+        :rtype: dict
+        """
+        qsr_params = self.__qsr_params_defaults.copy()
+        try:
+            qsr_params["quantisation_factor"] = float(req_params["dynamic_args"][self._unique_id]["quantisation_factor"])
+        except (KeyError, TypeError):
+            try:
+                qsr_params["quantisation_factor"] = float(req_params["dynamic_args"]["for_all_qsrs"]["quantisation_factor"])
+            except (TypeError, KeyError):
+                pass
+        return qsr_params
+
+
+.. note::
+    Make sure that the QSR namespace **has precedence** over the global `'for_all_qsrs'` one.
