@@ -14,29 +14,30 @@ class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         # todo seems to me like some of the members could be re-organised as properties, etc.
         super(QSR_Arg_Relations_Abstractclass, self).__init__()
 
-        self.qsr_relations_and_values = None
-        """?"""
+        self.qsr_relations_and_values = None # todo private abstractproperty maybe?
+        """dict: Holds the passed `qsr_relations_and_values` dict in `dynamic_args`."""
 
         self._all_possible_relations = None
-        """?"""
+        """tuple: All possible relations, basically alphabetically sorted list of the keys of `qsr_relations_and_values`."""
 
         self.all_possible_values = None
-        """?"""
+        """tuple: List of distance thresholds from `qsr_relations_and_values`, corresponding to the order of `self._all_possible_relations`."""
 
         self.allowed_value_types = None  # todo private abstractproperty maybe?
-        """?"""
+        """tuple: Allowed types of the thresholds."""
 
+        # todo should be private abstractproperty
         self.value_sort_key = None
-        """?"""
+        """type depends on implementation: The method that the QSR labels are sorted based on their values."""
 
         self.__qsr_params_defaults = {"qsr_relations_and_values": None}
-        """?"""
+        """dict: Default values of the QSR parameters."""
 
     def __populate_possible_relations_and_values(self):
-        """
+        """Populate the internal variables from `qsr_relations_and_values` passed in `dynamic_args`.
 
-        :return:
-        :rtype:
+        :return: Relations labels, Relation thresholds. Sorted according to `self.value_sort_key`.
+        :rtype: tuple, tuple
         """
         ret_relations = []
         ret_values = []
@@ -47,12 +48,12 @@ class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         return ret_relations, ret_values
 
     def __check_validity_of_qsr_relations_and_values(self, qsr_relations_and_values):
-        """
+        """Check that there are no type/value errors in the passed parameters.
 
-        :param qsr_relations_and_values:
-        :type qsr_relations_and_values:
-        :return:
-        :rtype:
+        :param qsr_relations_and_values: User specified relation labels and values.
+        :type qsr_relations_and_values: dict
+        :return: True if all good, else it should have already raised an exception.
+        :rtype: bool
         """
         if type(qsr_relations_and_values) is not dict:
             raise ValueError("qsr_relations_and_values must be a dict")
@@ -65,12 +66,10 @@ class QSR_Arg_Relations_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         return True
 
     def _set_qsr_relations_and_values(self, qsr_relations_and_values):
-        """
+        """Validate and set the internal variables from `qsr_relations_and_values` passed in `dynamic_args`.
 
-        :param qsr_relations_and_values:
-        :type qsr_relations_and_values:
-        :return:
-        :rtype:
+        :param qsr_relations_and_values: Holds the labels and corresponding values as passed in `dynamic_args`.
+        :type qsr_relations_and_values: dict
         """
         if self.__check_validity_of_qsr_relations_and_values(qsr_relations_and_values):
             self.qsr_relations_and_values = qsr_relations_and_values

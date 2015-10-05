@@ -9,12 +9,17 @@ from qsrlib_io.world_qsr_trace import *
 class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
     """Argument distance relations.
 
+    .. note:: The relations are defined on the intervals of distance thresholds [d\ :sub:`k`, d\ :sub:`k+1`).
+
     Values of the abstract properties
         * **_unique_id** = "argd"
         * **_all_possible_relations** = depends on what user has passed
         * **_dtype** = "points"
 
-    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    `dynamic_args`
+        * **'qsr_relations_and_values'**: A dictionary with keys being the relations labels and values the distance thresholds as an int or a float.
+
+    .. seealso:: For further details, refer to its :doc:`description. <../handwritten/qsrs/argd>`
     """
 
     _unique_id = "argd"
@@ -30,11 +35,13 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         """Constructor."""
         super(QSR_Arg_Relations_Distance, self).__init__()
 
+        # todo: should be private/protected
         self.allowed_value_types = (int, float)
-        """?"""
+        """tuple: distance thresholds can only be int or float"""
 
-        self.value_sort_key = operator.itemgetter(1)  # Sort by threshold
-        """?"""
+        # todo: should be private/protected
+        self.value_sort_key = operator.itemgetter(1)
+        """operator.itemgetter: Sort keys/values by threshold value."""
 
     def _process_qsr_parameters_from_request_parameters(self, req_params, **kwargs):
         """
