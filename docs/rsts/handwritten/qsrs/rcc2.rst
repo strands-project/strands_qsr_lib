@@ -1,7 +1,7 @@
 Region Connection Calculus 2
 ============================
 
-The *Region Connection Calculus* (RCC) [1]_ [2]_ is intended to serve for qualitative spatial representation and reasoning.
+The *Region Connection Calculus* [1]_ [2]_ (RCC) is intended to serve for qualitative spatial representation and reasoning.
 RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to
 each other.
 
