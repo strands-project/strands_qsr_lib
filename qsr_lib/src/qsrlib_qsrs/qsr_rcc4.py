@@ -12,7 +12,7 @@ class QSR_RCC4(QSR_RCC_Abstractclass):
         * **_dtype** = "bounding_boxes_2d"
 
     QSR specific `dynamic_args`
-        * **quantisation_factor** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
+        * **'quantisation_factor'** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
 
     .. seealso:: For further details about RCC4, refer to its :doc:`description. <../handwritten/qsrs/rcc4>`
     """

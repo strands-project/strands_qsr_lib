@@ -15,7 +15,7 @@ class QSR_RCC3_Rectangle_Bounding_Boxes_2D(QSR_RCC_Abstractclass):
         * **_dtype** = "bounding_boxes_2d"
 
     QSR specific `dynamic_args`
-        * **quantisation_factor** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
+        * **'quantisation_factor'** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
 
     .. seealso:: For further details about RCC3, refer to its :doc:`description. <../handwritten/qsrs/rcc3>`
     """
