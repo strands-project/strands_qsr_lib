@@ -66,7 +66,12 @@ Special Topics
     :titlesonly:
     :hidden:
 
+    allen
     qstag
+
+**Allen's Interval Algebra**
+
+*Allen's Interval Algebra* is a calculus for temporal reasoning. For further details see :doc:`this page <allen>`.
 
 **Qualitative Spatio-Temporal Activity Graphs**
 
