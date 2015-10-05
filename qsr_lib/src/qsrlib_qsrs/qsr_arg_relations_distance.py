@@ -16,7 +16,7 @@ class QSR_Arg_Relations_Distance(QSR_Arg_Relations_Abstractclass):
         * **_all_possible_relations** = depends on what user has passed
         * **_dtype** = "points"
 
-    `dynamic_args`
+    QSR specific `dynamic_args`
         * **'qsr_relations_and_values'**: A dictionary with keys being the relations labels and values the distance thresholds as an int or a float.
 
     .. seealso:: For further details, refer to its :doc:`description. <../handwritten/qsrs/argd>`

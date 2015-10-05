@@ -11,6 +11,9 @@ class QSR_RCC5(QSR_RCC_Abstractclass):
         * **_all_possible_relations** = ("dr", "po", "pp", "ppi", "eq")
         * **_dtype** = "bounding_boxes_2d"
 
+    QSR specific `dynamic_args`
+        * **quantisation_factor** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
+
     .. seealso:: For further details about RCC5, refer to its :doc:`description. <../handwritten/qsrs/rcc5>`
     """
 
