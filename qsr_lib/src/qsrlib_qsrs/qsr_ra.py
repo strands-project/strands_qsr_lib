@@ -5,7 +5,7 @@ from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
 
 
 class QSR_RA(QSR_Dyadic_1t_Abstractclass):
-    """Regional Algebra.
+    """Rectangle Algebra.
 
     Members:
         * _unique_id: "ra"
