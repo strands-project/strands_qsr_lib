@@ -272,8 +272,8 @@ The request message is an object of the class :class:`QSRlib_Request_Message <qs
 The compulsory arguments are `input_data` which is your `World_Trace` object that you created before and
 the `which_qsr` which is your requested QSR. If you want only one QSR to be computed it is a string, otherwise
 if you want to compute multiple QSRs in one call pass their names as a list. The optional argument `req_made_at`
-can be safely ignored. The second optional argument `dynamic_args` is in brief a dictionary with your call and QSR
-specific parameters. More about this argument can be found :ref:`later <dyn-args>`.
+can be safely ignored. The second optional argument dynamic_args_ is in brief a dictionary with your call and QSR
+specific parameters.
 
 .. _res_msg:
 
@@ -286,16 +286,82 @@ The main field of it is the `qsrs` one that holds your computed QSRs as a World_
 The remaining ones are simply timestamps of the process and can be safely ignored.
 
 
-.. _dyn-args:
+.. _dynamic_args:
 
-QSR parameters & `dynamic_args`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`dynamic_args`
+~~~~~~~~~~~~~~
 
-To be written.
+.. _qsrs_for:
+
+Requesting QSRs for specific objects only
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Each QSR has a default behavior for which objects to compute QSRs for. Typically, this is for all valid combinations
+of the objects in the World_Trace_. One way to compute QSRs for specific objects is to use the slicing utilities
+and subsample the World_Trace_. Still, this might not have the desired effect as most QSRs will also create relations
+for mirror pairs as well, e.g. the RCC relations computed for two objects o1 and o2 will be for both o1,o2 as well as
+o2,o1.
+
+For these reasons QSRlib allows the user to specify valid objects that are passed in the request in the `dynamic_args`
+field. It is easier to explain the usage with the examples shown below.
+
+For all cases assument that we have a World_Trace_ of three objects o1, o2 and o3, and we want to compute two dyadic QSRs
+:doc:`CARDIR <qsrs/cardir>` and :doc:`RCC8 <qsrs/rcc8>`, and one monadic :doc:`MOS <qsrs/mos>`.
+
+By default the dyadic QSRs will be computed for o1,o2; o1,o3; o2,o3; o3,o1; and o3,o2; and mos relations will be
+computed for o1;o2; and o3.
+
+**Example 1:**
+Suppose we want to compute QSR relations for o1,o2 for the dyadic QSRs and for o1 and o2 for MOS. All we need to do is
+define a `dynamic_args` as follows (and then pass it to our request).
+
+.. code:: python
+
+    dynamic_args = {'for_all_qsrs': {'qsrs_for': [('o1', 'o2'), 'o1', 'o2']}}
+
+
+**Example 2:**
+Now, suppose that we want to compute CARDIR relations for o1,o2 and o2,o3, RCC8 relations for o1,o3 and MOS
+relations for o1 only. This is possible by defining the following `dynamic_args`:
+
+.. code:: python
+
+    dynamic_args = {'cardir': {'qsrs_for': [('o1', 'o2'), ('o2', 'o3')]},
+                    'rcc8': {'qsrs_for': [('o1', 'o3')]},
+                    'mos': {'qsrs_for': ['o1']}}
+
+.. note::
+    We can mix the global namespace `'for_all_qsrs'` with the QSR specific namespace, but note that
+    parameters in the QSR namespace always take precedence over the global one.
+
+
+.. _qsr_specific:
+
+QSR specific parameters
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Further to the `qsrs_for` option of dynamic args which is common for all QSRs,
+some of the QSRs allow some form of customization during the request call via their namespace in `dynamic_args`.
+What options are available depends on each QSR and is the options are given and described in their own API pages.
+
+An example is shown below using :doc:`MOS <qsrs/mos>`, which can take a parameter called `'quantisation_factor'`
+that determines the minimum distance of an object between two frames in order to be considered that it has moved.
+
+.. code:: python
+
+    dynamic_args = {'mos': {'quantisation_factor': 1.0}}
+
+Of course we can still mix QSR specific parameters with common ones. So we wanted to compute MOS relations with the
+above quantisation factor for only object o1 when there are more we could do:
+
+.. code:: python
+
+    dynamic_args = {'mos': {'quantisation_factor': 1.0,
+                            'qsrs_for': ['o1']}}
 
 .. _qstag:
 
-Graph Representation
+Graph representation
 ~~~~~~~~~~~~~~~~~~~~
 
 QSRlib provides also functionalities to represent time-series QSRs as a graph structure,
