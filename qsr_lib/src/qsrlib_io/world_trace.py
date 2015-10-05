@@ -204,40 +204,26 @@ class World_Trace(object):
         object_state_series = []
         for t, v in enumerate(track):
             vlen = len(v)
-
-            x = float('nan')
-            y = float('nan')
-            z = float('nan')
-            xsize = float('nan')
-            ysize = float('nan')
-            zsize = float('nan')
-
             if vlen == 2:
-                x = v[0]
-                y = v[1]
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1],
+                                                        **kwargs))
             elif vlen == 3:
-                x = v[0]
-                y = v[1]
-                z = v[2]
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1], z=v[2],
+                                                        **kwargs))
             elif vlen == 4:
-                x = v[0]
-                y = v[1]
-                xsize = v[2]
-                ysize = v[3]
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1],
+                                                        xsize=v[2], ysize=v[3],
+                                                        **kwargs))
             elif vlen == 6:
-                x = v[0]
-                y = v[1]
-                z = v[2]
-                xsize = v[3]
-                ysize = v[4]
-                zsize = v[5]
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1], z=v[2],
+                                                        xsize=v[3], ysize=v[4], zsize=v[5],
+                                                        **kwargs))
             else:
                 raise ValueError("Don't know how to interpret data of length of %d" % vlen)
-
-            object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
-                                                    x=x, y=y, z=z,
-                                                    xsize=xsize, ysize=ysize, zsize=zsize,
-                                                    **kwargs))
         self.add_object_state_series(object_state_series)
 
     def add_object_state(self, object_state, timestamp=None):
