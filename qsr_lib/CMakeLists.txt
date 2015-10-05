@@ -55,6 +55,6 @@ if (CATKIN_ENABLE_TESTING)
   add_rostest(tests/rcc5_tester.test)
   add_rostest(tests/rcc8_tester.test)
   add_rostest(tests/tpcc_tester.test)
-#  add_rostest(tests/multiple_tester.test)
+  add_rostest(tests/multiple_tester.test)
 
 endif()

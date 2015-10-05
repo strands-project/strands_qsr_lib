@@ -15,7 +15,10 @@ class AbstractClass_UnitTest(unittest.TestCase):
         self._worlds = {"data1": load_input_data1(),
                         "data2": load_input_data2(),
                         "data3": load_input_data3(),
-                        "data4": load_input_data4()}
+                        "data4": load_input_data4(),
+                        "data2_first100": load_input_data2_first100(),
+                        "data3_first100": load_input_data3_first100(),
+                        "data4_first100": load_input_data4_first100()}
         self._qsrlib = QSRlib()
 
     @abstractmethod
