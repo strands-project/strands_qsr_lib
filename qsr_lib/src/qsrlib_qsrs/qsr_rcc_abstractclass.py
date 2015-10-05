@@ -11,7 +11,7 @@ class QSR_RCC_Abstractclass(QSR_Dyadic_1t_Abstractclass):
         * **_all_possible_relations** = defined by the RCC variant.
         * **_dtype** = "bounding_boxes_2d"
 
-    QSR specific parameters
+    QSR specific `dynamic_args`
         * **quantisation_factor** (*float*) = 0.0: Threshold that determines whether two rectangle regions are disconnected.
     """
 

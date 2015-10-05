@@ -12,6 +12,9 @@ class QSR_Moving_or_Stationary(QSR_Monadic_2t_Abstractclass):
         * **_all_possible_relations** = ("m", "s")
         * **_dtype** = "points"
 
+    QSR specific `dynamic_args`
+        * **quantisation_factor** (*float*) = 0.0: Threshold that determines minimal Euclidean distance to be considered as moving.
+
     Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
     """
 

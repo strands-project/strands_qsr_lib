@@ -13,7 +13,7 @@ as well as a development framework for rapid implementation of new QSRs.
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
+   :maxdepth: 2
 
    rsts/handwritten/contribs
    rsts/handwritten/install

@@ -13,7 +13,10 @@ class QSR_Arg_Prob_Relations_Distance(QSR_Arg_Relations_Distance):
         * **_all_possible_relations** = depends on what user has passed
         * **_dtype** = "points"
 
-    Some explanation about the QSR or better link to a separate webpage explaining it. Maybe a reference if it exists.
+    QSR Parameters (for `dynamic_args`)
+        * **'qsr_relations_and_values'**: A dictionary with keys being the relations labels and values
+
+    .. seealso:: For further details, refer to its :doc:`description. <../handwritten/qsrs/argprobd>`
     """
 
     def __init__(self):
