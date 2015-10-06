@@ -4,9 +4,9 @@ Installation
 Dependencies
 ------------
 
-* The main dependency is `numpy` which usually gets installed with python.
-* Also `matplotlib` is used by some visualization modules, but again it should be already installed in your system.
-* `igraph` is required if you want to produce :doc:`QSTAGs <qsrs/qstag>`.
+* `numpy` which usually gets installed with python.
+* `matplotlib` is used by some visualization modules, but again it should be already installed in your system.
+* `igraph` (used by :doc:`QSTAGs <qsrs/qstag>`).
 
     * In linux it should be in your distro's repositories. For example in modern ubuntu you can install it as ``apt-get install python-igraph`` (don't forget the `sudo` if needed).
     * For other systems please refer to igraph_ installation instructions.
