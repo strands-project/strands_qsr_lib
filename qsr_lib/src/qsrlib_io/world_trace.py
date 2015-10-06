@@ -181,7 +181,7 @@ class World_Trace(object):
         return sorted(self.trace.keys())
 
     # *** data adders
-    def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
+    def add_object_track_from_list(self, track, obj_name, t0=0, **kwargs):
         """Add the objects data to the world_trace from a list of values.
 
         It is capable of handling 2D and 3D points, 2D and 3D bounding boxes.
@@ -193,10 +193,10 @@ class World_Trace(object):
         * 2D bounding boxes: tuples have length of 4 (x, y, xsize,y_size).
         * 3D bounding boxes: tuples have length of 6 (x, y, z, xsize, ysize, zsize).
 
-        :param obj_name: Name of the object.
-        :type obj_name: str
         :param track:  List of tuples of data.
         :type track: list or tuple of list(s) or tuple(s)
+        :param obj_name: Name of the object.
+        :type obj_name: str
         :param t0: First timestamp to offset timestamps.
         :type t0: int or float
         :param kwargs: kwargs arguments.
