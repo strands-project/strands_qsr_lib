@@ -181,33 +181,49 @@ class World_Trace(object):
         return sorted(self.trace.keys())
 
     # *** data adders
-    # todo make to handle 3D as well, 2D points: len=2, 3D points: len=3, 2D bbs: len=4, 3D bbs: len=6
-    def add_object_track_from_list(self, obj_name, track, t0=0, **kwargs):
-        """Add the objects data to the world_trace from a list of values
+    def add_object_track_from_list(self, track, obj_name, t0=0, **kwargs):
+        """Add the objects data to the world_trace from a list of values.
 
+        It is capable of handling 2D and 3D points, 2D and 3D bounding boxes.
+
+        Basically:
+
+        * 2D points: tuples have length of 2 (x, y).
+        * 3D points: tuples have length of 3 (x, y, z).
+        * 2D bounding boxes: tuples have length of 4 (x, y, xsize,y_size).
+        * 3D bounding boxes: tuples have length of 6 (x, y, z, xsize, ysize, zsize).
+
+        :param track:  List of tuples of data.
+        :type track: list or tuple of list(s) or tuple(s)
         :param obj_name: Name of the object.
         :type obj_name: str
-        :param track:  List of 2D points (len(o)=2) or 2D bounding boxes (len(o)=4). 3D points and bboxes not yet supported.
-        :type track: list or tuple of list(s) or tuple(s)
         :param t0: First timestamp to offset timestamps.
         :type t0: int or float
         :param kwargs: kwargs arguments.
         """
         object_state_series = []
         for t, v in enumerate(track):
-            x = v[0]
-            y = v[1]
-            try:
-                xsize = v[2]
-            except IndexError:
-                xsize = float('nan')
-            try:
-                ysize = v[3]
-            except IndexError:
-                ysize = float('nan')
-            object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
-                                                    x=x, y=y, xsize=xsize, ysize=ysize,
-                                                    **kwargs))
+            vlen = len(v)
+            if vlen == 2:
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1],
+                                                        **kwargs))
+            elif vlen == 3:
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1], z=v[2],
+                                                        **kwargs))
+            elif vlen == 4:
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1],
+                                                        xsize=v[2], ysize=v[3],
+                                                        **kwargs))
+            elif vlen == 6:
+                object_state_series.append(Object_State(name=obj_name, timestamp=t+t0,
+                                                        x=v[0], y=v[1], z=v[2],
+                                                        xsize=v[3], ysize=v[4], zsize=v[5],
+                                                        **kwargs))
+            else:
+                raise ValueError("Don't know how to interpret data of length of %d" % vlen)
         self.add_object_state_series(object_state_series)
 
     def add_object_state(self, object_state, timestamp=None):
