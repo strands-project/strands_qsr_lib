@@ -14,8 +14,8 @@ The structure of a QSTAG consists of three layers:
 * The temporal relations layer consists of nodes that encode Allen interval algebra (IA) relations between the QSR intervals.
 
 .. image:: ../images/qstag.png
-   :height: 100px
-   :width: 200 px
+   :height: 200px
+   :width: 400 px
 
 Episodes
 --------
