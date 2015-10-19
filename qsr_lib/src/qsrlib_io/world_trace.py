@@ -263,20 +263,20 @@ class World_Trace(object):
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
-    def get_at_timestamp_range(self, start, finish=None, step=1, copy_by_reference=False, include_finish=True):
-        """Return a subsample between start and finish timestamps.
+    def get_at_timestamp_range(self, start, stop=None, step=1, copy_by_reference=False, include_finish=True):
+        """Return a subsample between start and stop timestamps.
 
         :param start: Start timestamp.
         :type start: int or float
-        :param finish: Finish timestamp. If empty then finish is set to the last timestamp.
-        :type finish: int or float
+        :param stop: Finish timestamp. If empty then stop is set to the last timestamp.
+        :type stop: int or float
         :param step: subsample based on step measured in timestamps list index
         :type step: int
         :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
-        :param include_finish: Whether to include or not the world state at the finish timestamp.
+        :param include_finish: Whether to include or not the world state at the stop timestamp.
         :type include_finish: bool
-        :return: Subsample between start and finish.
+        :return: Subsample between start and stop.
         :rtype: World_Trace
         """
         timestamps = self.get_sorted_timestamps()
@@ -284,15 +284,15 @@ class World_Trace(object):
             istart = timestamps.index(start)
         except ValueError:
             raise ValueError("start not found")
-        if finish is None:
-            finish = timestamps[-1]
+        if stop is None:
+            stop = timestamps[-1]
         try:
-            ifinish = timestamps.index(finish)
+            istop = timestamps.index(stop)
         except ValueError:
-            raise ValueError("finish not found")
-        if istart > ifinish:
-            raise ValueError("start cannot be after finish")
-        timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
+            raise ValueError("stop not found")
+        if istart > istop:
+            raise ValueError("start cannot be after stop")
+        timestamps = timestamps[istart:istop] + [timestamps[istop]] if include_finish else timestamps[istart:istop]
         if step > 1:
             timestamps = timestamps[::step]
         ret = World_Trace()
