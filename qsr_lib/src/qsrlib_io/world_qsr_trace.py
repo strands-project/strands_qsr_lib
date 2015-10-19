@@ -192,37 +192,6 @@ class World_QSR_Trace(object):
                         raise e
         return ret
 
-    # todo seems redundunt and overcomlicated, probably remove
-    def get_for_objects_at_timestamp_range(self, start, finish, objects_names,
-                                           copy_by_reference=False, include_finish=True, time_slicing_first=True):
-        """.. warning::
-            Planned for removal. Raises DeprecationWarning.
-
-        Return a subsample for requested objects between start and finish timestamps.
-
-        :param start: Start timestamp.
-        :type start: int or float
-        :param finish: Finish timestamp.
-        :type finish: bool
-        :param objects_names: Requested objects names.
-        :param copy_by_reference: Return a copy or by reference.
-        :type copy_by_reference: bool
-        :param include_finish: Whether to include or not the world state at the finish timestamp.
-        :type include_finish: bool
-        :param time_slicing_first: Perform time slicing first or object slicing, can be used to optimize the call.
-        :type time_slicing_first: bool
-        :return: Subsample for the requested objects between start and finish timestamps.
-        :rtype: World_QSR_Trace
-        """
-        raise DeprecationWarning
-        if time_slicing_first:
-            ret = self.get_at_timestamp_range(start, finish, copy_by_reference, include_finish)
-            ret = ret.get_for_objects(objects_names)
-        else:
-            ret = self.get_for_objects(objects_names, copy_by_reference)
-            ret = ret.get_at_timestamp_range(start, finish, include_finish=include_finish)
-        return ret
-
     def get_for_qsrs(self, qsrs_list):
         """Return a subsample for requested QSRs only.
 
