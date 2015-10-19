@@ -131,12 +131,15 @@ class World_QSR_Trace(object):
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
-    def get_at_timestamp_range(self, start, finish=None, copy_by_reference=False, include_finish=True):
+    def get_at_timestamp_range(self, start, finish=None, step=1, copy_by_reference=False, include_finish=True):
         """Return a subsample between start and finish timestamps.
 
         :param start: Sstart timestamp.
         :type start: int or float
         :param finish: Finish timestamp. If empty then finish is set to the last timestamp.
+        :type finish: int or float
+        :param step: subsample based on step measured in timestamps list index
+        :type step: int
         :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
         :param include_finish: Whether to include or not the world state at the finish timestamp.
@@ -158,6 +161,8 @@ class World_QSR_Trace(object):
         if istart > ifinish:
             raise ValueError("start cannot be after finish")
         timestamps = timestamps[istart:ifinish] + [timestamps[ifinish]] if include_finish else timestamps[istart:ifinish]
+        if step > 1:
+            timestamps = timestamps[::step]
         ret = World_QSR_Trace(self.qsr_type)
         for t in timestamps:
             ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
