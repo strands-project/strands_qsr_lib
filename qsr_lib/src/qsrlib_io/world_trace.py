@@ -263,7 +263,7 @@ class World_Trace(object):
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
-    def get_at_timestamp_range(self, start, stop=None, istep=1, copy_by_reference=False, include_finish=True):
+    def get_at_timestamp_range(self, start=None, stop=None, istep=1, copy_by_reference=False, include_finish=True):
         """Return a subsample between start and stop timestamps.
 
         :param start: Start timestamp.
@@ -280,6 +280,8 @@ class World_Trace(object):
         :rtype: World_Trace
         """
         timestamps = self.get_sorted_timestamps()
+        if start is None:
+            start = timestamps[0]
         try:
             istart = timestamps.index(start)
         except ValueError:
