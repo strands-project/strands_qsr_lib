@@ -263,15 +263,15 @@ class World_Trace(object):
         return self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
 
     # *** slicing utilities
-    def get_at_timestamp_range(self, start, stop=None, step=1, copy_by_reference=False, include_finish=True):
+    def get_at_timestamp_range(self, start, stop=None, istep=1, copy_by_reference=False, include_finish=True):
         """Return a subsample between start and stop timestamps.
 
         :param start: Start timestamp.
         :type start: int or float
         :param stop: Finish timestamp. If empty then stop is set to the last timestamp.
         :type stop: int or float
-        :param step: subsample based on step measured in timestamps list index
-        :type step: int
+        :param istep: subsample based on step measured in timestamps list index
+        :type istep: int
         :param copy_by_reference: Return a copy or by reference.
         :type copy_by_reference: bool
         :param include_finish: Whether to include or not the world state at the stop timestamp.
@@ -293,8 +293,8 @@ class World_Trace(object):
         if istart > istop:
             raise ValueError("start cannot be after stop")
         timestamps = timestamps[istart:istop] + [timestamps[istop]] if include_finish else timestamps[istart:istop]
-        if step > 1:
-            timestamps = timestamps[::step]
+        if istep > 1:
+            timestamps = timestamps[::istep]
         ret = World_Trace()
         for t in timestamps:
             ret.trace[t] = self.trace[t] if copy_by_reference else copy.deepcopy(self.trace[t])
