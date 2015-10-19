@@ -18,7 +18,9 @@ def possible_pairs(s, mirrors=True):
     :return: List of pairs as tuples.
     :rtype: list of tuples of str
     """
-    return list(itertools.permutations(set(s), 2)) if mirrors else list(itertools.combinations(set(s), 2))
+    if len(s) != len(set(s)):
+        raise ValueError('duplicates found, but not allowed')
+    return list(itertools.permutations(s, 2)) if mirrors else list(itertools.combinations(s, 2))
 
 def possible_pairs_between_two_lists(s1, s2, mirrors=True):
     """Return possible pairs between the elements of two sets.
@@ -37,11 +39,14 @@ def possible_pairs_between_two_lists(s1, s2, mirrors=True):
     :return: List of pairs as tuples.
     :rtype: list of tuples of str
     """
-    s1, s2 = set(s1), set(s2)
+    if len(s1) != len(set(s1)) or len(s2) != len(set(s2)):
+        raise ValueError('duplicates found, but not allowed')
     return list(itertools.product(s1, s2)) + list(itertools.product(s2, s1)) if mirrors else list(itertools.product(s1, s2))
 
 def possible_triplets(s, mirrors=True):
     """
     Return the possible triplets from the list s.
     """
-    return list(itertools.permutations(set(s), 3)) if mirrors else list(itertools.combinations(set(s), 3))
+    if len(s) != len(set(s)):
+        raise ValueError('duplicates found, but not allowed')
+    return list(itertools.permutations(s, 3)) if mirrors else list(itertools.combinations(s, 3))
