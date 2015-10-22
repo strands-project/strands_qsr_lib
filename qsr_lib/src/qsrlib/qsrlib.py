@@ -4,6 +4,7 @@ from __future__ import print_function, division
 from datetime import datetime
 from qsrlib_io.world_trace import World_Trace
 from qsrlib_utils.utils import merge_world_qsr_traces
+from qsrlib_utils.filters import *
 from qsrlib_qsrs import *
 from qsrlib_qstag.qstag import Activity_Graph
 
@@ -84,6 +85,9 @@ class QSRlib(object):
         self.__qsrs_registry = self.__check_and_activate_qsrs(qsrs_registry)
         """dict: The registry of the QSRs, a mapping between their unique names and their classes."""
 
+        self.__filters_registry = {"median_filter": apply_median_filter}
+        """dict: The registry of the QSRs, a mapping between their unique names and their classes."""
+
         if help:
             self.help()
 
@@ -95,6 +99,15 @@ class QSRlib(object):
         :rtype: dict
         """
         return self.__qsrs_registry
+
+    @property
+    def filters_registry(self):
+        """Getter.
+
+        :return: `self.__filters_registry`
+        :rtype: dict
+        """
+        return self.__filters_registry
 
     @staticmethod
     def __check_and_activate_qsrs(qsrs_registry):
@@ -129,7 +142,8 @@ class QSRlib(object):
             print("-", i)
 
     def request_qsrs(self, req_msg):
-        """Main function of the QSRlib that does all the magic; returns the computed requested QSRs.
+        """Main function of the QSRlib that does all the magic; returns the computed requested QSRs,
+        and the QSTAG (if requested in req_msg.dynamic_args)
 
         :param req_msg: A request message containing the necessary data and other options.
         :type req_msg: QSRlib_Request_Message
@@ -155,8 +169,20 @@ class QSRlib(object):
         else:
             world_qsr_trace = None
 
+        # If any filters are requested in the dynamic args
+        if "filters" in req_msg.dynamic_args:
+            for filter_, params in req_msg.dynamic_args["filters"].items():
+                world_qsr_trace = self.filters_registry[filter_](world_qsr_trace, params)
+
+        # If the QSTAG is requested in the dynamic args
+        activity_graph = None
+        if "qstag" in req_msg.dynamic_args:
+            activity_graph = Activity_Graph(req_msg.input_data, world_qsr_trace, \
+                            req_msg.dynamic_args["qstag"]["object_types"] if "object_types" in req_msg.dynamic_args["qstag"] else {},
+                            req_msg.dynamic_args["qstag"]["params"] if "params" in req_msg.dynamic_args["qstag"] else {})
+
         qsrlib_response = QSRlib_Response_Message(qsrs=world_qsr_trace,
-                                                  qstag=Activity_Graph(req_msg.input_data, world_qsr_trace,  req_msg.dynamic_args["qstag"]["object_types"] if "object_types" in req_msg.dynamic_args["qstag"] else {}) if "qstag" in req_msg.dynamic_args  else None,
+                                                  qstag=activity_graph,
                                                   req_made_at=req_msg.made_at,
                                                   req_received_at=req_received_at,
                                                   req_finished_at=datetime.now())
