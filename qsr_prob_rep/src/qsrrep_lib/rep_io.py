@@ -26,20 +26,38 @@ from abc import ABCMeta, abstractmethod
 import json
 
 
-class HMMRepRequestAbstractclass(object):
+class RepRequestAbstractclass(object):
     __metaclass__ = ABCMeta
 
     _const_function_pointer = lambda *args, **kwargs: args[1].my_function(**kwargs) # Example function pointer
 
     @abstractmethod
     def __init__(self):
+        self.rep_type = ""
         self.kwargs = {}
 
     def call_function(self, inst):
         return self._const_function_pointer(inst, **self.kwargs)
 
 
-class HMMReqResponseBaseclass(object):
+class ReqResponseBaseclass(object):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def get(self):
+        return
+
+
+class HMMRepRequestAbstractclass(RepRequestAbstractclass):
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self):
+        self.rep_type = "hmm"
+        self.kwargs = {}
+
+
+class HMMReqResponseBaseclass(ReqResponseBaseclass):
     __metaclass__ = ABCMeta
 
     def __init__(self, qsr_type, data):
@@ -150,8 +168,10 @@ class HMMReqResponseLogLikelihood(HMMReqResponseBaseclass):
 # See file ehader for explanation
 ###############################################################################
 available_services = {
-    "create": [HMMRepRequestCreate, HMMReqResponseCreate],
-    "sample": [HMMRepRequestSample, HMMReqResponseSample],
-    "log_likelihood": [HMMRepRequestLogLikelihood, HMMReqResponseLogLikelihood]
+    "hmm": {
+        "create": [HMMRepRequestCreate, HMMReqResponseCreate],
+        "sample": [HMMRepRequestSample, HMMReqResponseSample],
+        "log_likelihood": [HMMRepRequestLogLikelihood, HMMReqResponseLogLikelihood]
+    }
 }
 ###############################################################################
