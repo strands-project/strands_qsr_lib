@@ -2,6 +2,138 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* removed import pandas that was not used
+* Updated QSTAG code to return in the Response_Message.qstag
+  major re-jig of activity graph class and graphlets
+  updated params to a dictionary
+  fixed the graphlet printing in the example
+  removed mysterious f function
+  implemented a median filter in qsr_utils
+  documentation for QSTAGs and Graphets added.
+  update to scripts/qstag_example
+* fixed broken order due to set operation
+* made start in time slicing optional, defaulting to first timestamp if None
+* refactoring
+* removed deprecated
+* refactoring
+* step slicing for World_Trace and World_QSR_Trace
+* changed argument order
+* made it a bit more efficient
+* extended functionality of add_object_track_from_list to handle 2D and 3D points and bboxes
+* small formatting
+* docs for QSR specific dynamic_args
+* argd docs
+* docs for RA
+* added back multiple for new QSRs
+* added tpcc unittests
+* more docs
+* removed tpcc dbg lines
+* Merge branch 'master' of https://github.com/strands-project/strands_qsr_lib
+  Conflicts:
+  qsr_lib/scripts/mwe.py
+* Add *s* relation.
+* added igraph run_dependency in package.xml
+* Fix broken partitioning.
+* Fix 'sam' relation.
+* tidy up examples
+* Tidy up TPCC helper methods.
+* Use tuple of types instead of list.
+* Put tpcc_test back into mwe.py.
+* Add TPCC QSR.
+* Merge branch 'master' into rcc4
+  Conflicts:
+  qsr_lib/CMakeLists.txt
+  qsr_lib/src/qsrlib_qsrs/__init_\_.py
+* Merge branch 'master' into rcc5
+* documentation for qstag added
+* Merge branch 'master' into qstag
+  Conflicts:
+  qsr_lib/src/qsrlib/qsrlib.py
+* added qstag
+* Merge pull request `#180 <https://github.com/strands-project/strands_qsr_lib/issues/180>`_ from yianni/regional_algebra
+  regional algebra 'ra' new QSR
+* temporally disabling multiple-test as it will always fail for now
+* Merge branch 'master' into regional_algebra
+* Merge branch 'master' into rcc4
+* put rcc3 back, but left it out from docs
+* shortened names and filenames of rcc2, rcc8 and cardir
+* unnitests
+* replaced rcc3 with rcc4
+* shortened name, unittests
+* more docs
+* added rcc5 for completeness
+* regional algebra 'ra' new QSR
+* QSRs abstractproperties
+* undo removing members from within __init_\_ in QSR_Abstractclass, as there might be dragons if changed on class level
+* minor argument refactoring
+* _dtype related things, mains are refactoring and moving to the root QSR_Abstractclass
+* refactored _allowed_parameters to _common_dynamic_args
+* deleted todo comments
+* no need for self.node as rospy.init_node returns None
+* adding some docstrings, need to be tested how they look in rtd for rest
+* width,length,height are now xsize,ysize,zsize; also roll,pitch,yaw are not replaced by rotation tuple
+* clean up unused code
+* sorting todo comments
+* World_QSR_Trace.add_qsr does not append, maybe such method needed
+* refactoring
+* some docstr changed
+* add_world_qsr_state has no overwrite protection anymore for better performance (just like all others)
+* refactoring
+* removed last_updated which is never used and is already included elsewhere
+* getter methods to getter property methods
+* QSRlib.get_qsrs_registry turned into a property getter qsrs_registry
+* removed unnecessary __init_\_ in QSR_Abstractclass
+* tupled _all_possible_relations
+* removed unncessary imports
+* resolved by `#159 <https://github.com/strands-project/strands_qsr_lib/issues/159>`_
+* possible_pairs now casts to set, removed sorting options
+* fixed doc for rtd
+* refactored from car_dir to cardir
+* refactored ConDir to car_dir
+* Update README.md
+* lots of docs, sphinx setup, rst generated
+* Merge branch 'master' into docnew_checks
+* updated world_trace slicing utilities dbg script
+* added World_QSR_Trace slicing methods
+* changed default of return_by_reference to False, also refactored
+* fixed bug when finish=0.0, some refactoring in World_Trace
+* check
+* fixed bug in _custom_checks_world_trace
+* trigger new build
+* added qtccs and qtcbcs rostests
+* added some further tests about q-factor to QSRs using it
+* qtcbs tester
+* ignore: triggering new build
+* check
+* Merge branch 'rostest_multiple' of github.com:yianni/strands_qsr_lib into rostest_multiple
+  Conflicts:
+  qsr_lib/tests/multiple_tester.test
+* extra allotted time
+* fix typo
+* added the ultima rostest, i.e. for multiple (all QSRs computed in one call)
+* added forgotten rostests to CMakelists
+* rostest for argprobd
+* adding more datasets, more tests and restructuring unittests
+* wrong refactoring
+* adds a number of rostests (unitests) for all QSRs except argd/argprobd
+* making sure that _custom_checks_world_trace works only with qtcbs, validate=False, no_collapse=Truecloses `#144 <https://github.com/strands-project/strands_qsr_lib/issues/144>`_
+* custom_checks refactored and simplified, closes `#144 <https://github.com/strands-project/strands_qsr_lib/issues/144>`_
+* refactored to protected all_possible_relations and tuplecised, closes `#143 <https://github.com/strands-project/strands_qsr_lib/issues/143>`_
+* removed leftover from set_from_config_file
+* resolved World_Trace todos, closes `#148 <https://github.com/strands-project/strands_qsr_lib/issues/148>`_
+* minor refactoring
+* updated load dynamic_args from yml file example
+* minor refactoring
+* minor refactoring
+* removed argument that was never used and was unnecessary
+* set_from_config_file removed from server side and offered as a utility to client
+* minor insignificant refactoring
+* refactored to protected set_qsr_relations_and_values, closes `#147 <https://github.com/strands-project/strands_qsr_lib/issues/147>`_
+* getter for _unique_id, closes `#145 <https://github.com/strands-project/strands_qsr_lib/issues/145>`_
+* Contributors: Chris Burbridge, PDuckworth, Paul Duckworth, Peter Lightbody, Yiannis Gatsoulis
+
 0.2.0 (2015-08-27)
 ------------------
 * got rid of make_world_qsr_trace when possible (depends on inherited class)
