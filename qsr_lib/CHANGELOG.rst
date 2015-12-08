@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2015-12-08)
+------------------
 * removed import pandas that was not used
 * Updated QSTAG code to return in the Response_Message.qstag
   major re-jig of activity graph class and graphlets
