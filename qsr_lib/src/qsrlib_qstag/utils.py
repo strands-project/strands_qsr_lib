@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Utilities
-	__author__	  = "Paul Duckworth"
-	__copyright__   = "Copyright 2015, University of Leeds"
+"""QSTAG Utilities
 """
 from __future__ import print_function
 from itertools import combinations, permutations
 import copy, sys
 from igraph import Graph as iGraph
 import numpy as np
-import pandas as pd
 import warnings
 
 

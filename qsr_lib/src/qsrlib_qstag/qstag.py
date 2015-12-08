@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """Qualitative Spatio-Temporal Activity Graph module
-	__author__      = "Paul Duckworth"
-	__copyright__   = "Copyright 2015, University of Leeds"
 """
 from __future__ import print_function
 import sys
