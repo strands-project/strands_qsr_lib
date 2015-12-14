@@ -8,6 +8,7 @@ Created on Mon Jun 22 14:19:25 2015
 
 from rep_io import ServiceManager, RepRequestAbstractclass
 from rep_hmm import RepHMM
+from rep_pf import RepPf
 
 
 class ProbRepLib(object):
@@ -23,7 +24,8 @@ class ProbRepLib(object):
     """
 
     modules = {
-        RepHMM.namespace: RepHMM()
+        RepHMM.namespace: RepHMM(),
+        RepPf.namespace: RepPf()
     }
 
     def __init__(self):
