@@ -64,7 +64,7 @@ class HMMReqResponseAbstractclass(ReqResponseAbstractclass):
 
 class HMMRepRequestCreate(HMMRepRequestAbstractclass):
 
-    def __init__(self, qsr_type, qsr_seq, store=False):
+    def __init__(self, qsr_type, qsr_seq, lookup_table=None, transition_matrix=None, emission_matrix=None):
         """
         :param qsr_type: The QSR this HMM is modelling
         :param qsr_seq: The list of lists of the QSR state chains
@@ -74,7 +74,9 @@ class HMMRepRequestCreate(HMMRepRequestAbstractclass):
         self.kwargs = {
             "qsr_type": qsr_type,
             "qsr_seq": qsr_seq,
-            "store": store
+            "lookup_table": lookup_table,
+            "transition_matrix": transition_matrix,
+            "emission_matrix": emission_matrix
         }
 
 
@@ -89,7 +91,7 @@ class HMMReqResponseCreate(HMMReqResponseAbstractclass):
 
 class HMMRepRequestSample(HMMRepRequestAbstractclass):
 
-    def __init__(self, qsr_type, xml, max_length, num_samples=1):
+    def __init__(self, qsr_type, xml, max_length, num_samples=1, lookup_table=None):
         """
         :param qsr_type: The QSR this HMM is modelling
         :param xml: The HMM in its xml representation
@@ -101,7 +103,8 @@ class HMMRepRequestSample(HMMRepRequestAbstractclass):
             "qsr_type": qsr_type,
             "xml": xml,
             "max_length": max_length,
-            "num_samples": num_samples
+            "num_samples": num_samples,
+            "lookup_table": lookup_table
         }
 
 
@@ -116,7 +119,7 @@ class HMMReqResponseSample(HMMReqResponseAbstractclass):
 
 class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
 
-    def __init__(self, qsr_type, xml, qsr_seq):
+    def __init__(self, qsr_type, xml, qsr_seq, lookup_table=None):
         """
         :param qsr_type: The QSR this HMM is modelling
         :param xml: The HMM in its xml representation
@@ -126,7 +129,8 @@ class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
         self.kwargs = {
             "qsr_type": qsr_type,
             "xml": xml,
-            "qsr_seq": qsr_seq
+            "qsr_seq": qsr_seq,
+            "lookup_table": lookup_table
         }
 
 

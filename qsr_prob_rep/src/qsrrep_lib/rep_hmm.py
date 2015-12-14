@@ -8,6 +8,7 @@ from qsrrep_hmms.qtcc_hmm import QTCCHMM
 from qsrrep_hmms.qtcb_hmm import QTCBHMM
 from qsrrep_hmms.qtcbc_hmm import QTCBCHMM
 from qsrrep_hmms.rcc3_hmm import RCC3HMM
+from qsrrep_hmms.generic_hmm import GenericHMM
 from collections import OrderedDict
 import os
 import tempfile
@@ -23,7 +24,8 @@ class RepHMM(object):
         "qtcc": QTCCHMM,
         "qtcb": QTCBHMM,
         "qtcbc": QTCBCHMM,
-        "rcc3": RCC3HMM
+        "rcc3": RCC3HMM,
+        "generic": GenericHMM
     }
 
     __hmm_types_active = {}
