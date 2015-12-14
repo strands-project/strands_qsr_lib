@@ -2,7 +2,7 @@
 
 import rospy
 import json
-from qsrrep_lib.rep_io import available_services, RepRequestAbstractclass
+from qsrrep_lib.rep_io import RepRequestAbstractclass, ServiceManager
 from qsr_prob_rep.srv import QSRProbRep, QSRProbRepRequest
 
 class ROSClient(object):
@@ -14,7 +14,7 @@ class ROSClient(object):
         :param server_name: The name of the hmm_rep_ros server. Default: 'prob_rep_ros_server'
         """
         self.services = {} # Creating a dictonary containing all the service names and classes
-        for namespace, services in available_services.items():
+        for namespace, services in ServiceManager().get_available_services().items():
             for k, v in services.items():
                 self.services[v[0]] = server_name + "/" + namespace + "/" + k
 
@@ -30,7 +30,7 @@ class ROSClient(object):
         s = rospy.ServiceProxy(self.services[req.__class__],QSRProbRep)
         try:
             s.wait_for_service(timeout=10.)
-            res = s(QSRProbRepRequest(qsr_type=req.kwargs.pop("qsr_type"), data=json.dumps(req.kwargs)))
+            res = s(QSRProbRepRequest(data=json.dumps(req.kwargs)))
         except (rospy.ROSException, rospy.ROSInterruptException, rospy.ServiceException) as e:
             rospy.logerr(e)
             return None
@@ -38,4 +38,4 @@ class ROSClient(object):
             data = json.loads(res.data)
         except ValueError:
             data = str(res.data)
-        return res.qsr_type, data
+        return data

@@ -4,8 +4,7 @@
 import rospy
 import json
 from qsrrep_lib.rep_lib import ProbRepLib
-# Wildard import necessary because I don't know which services exist, they are defined in 'qsrrep_lib.rep_io.available_services'
-from qsrrep_lib.rep_io import *
+from qsrrep_lib.rep_io import ServiceManager
 from qsr_prob_rep.srv import QSRProbRepResponse, QSRProbRep
 
 
@@ -20,9 +19,8 @@ class HMMRepROSServer(object):
         """
         rospy.loginfo("Starting %s" % name)
         self._lib = ProbRepLib()
-#        self._lib.print_hmms_available()
         self.services = {}
-        for namespace, services in available_services.items():
+        for namespace, services in ServiceManager.available_services.items():
             # Automatically creating a service for all the entries in 'qsrrep_lib.rep_io.available_services'
             # Passing the key of the dict entry to the service to identify the right function to call
             for i, service in enumerate(services):
@@ -32,8 +30,8 @@ class HMMRepROSServer(object):
                 self.services[service] = rospy.Service("~"+namespace+"/"+service, QSRProbRep, (lambda a,b: lambda x: self.callback(x, a, b))(namespace,service))
 
     def callback(self, req, rep, srv_type):
-        r = available_services[rep][srv_type][0](qsr_type=req.qsr_type, **json.loads(req.data))
-        return QSRProbRepResponse(qsr_type=req.qsr_type, data=self._lib.request(r).get())
+        r = ServiceManager.available_services[rep][srv_type][0](**json.loads(req.data))
+        return QSRProbRepResponse(data=self._lib.request(r).get())
 
 
 if __name__ == '__main__':
