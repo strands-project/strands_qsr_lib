@@ -42,8 +42,8 @@ class Activity_Graph:
 		if not isinstance(params["max_eps"], int):
 		 	raise RuntimeError("params needs to contain a dictionary of Graphlet parameters. i.e. max_eps, and min/max_rows.")
 
-		self.graphlets = self.Graphlets(self.__episodes, params)
-		"""Graphlets object containing, unique graphlets, hashes and histogram of graphlets."""
+		self.graphlets = Graphlets(self.__episodes, params)
+		"""Creates a Graphlets object containing lists of, unique graphlets, hashes and histogram of graphlets."""
 
 
 	@property
@@ -183,46 +183,46 @@ class Activity_Graph:
 						objects_types[oname] = "unknown"
 		return objects_types
 
-	class Graphlets:
-		'''
-		Graphlet class:
-		Minimal subgraphs of the same structure as the Activity Graph.
-		'''
+class Graphlets:
+	'''
+	Graphlet class:
+	Minimal subgraphs of the same structure as the Activity Graph.
+	'''
 
-		def __init__(self, episodes, params, object_types={}):
-			"""Constructor.
+	def __init__(self, episodes, params, object_types={}):
+		"""Constructor.
 
-			:param episodes: list of QSR episodes, each a tuple of the form: ([objects], {epi_rel}, (epi_start, epi_end))
-			:type episodes: list
-			:param params: dictionary of parameters: minimum rows, maximum rows, maximum episodes used for graphlets
-			:type params: dict
-			:param object_types: dictionary of object name to a generic object type
-			:type object_types: dict
-			"""
-			try:
-				max_eps = params["max_eps"]
-			except KeyError:
-				params = {"min_rows":1, "max_rows":1, "max_eps":3}
+		:param episodes: list of QSR episodes, each a tuple of the form: ([objects], {epi_rel}, (epi_start, epi_end))
+		:type episodes: list
+		:param params: dictionary of parameters: minimum rows, maximum rows, maximum episodes used for graphlets
+		:type params: dict
+		:param object_types: dictionary of object name to a generic object type
+		:type object_types: dict
+		"""
+		try:
+			max_eps = params["max_eps"]
+		except KeyError:
+			params = {"min_rows":1, "max_rows":1, "max_eps":3}
 
-			all_graphlets, hashes = get_graphlet_selections(episodes, params, vis=False)
-			"""lists: Two lists of all graphlets and hashes in Activity_Graph."""
+		all_graphlets, hashes = get_graphlet_selections(episodes, params, vis=False)
+		"""lists: Two lists of all graphlets and hashes in Activity_Graph."""
 
-			self.histogram = []
-			"""list: The list of graphlet counts (zip with codebook for a hash of each, and check graphlets for the iGraph)."""
-			self.code_book = []
-			"""list: The list of graphlet hashes (zip with histogram for count of each)."""
-			self.graphlets = {}
-			"""dict: dictionary of the graphlet hash as key, and the iGraph object as value."""
+		self.histogram = []
+		"""list: The list of graphlet counts (zip with codebook for a hash of each, and check graphlets for the iGraph)."""
+		self.code_book = []
+		"""list: The list of graphlet hashes (zip with histogram for count of each)."""
+		self.graphlets = {}
+		"""dict: dictionary of the graphlet hash as key, and the iGraph object as value."""
 
-			for h, g in zip(hashes, all_graphlets):
+		for h, g in zip(hashes, all_graphlets):
 
-				if h not in self.code_book:
-					self.code_book.append(h)
-					self.histogram.append(1)
-					self.graphlets[h] = g
-				else:
-					ind = self.code_book.index(h)
-					self.histogram[ind] += 1
+			if h not in self.code_book:
+				self.code_book.append(h)
+				self.histogram.append(1)
+				self.graphlets[h] = g
+			else:
+				ind = self.code_book.index(h)
+				self.histogram[ind] += 1
 
 
 def get_graphlet_selections(episodes, params, vis=False):

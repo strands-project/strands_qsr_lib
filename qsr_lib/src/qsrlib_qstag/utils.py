@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""QSTAG Utilities
+"""QSTAR Utilities
 """
 from __future__ import print_function
 from itertools import combinations, permutations
