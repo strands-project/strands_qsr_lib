@@ -104,34 +104,34 @@ def get_allen_relation(duration1, duration2):
 	is2, ie2 = duration2
 
 	if is2-1 == ie1:
-		return 'meets'
+		return 'm'
 	elif is1-1 == ie2:
-		return 'metby'
+		return 'mi'
 
 	elif is1 == is2 and ie1 == ie2:
-		return 'equal'
+		return '='
 
 	elif is2 > ie1:
-		return 'before'
+		return '<'
 	elif is1 > ie2:
-		return 'after'
+		return '>'
 
 	elif ie1 >= is2 and ie1 < ie2 and is1 < is2:
-		return 'overlaps'
+		return 'o'
 	elif ie2 >= is1 and ie2 < ie1 and is2 < is1:
-		return 'overlapped_by'
+		return 'oi'
 	elif is1 > is2 and ie1 < ie2:
-		return 'during'
+		return 'd'
 	elif is1 < is2 and ie1 > ie2:
-		return 'contains'
+		return 'di'
 	elif is1 == is2 and ie1 < ie2:
-		return 'starts'
+		return 's'
 	elif is1 == is2 and ie1 > ie2:
-		return 'started_by'
+		return 'si'
 	elif ie1 == ie2 and is2 < is1:
-		return 'finishes'
+		return 'f'
 	elif ie1 == ie2 and is2 > is1:
-		return 'finished_by'
+		return 'fi'
 
 
 def graph_hash(G, node_name_attribute='name', edge_name_attribute=None):
