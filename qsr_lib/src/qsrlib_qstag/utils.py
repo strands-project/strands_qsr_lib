@@ -116,13 +116,13 @@ def get_allen_relation(duration1, duration2):
 	elif is1 > ie2:
 		return 'after'
 
-	elif ie1 >= is2 and ie1 <= ie2 and is1 <= is2:
+	elif ie1 >= is2 and ie1 < ie2 and is1 < is2:
 		return 'overlaps'
-	elif ie2 >= is1 and ie2 <= ie1 and is2 <= is1:
+	elif ie2 >= is1 and ie2 < ie1 and is2 < is1:
 		return 'overlapped_by'
-	elif is1 >= is2 and ie1 <= ie2:
+	elif is1 > is2 and ie1 < ie2:
 		return 'during'
-	elif is1 <= is2 and ie1 >= ie2:
+	elif is1 < is2 and ie1 > ie2:
 		return 'contains'
 	elif is1 == is2 and ie1 < ie2:
 		return 'starts'
