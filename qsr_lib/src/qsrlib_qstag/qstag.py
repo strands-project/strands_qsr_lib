@@ -352,12 +352,12 @@ def get_graph(episodes, object_types={}):
 	:rtype: igraph.Graph
 	"""
 
-	temporal_map = {'after': 'before',
-					'metby' : 'meets',
-					'overlapped_by': 'overlaps',
-					'started_by': 'starts',
-					'contains':'during',
-					'finished_by': 'finishes'
+	temporal_map = {'>': '<',
+					'mi' : 'm',
+					'oi': 'o',
+					'si': 's',
+					'di':'d',
+					'fi': 'f'
 					}
 
 	spatial_nodes_edges = {"rcc2": 2, "rcc3": 2, "rcc8": 2, "cardir": 2,
