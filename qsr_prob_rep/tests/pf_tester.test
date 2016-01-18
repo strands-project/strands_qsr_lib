@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="prob_rep_ros_server" pkg="qsr_prob_rep" type="qsr_prob_rep_ros_server.py" />
+
+  <test test-name="pf_tester" pkg="qsr_prob_rep" type="pf_tester.py" />
+
+</launch>

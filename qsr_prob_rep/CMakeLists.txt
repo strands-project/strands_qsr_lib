@@ -61,4 +61,5 @@ install(PROGRAMS
 if (CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(tests/hmm_tester.test)
+  add_rostest(tests/pf_tester.test)
 endif()
