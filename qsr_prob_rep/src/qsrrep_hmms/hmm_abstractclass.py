@@ -91,7 +91,7 @@ class HMMAbstractclass():
         """
 
         trans = np.ones([size,size])
-        return trans/trans.sum(axis=1)
+        return trans/trans.sum(axis=1, keepdims=True)
 
     def _create_emission_matrix(self, size, **kwargs):
         """Method for the creation of the emission probability matrix. Creates
@@ -102,7 +102,7 @@ class HMMAbstractclass():
         """
 
         emi = np.ones([size,size])
-        return emi/emi.sum(axis=1)
+        return emi/emi.sum(axis=1, keepdims=True)
 
     @abstractmethod
     def _qsr_to_symbol(self, qsr_data):
