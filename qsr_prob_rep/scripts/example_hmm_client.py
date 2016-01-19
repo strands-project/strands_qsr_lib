@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from qsrrep_ros.ros_client import ROSClient
+from qsrrep_lib.rep_hmm import RepHMM
 from qsrrep_lib.rep_io_hmm import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
 #from qsrrep_lib.rep_lib import ProbRepLib
 import os
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(parents=[general])
     subparsers = parser.add_subparsers(dest='action')
     qtc_parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)
-    qtc_parse.add_argument('-qsr', '--qsr_type', help="choose qsr: %s", type=str, required=True) #TODO: fix availabel
+    qtc_parse.add_argument('-qsr', '--qsr_type', help="choose qsr: %s" % RepHMM.hmm_types_available.keys(), type=str, required=True)
 
     # Parsers for create function
     create_parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)
