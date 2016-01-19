@@ -114,7 +114,7 @@ class GenericHMM(HMMAbstractclass):
         """
 
         if self.trans != None:
-            return self.trans
+            return np.array(self.trans)
         return super(self.__class__, self)._create_transition_matrix(size=size, **kwargs)
 
     def _create_emission_matrix(self, size, **kwargs):
@@ -126,5 +126,5 @@ class GenericHMM(HMMAbstractclass):
         """
 
         if self.emi != None:
-            return self.emi
+            return np.array(self.emi)
         return super(self.__class__, self)._create_emission_matrix(size=size, **kwargs)
