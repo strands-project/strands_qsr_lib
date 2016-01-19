@@ -34,8 +34,8 @@ class RepPf(object):
             p = self.__filter_bank[kwargs["uuid"]]["filter"].emp.particles
             print "INIT MODEL SIZES:", np.bincount(map(int,p[:,1].flatten()), minlength=2)
             print "INIT STATES:", np.bincount(map(int,p[:,0].flatten())), len(np.bincount(map(int,p[:,0].flatten())))
-            print "INIT STATES model 0:", np.bincount(map(int,p[np.where(p[:,1] == 0),0].flatten())), len(np.bincount(map(int,p[np.where(p[:,1] == 0),0].flatten())))
-            print "INIT STATES model 1:", np.bincount(map(int,p[np.where(p[:,1] == 1),0].flatten())), len(np.bincount(map(int,p[np.where(p[:,1] == 1),0].flatten())))
+            for i in range(int(np.max(p[:,1]))+1):
+                print "INIT STATES model %i:"%i, np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())), len(np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())))
 
         return PfReqResponseCreate(data=kwargs["uuid"])
 
