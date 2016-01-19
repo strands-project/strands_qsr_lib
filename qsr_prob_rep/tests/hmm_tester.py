@@ -53,12 +53,13 @@ class TestHMM(unittest.TestCase):
 
         self.r = ROSClient()
 
-    def _create_hmm(self, qsr_file, qsr_type):
+    def _create_hmm(self, qsr_file, qsr_type, start_at_zero=True):
         with open(qsr_file, 'r') as f: qsr_seq = json.load(f)
         d = self.r.call_service(
             HMMRepRequestCreate(
                 qsr_seq=qsr_seq,
-                qsr_type=qsr_type
+                qsr_type=qsr_type,
+                start_at_zero=start_at_zero
             )
         )
         return d

@@ -133,7 +133,7 @@ class HMMAbstractclass():
         """
         return gh.IntegerRange(0, num_symbols)
 
-    def _train(self, seq, trans, emi, num_possible_states, pseudo_transitions=False):
+    def _train(self, seq, trans, emi, num_possible_states, pseudo_transitions=False, start_at_zero=False):
         """Uses the given parameters to train a multinominal HMM to represent
         the given seqences of observations. Uses Baum-Welch training.
         Please override if special training is necessary for your QSR.
@@ -147,10 +147,16 @@ class HMMAbstractclass():
         """
 
         print 'Generating HMM:'
+        print seq
         print '\tCreating symbols...'
         symbols = self._generate_alphabet(num_possible_states)
-        startprob = np.zeros(num_possible_states)
-        startprob[0] = 1
+        if start_at_zero:
+            startprob = np.zeros(num_possible_states)
+            startprob[0] = 1
+        else:
+            startprob = np.ones(num_possible_states)
+            startprob = startprob/np.sum(startprob)
+        print startprob
         print '\t\t', symbols
         print '\tCreating HMM...'
         hmm = gh.HMMFromMatrices(
@@ -202,7 +208,14 @@ class HMMAbstractclass():
         state_seq = self._qsr_to_symbol(kwargs["qsr_seq"])
         trans = self._create_transition_matrix(size=self.get_num_possible_states(), **kwargs)
         emi = self._create_emission_matrix(size=self.get_num_possible_states(), **kwargs)
-        hmm = self._train(state_seq, trans, emi, self.get_num_possible_states(), pseudo_transitions=kwargs["pseudo_transitions"])
+        hmm = self._train(
+            state_seq,
+            trans,
+            emi,
+            self.get_num_possible_states(),
+            pseudo_transitions=kwargs["pseudo_transitions"],
+            start_at_zero=kwargs["start_at_zero"]
+        )
         print '...done'
         return hmm
 
