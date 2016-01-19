@@ -20,6 +20,7 @@
   <build_depend>rostest</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>std_srvs</build_depend>
+  <build_depend>pybayes</build_depend>
 
   <run_depend>ghmm</run_depend>
   <run_depend>message_runtime</run_depend>
@@ -28,6 +29,7 @@
   <run_depend>rostest</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>std_srvs</run_depend>
+  <run_depend>pybayes</run_depend>
 
   <test_depend>rosunit</test_depend>
 

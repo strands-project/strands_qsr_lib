@@ -3,6 +3,7 @@
 from abc import abstractmethod, ABCMeta
 import numpy as np
 import ghmm as gh
+from copy import deepcopy
 
 
 class HMMAbstractclass():
@@ -90,7 +91,7 @@ class HMMAbstractclass():
         """
 
         trans = np.ones([size,size])
-        return trans/trans.sum(axis=1)
+        return trans/trans.sum(axis=1, keepdims=True)
 
     def _create_emission_matrix(self, size, **kwargs):
         """Method for the creation of the emission probability matrix. Creates
@@ -101,7 +102,7 @@ class HMMAbstractclass():
         """
 
         emi = np.ones([size,size])
-        return emi/emi.sum(axis=1)
+        return emi/emi.sum(axis=1, keepdims=True)
 
     @abstractmethod
     def _qsr_to_symbol(self, qsr_data):
@@ -132,7 +133,7 @@ class HMMAbstractclass():
         """
         return gh.IntegerRange(0, num_symbols)
 
-    def _train(self, seq, trans, emi, num_possible_states):
+    def _train(self, seq, trans, emi, num_possible_states, pseudo_transitions=False, start_at_zero=False):
         """Uses the given parameters to train a multinominal HMM to represent
         the given seqences of observations. Uses Baum-Welch training.
         Please override if special training is necessary for your QSR.
@@ -146,10 +147,16 @@ class HMMAbstractclass():
         """
 
         print 'Generating HMM:'
+        print seq
         print '\tCreating symbols...'
         symbols = self._generate_alphabet(num_possible_states)
-        startprob = np.zeros(num_possible_states)
-        startprob[0] = 1
+        if start_at_zero:
+            startprob = np.zeros(num_possible_states)
+            startprob[0] = 1
+        else:
+            startprob = np.ones(num_possible_states)
+            startprob = startprob/np.sum(startprob)
+        print startprob
         print '\t\t', symbols
         print '\tCreating HMM...'
         hmm = gh.HMMFromMatrices(
@@ -161,6 +168,25 @@ class HMMAbstractclass():
         )
         print '\tTraining...'
         hmm.baumWelch(self._create_sequence_set(seq, symbols))
+
+        if pseudo_transitions:
+            print '\tAdding pseudo transitions...'
+            pseudo = deepcopy(trans)
+            pseudo[pseudo > 0.] = 1.
+            pseudo = pseudo/(float(len(seq)+1))
+
+            trans_trained, emi, start = hmm.asMatrices()
+            trans_trained = np.array(trans_trained)+pseudo
+
+            hmm = gh.HMMFromMatrices(
+                symbols,
+                gh.DiscreteDistribution(symbols),
+                trans_trained.tolist(),
+                emi,
+                start
+            )
+
+            hmm.normalize()
 
         return hmm
 
@@ -182,7 +208,14 @@ class HMMAbstractclass():
         state_seq = self._qsr_to_symbol(kwargs["qsr_seq"])
         trans = self._create_transition_matrix(size=self.get_num_possible_states(), **kwargs)
         emi = self._create_emission_matrix(size=self.get_num_possible_states(), **kwargs)
-        hmm = self._train(state_seq, trans, emi, self.get_num_possible_states())
+        hmm = self._train(
+            state_seq,
+            trans,
+            emi,
+            self.get_num_possible_states(),
+            pseudo_transitions=kwargs["pseudo_transitions"],
+            start_at_zero=kwargs["start_at_zero"]
+        )
         print '...done'
         return hmm
 

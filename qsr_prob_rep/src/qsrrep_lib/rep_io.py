@@ -3,6 +3,8 @@
 """This file defines classes for the interaction with the HMMs. To create your
 own please follow these steps:
 
+TODO: Update description
+
     * Create a request class following the naming scheme: HMMRepRequestFunctionality
     where 'Functionality' is replaced by your new functionality name.
         * Inherit from 'HMMRepRequestAbstractclass'
@@ -23,135 +25,48 @@ own please follow these steps:
 """
 
 from abc import ABCMeta, abstractmethod
-import json
 
 
-class HMMRepRequestAbstractclass(object):
+class RepRequestAbstractclass(object):
     __metaclass__ = ABCMeta
-
-    _const_function_pointer = lambda *args, **kwargs: args[1].my_function(**kwargs) # Example function pointer
 
     @abstractmethod
     def __init__(self):
+        self.rep_type = ""
         self.kwargs = {}
 
-    def call_function(self, inst):
-        return self._const_function_pointer(inst, **self.kwargs)
+    def call_function(self, c, f):
+        return getattr(c, f)(**self.kwargs)
 
 
-class HMMReqResponseBaseclass(object):
+class ReqResponseAbstractclass(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, qsr_type, data):
-        """
-        :param qsr_type: The qqsr this HMM models
-        :param data: Gneric data object, as string or json.dump
-        """
-        self.qsr_type = qsr_type
-        self.data = data
+    qsr_type = ""
 
-    def get_type(self):
-        """Getting the type of the qsr this HMM is modelling
-
-        :return: The qsr type as a string
-        """
-        return self.qsr_type
-
+    @abstractmethod
     def get(self):
-        """Getting the resulting data. What this depends on the actual request made.
-
-        :return: the data as a string or json.dump
-        """
-        return self.data
+        return
 
 
-class HMMRepRequestCreate(HMMRepRequestAbstractclass):
+class ServiceManager():
 
-    _const_function_pointer = lambda *args, **kwargs: args[1]._create_hmm(**kwargs)
+    available_services = {}
 
-    def __init__(self, qsr_type, qsr_seq, store=False):
-        """
-        :param qsr_type: The QSR this HMM is modelling
-        :param qsr_seq: The list of lists of the QSR state chains
-        :param store: Unused. Might leave that to client side.
-        """
-        self.kwargs = {
-            "qsr_type": qsr_type,
-            "qsr_seq": qsr_seq,
-            "store": store
-        }
+    def get_available_services(self):
+        __import__("qsrrep_lib.rep_lib") # This calls all the decorators. Necessary in ros_client.py to generate dictionary.
+        return self.available_services
 
+    class service_function(object):
+        def __init__(self, namespace, request_class, response_class):
+            self.namespace = namespace
+            self.request_class = request_class
+            self.response_class = response_class
 
-class HMMReqResponseCreate(HMMReqResponseBaseclass):
-
-    def get(self):
-        """
-        :return: The HMM in an xml representation string as a str
-        """
-        return str(super(self.__class__, self).get())
-
-
-class HMMRepRequestSample(HMMRepRequestAbstractclass):
-
-    _const_function_pointer = lambda *args, **kwargs: args[1]._sample_hmm(**kwargs)
-
-    def __init__(self, qsr_type, xml, max_length, num_samples=1):
-        """
-        :param qqsr_type: The QSR this HMM is modelling
-        :param xml: The HMM in its xml representation
-        :param max_length: The maximum length of the sample. This will be kept if at all possible
-        :param num_samples: The number of samples to take
-        """
-        self.kwargs = {
-            "qsr_type": qsr_type,
-            "xml": xml,
-            "max_length": max_length,
-            "num_samples": num_samples
-        }
-
-
-class HMMReqResponseSample(HMMReqResponseBaseclass):
-
-    def get(self):
-        """
-        :return: The list of lists of samples take from the given HMM as a json.dump
-        """
-        return super(self.__class__, self).get()
-
-
-class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
-
-    _const_function_pointer = lambda *args, **kwargs: args[1]._get_log_likelihood(**kwargs)
-
-    def __init__(self, qsr_type, xml, qsr_seq):
-        """
-        :param qqsr_type: The QSR this HMM is modelling
-        :param xml: The HMM in its xml representation
-        :param qsr_seq: A list of lists of QSR state chains to check against the given HMM
-        """
-        self.kwargs = {
-            "qsr_type": qsr_type,
-            "xml": xml,
-            "qsr_seq": qsr_seq
-        }
-
-
-class HMMReqResponseLogLikelihood(HMMReqResponseBaseclass):
-
-    def get(self):
-        """
-        :return: The accumulated loglikelihood of the given state chains being produced by the given HMM as a json.dump
-        """
-        return super(self.__class__, self).get()
-
-
-###############################################################################
-# Define available services here:
-# See file ehader for explanation
-###############################################################################
-available_services = {
-    "create": [HMMRepRequestCreate, HMMReqResponseCreate],
-    "sample": [HMMRepRequestSample, HMMReqResponseSample],
-    "log_likelihood": [HMMRepRequestLogLikelihood, HMMReqResponseLogLikelihood]
-}
-###############################################################################
+        def __call__(self, func):
+            if self.namespace not in ServiceManager.available_services:
+                ServiceManager.available_services[self.namespace] = {}
+            ServiceManager.available_services[self.namespace][func.__name__] = (self.request_class, self.response_class)
+            def wrapper(self, *args, **kwargs):
+                return func(self, *args, **kwargs)
+            return wrapper

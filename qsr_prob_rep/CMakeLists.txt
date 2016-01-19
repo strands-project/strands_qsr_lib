@@ -48,7 +48,9 @@ catkin_package(
 ## in contrast to setup.py, you can choose the destination
 install(PROGRAMS
   scripts/qsr_prob_rep_ros_server.py
-  scripts/example_ros_client.py
+  scripts/example_hmm_client.py
+  scripts/example_pf_client.py
+  scripts/create_pf_models.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -59,4 +61,5 @@ install(PROGRAMS
 if (CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(tests/hmm_tester.test)
+  add_rostest(tests/pf_tester.test)
 endif()

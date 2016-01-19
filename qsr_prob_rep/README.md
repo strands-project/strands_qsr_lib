@@ -6,13 +6,28 @@ This library provides functionalities to create probablistic models of QSR state
 
 The recommended language is python 2.7 using ROS Indigo. Eventhough the library uses ROS only for communication, the provided infrastructure currently relies on ROS services to be used. Python is recommended due to the fact that the provided ros_client is implemented in python and using the services directly might be a bit confusing at first since they rely on json parsable strings.
 
-For a python usage exmple, please see the example_ros_client.py in scripts. Try `rosrun qsr_prob_rep example_ros_client.py -h` for usage information.
+For a python usage exmple, please see the example_ros_client.py in scripts. Try `rosrun qsr_prob_rep example_hmm_client.py -h` or `rosrun qsr_prob_rep example_pf_client.py -h` for usage information depending on if you want to create a Hidden Markov Model or a Particle Filter.
 
 ### Currently implemented functionality
+
+**HMM**
 
 * _create_: This takes the desired qsr_type and a json parsable list of lists of QSR state chains and returns the xml representation of the trained HMM as a string. This function is easiest to use when reading the state chains from files as it's done in the example client. The resulting xml can either be written to disk, kept in memory, or stored in a datacentre. The xml string is used in all other functionalities to load the HMM.
 * _sample_: Given a HMM as an XML string, the desired number and length of samples, and the qsr the HMM models, this function produces sample state chains and returns them as numpy arrays.
 * _loglikelihood_: Given an HMM and a (list of) state chain(s), this function calculates the accumulative loglikelihood for the state chain(s) to be produced by the given HMM. Might produce `-inf` if production is impossible.
+
+**Particle Filter**
+
+* _create_: This takes a model consisting or several transition probability and observation probability matrices in a dictionary and a state look up table to create a particle filter. Create an instance of the `PfRepRequestCreate` class filling all the necessary information. The required model can be built with a helper class `qsrrep_pf.pf_model.PfModel` that includes tests for the model sanity. Have a look at the example client on how to use this. The look up table has to have as many states as the matrices have rows and coloumns, and should be a simple list or numpy array of the states that will be observed. The index of the state in the look up table has to correspond to the index for this state in the given matrices. Have a look at the `qsrrep_utils.qtc_model_generation` class for inspiration on how to create one. This returns a uuid identifying your particle filter.
+ * The necessary files can be create directly from the HMM by exporting the emission matrix as the observation probability matrix and the transitions as the transition probability matrix. This however, requires that you have enough training data to learn sensible emissians and transitions at the same time. If not, create your own observation probability matrix like it is done in `qsrrep_utils.qtc_model_generation`. The `create_pf_models.py` script can help to generate the files from the HMM.
+* _predict_: Takes the uuid of an existing particle filter and the number of sample generations to predict and returns the most likely next states and model including their probabilities.
+* _update_: Runs the baysian update for the particle filter identified by uuid id using an observation provided.
+* _list_filters_: Lists all currently active filters.
+* _remove_: Removes the particle filter with the given uuid from memory.
+
+**General usage advice**
+
+The ros_client for python hides a lot of the complexity from the user. Just create an instance of the correct request class and call `ROSClient().call_service` and the right service will be called for you. All the json parsing happens in the background and you don't have to worry about this. Have a look at the example clients to see how to do this.
 
 ### Currently implemented QSRs
 
@@ -22,6 +37,8 @@ For a python usage exmple, please see the example_ros_client.py in scripts. Try 
 * _RCC3_: A very simple rcc3 representation using uniform transition and emission matrices.
 
 ## For Developers
+
+**The following is currently hevily outdated and needs updating!!!**
 
 ### Adding a new QSR
 

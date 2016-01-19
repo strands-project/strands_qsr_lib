@@ -7,7 +7,7 @@ import sys
 import unittest
 from roslib.packages import find_resource
 from qsrrep_ros.ros_client import ROSClient
-from qsrrep_lib.rep_io import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
+from qsrrep_lib.rep_io_hmm import HMMRepRequestCreate, HMMRepRequestSample, HMMRepRequestLogLikelihood
 import json
 import hashlib
 
@@ -53,19 +53,20 @@ class TestHMM(unittest.TestCase):
 
         self.r = ROSClient()
 
-    def _create_hmm(self, qsr_file, qsr_type):
+    def _create_hmm(self, qsr_file, qsr_type, start_at_zero=True):
         with open(qsr_file, 'r') as f: qsr_seq = json.load(f)
-        _, d = self.r.call_service(
+        d = self.r.call_service(
             HMMRepRequestCreate(
                 qsr_seq=qsr_seq,
-                qsr_type=qsr_type
+                qsr_type=qsr_type,
+                start_at_zero=start_at_zero
             )
         )
         return d
 
     def _create_sample(self, hmm_file, qsr_type):
         with open(hmm_file, 'r') as f: hmm = f.read()
-        _, s = self.r.call_service(
+        s = self.r.call_service(
             HMMRepRequestSample(
                 qsr_type=qsr_type,
                 xml=hmm,
@@ -78,7 +79,7 @@ class TestHMM(unittest.TestCase):
     def _calculate_loglikelihood(self, hmm_file, qsr_file, qsr_type):
         with open(qsr_file, 'r') as f: qsr_seq = json.load(f)
         with open(hmm_file, 'r') as f: hmm = f.read()
-        q, l = self.r.call_service(
+        l = self.r.call_service(
             HMMRepRequestLogLikelihood(
                 qsr_type=qsr_type,
                 xml=hmm,
