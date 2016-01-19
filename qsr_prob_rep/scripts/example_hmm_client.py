@@ -10,13 +10,17 @@ import rospy
 import json
 import argparse
 
+
+def load_json_file(path):
+    with open(path, 'r') as f:
+        return json.load(f)
+
 def load_files(path):
     ret = []
     for f in os.listdir(path):
         if f.endswith(".qsr"):
             filename = path + '/' + f
-            with open(filename, 'r') as qsr:
-                ret.append(json.load(qsr))
+            ret.append(load_json_file(filename))
 
     return ret
 
@@ -34,6 +38,11 @@ if __name__ == "__main__":
     create_parse = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter,add_help=False)
     create_parse.add_argument('-i', '--input', help="reads *.qsr files from the given directory", type=str, required=True)
     create_parse.add_argument('-o', '--output', help="the file to which to write the resulting xml", type=str, required=True)
+    create_parse.add_argument('--trans', help="the transition matrix json file", type=str, default="")
+    create_parse.add_argument('--emi', help="the emission matrix json file", type=str, default="")
+    create_parse.add_argument('--lookup', help="the lookup table json file", type=str, default="")
+    create_parse.add_argument('--pseudo_transitions', help="add pseudo transitions after training", action="store_true", default=False)
+    create_parse.add_argument('--start_at_zero', help="assume 0 is the start state", action="store_true", default=False)
     subparsers.add_parser('create',parents=[general, qtc_parse, create_parse])
 
     # Parsers for sample function
@@ -61,7 +70,12 @@ if __name__ == "__main__":
         d = r.call_service(
             HMMRepRequestCreate(
                 qsr_seq=qsr_seq,
-                qsr_type=args.qsr_type
+                qsr_type=args.qsr_type,
+                pseudo_transitions=args.pseudo_transitions,
+                lookup_table=load_json_file(args.lookup),
+                transition_matrix=load_json_file(args.trans) if args.trans != "" else None,
+                emission_matrix=load_json_file(args.emi) if args.emi != "" else None,
+                start_at_zero=args.start_at_zero
             )
         )
         with open(args.output, 'w') as f: f.write(d)
