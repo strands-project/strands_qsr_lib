@@ -2,6 +2,35 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fixing normalisation of matrix. It only worked because they are square and all entries are 1.
+* Printing debug information on creation of the pf for all models not only for the first two. Might have also killed the server if only one model.
+* Adding all the new arguments of the hmm create message to the example hmm client. Use ... create -h for help.
+* The assumption that every hmm has a start state 0 is not valid. now there is a flag `start_at_zero` when you want to enforce a start state at 0.
+* generic hmm emi and trans have to numpy arrays to be consistent.
+* Fixing available hmms for help message
+* Adding simple tests for the particle filter
+* Fixing install targets.
+* Adding pybayes as a dependency
+* Adding optional pseudo transitions to hmm.
+* Adding a generic hmm that takes a lookup table, and optionally a transition and emission matrix. If the latter two are not provided, uniform distribution is assumed.
+* Updating readme slightly
+* Adding example files for particle filter creation.
+* Adding helper functions and scripts to create all the files necessary for the particle filter from the HMM or for QTC
+* Adding a particle filter for QRSs
+* * Decoupling HMMs from the main library functionality to allow for other representations to be added more easily.
+  * The Services are now create by decorating functions using the ServiceManager class.
+  * Simplifies the service generation by not needing to maintain a dictionary with all the services.
+  * Simplifies the class structure by not calling weird lambda functions anymore.
+  * removing `qsr_type` from the service request and response.
+  * Now part of the general kwargs for hmm
+  * Particle filter will not use this
+  * Allows to have a generic hmm that takes trans and emi matrix plus a lookup instead of a specific implementation.
+* Renamed example ros client to example hmm client as every representation will have their own client.
+* Introducing namespaces for services to distinguish between hmm and other representations.
+* Contributors: Christian Dondrup
+
 0.2.1 (2015-12-08)
 ------------------
 * Waiting for services to become available
