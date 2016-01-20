@@ -2,8 +2,8 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2016-01-20)
+------------------
 * Fixing normalisation of matrix. It only worked because they are square and all entries are 1.
 * Printing debug information on creation of the pf for all models not only for the first two. Might have also killed the server if only one model.
 * Adding all the new arguments of the hmm create message to the example hmm client. Use ... create -h for help.
