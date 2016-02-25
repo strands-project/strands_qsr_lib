@@ -26,6 +26,7 @@ TODO: Update description
 
 from abc import ABCMeta, abstractmethod
 from rep_io import RepRequestAbstractclass, ReqResponseAbstractclass
+import json
 
 
 class HMMRepRequestAbstractclass(RepRequestAbstractclass):
@@ -86,24 +87,24 @@ class HMMReqResponseCreate(HMMReqResponseAbstractclass):
 
     def get(self):
         """
-        :return: The HMM in an xml representation string as a str
+        :return: The HMM in an distionary representation as a json str
         """
-        return str(super(self.__class__, self).get())
+        return json.dumps(super(self.__class__, self).get())
 
 
 class HMMRepRequestSample(HMMRepRequestAbstractclass):
 
-    def __init__(self, qsr_type, xml, max_length, num_samples=1, lookup_table=None):
+    def __init__(self, qsr_type, dictionary, max_length, num_samples=1, lookup_table=None):
         """
         :param qsr_type: The QSR this HMM is modelling
-        :param xml: The HMM in its xml representation
+        :param dictionary: The HMM in its dictionary json representation
         :param max_length: The maximum length of the sample. This will be kept if at all possible
         :param num_samples: The number of samples to take
         """
         super(self.__class__, self).__init__()
         self.kwargs = {
             "qsr_type": qsr_type,
-            "xml": xml,
+            "dictionary": dictionary if isinstance(dictionary, dict) else json.loads(dictionary),
             "max_length": max_length,
             "num_samples": num_samples,
             "lookup_table": lookup_table
@@ -121,16 +122,16 @@ class HMMReqResponseSample(HMMReqResponseAbstractclass):
 
 class HMMRepRequestLogLikelihood(HMMRepRequestAbstractclass):
 
-    def __init__(self, qsr_type, xml, qsr_seq, lookup_table=None):
+    def __init__(self, qsr_type, dictionary, qsr_seq, lookup_table=None):
         """
         :param qsr_type: The QSR this HMM is modelling
-        :param xml: The HMM in its xml representation
+        :param dictionary: The HMM in its dictionary json representation
         :param qsr_seq: A list of lists of QSR state chains to check against the given HMM
         """
         super(self.__class__, self).__init__()
         self.kwargs = {
             "qsr_type": qsr_type,
-            "xml": xml,
+            "dictionary": dictionary if isinstance(dictionary, dict) else json.loads(dictionary),
             "qsr_seq": qsr_seq,
             "lookup_table": lookup_table
         }
