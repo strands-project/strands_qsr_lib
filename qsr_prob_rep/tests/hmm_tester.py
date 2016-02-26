@@ -32,10 +32,10 @@ class TestHMM(unittest.TestCase):
     }
 
     correct_hashsum = {
-        "qtcb": "3fb65b50d0f7631a300132e8bca9ca13",
-        "qtcc": "dbf1529cb0b0c90aaebbe7eafe0e9b05",
-        "qtcbc": "0a3acf7b48c4c1155931442c86317ce4",
-        "rcc3": "6d5bcc6c44d9b1120c738efa1994a40a"
+        "qtcb": "de1ea75d1b0d6c9ff8249a24583fedb9",
+        "qtcc": "5d74fb27e53ba00f84014d3be70e2740",
+        "qtcbc": "f73e2c85f1447a5109d6ab3d5201fb76",
+        "rcc3": "402c53a1cc004a5f518d0b607eb7ac38"
     }
 
     correct_loglikelihoods ={
@@ -65,11 +65,11 @@ class TestHMM(unittest.TestCase):
         return d
 
     def _create_sample(self, hmm_file, qsr_type):
-        with open(hmm_file, 'r') as f: hmm = f.read()
+        with open(hmm_file, 'r') as f: hmm = json.load(f)
         s = self.r.call_service(
             HMMRepRequestSample(
                 qsr_type=qsr_type,
-                xml=hmm,
+                dictionary=hmm,
                 max_length=10,
                 num_samples=1
             )
@@ -78,11 +78,11 @@ class TestHMM(unittest.TestCase):
 
     def _calculate_loglikelihood(self, hmm_file, qsr_file, qsr_type):
         with open(qsr_file, 'r') as f: qsr_seq = json.load(f)
-        with open(hmm_file, 'r') as f: hmm = f.read()
+        with open(hmm_file, 'r') as f: hmm = json.load(f)
         l = self.r.call_service(
             HMMRepRequestLogLikelihood(
                 qsr_type=qsr_type,
-                xml=hmm,
+                dictionary=hmm,
                 qsr_seq=qsr_seq
             )
         )
@@ -93,7 +93,7 @@ class TestHMM(unittest.TestCase):
 
     def test_qtcb_create(self):
         res = self._create_hmm(self.QTCB_QSR, 'qtcb')
-        self.assertEqual(hashlib.md5(res).hexdigest(), self.correct_hashsum["qtcb"])
+        self.assertEqual(hashlib.md5(json.dumps(res)).hexdigest(), self.correct_hashsum["qtcb"])
 
     def test_qtcb_sample(self):
         res = self._create_sample(self.QTCB_SAMPLE_TEST_HMM, 'qtcb')
@@ -105,7 +105,7 @@ class TestHMM(unittest.TestCase):
 
     def test_qtcc_create(self):
         res = self._create_hmm(self.QTCC_QSR, 'qtcc')
-        self.assertEqual(hashlib.md5(res).hexdigest(), self.correct_hashsum["qtcc"])
+        self.assertEqual(hashlib.md5(json.dumps(res)).hexdigest(), self.correct_hashsum["qtcc"])
 
     def test_qtcc_sample(self):
         res = self._create_sample(self.QTCC_SAMPLE_TEST_HMM, 'qtcc')
@@ -117,7 +117,7 @@ class TestHMM(unittest.TestCase):
 
     def test_qtcbc_create(self):
         res = self._create_hmm(self.QTCBC_QSR, 'qtcbc')
-        self.assertEqual(hashlib.md5(res).hexdigest(), self.correct_hashsum["qtcbc"])
+        self.assertEqual(hashlib.md5(json.dumps(res)).hexdigest(), self.correct_hashsum["qtcbc"])
 
     def test_qtcbc_sample(self):
         res = self._create_sample(self.QTCBC_SAMPLE_TEST_HMM, 'qtcbc')
@@ -129,7 +129,7 @@ class TestHMM(unittest.TestCase):
 
     def test_rcc3_create(self):
         res = self._create_hmm(self.RCC3_QSR, 'rcc3')
-        self.assertEqual(hashlib.md5(res).hexdigest(), self.correct_hashsum["rcc3"])
+        self.assertEqual(hashlib.md5(json.dumps(res)).hexdigest(), self.correct_hashsum["rcc3"])
 
     def test_rcc3_sample(self):
         res = self._create_sample(self.RCC3_TEST_HMM, 'rcc3')
