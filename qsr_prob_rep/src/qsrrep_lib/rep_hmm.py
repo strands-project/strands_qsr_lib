@@ -11,6 +11,7 @@ from qsrrep_hmms.rcc3_hmm import RCC3HMM
 from qsrrep_hmms.generic_hmm import GenericHMM
 import ghmm as gh
 import json
+import numpy as np
 
 
 class RepHMM(object):
@@ -48,7 +49,7 @@ class RepHMM(object):
         :return: A 'HMMReqResponseCreate' object containing the resulting data
 
         """
-        hmm = self.__hmm_types_active[kwargs["qsr_type"]].get_hmm(
+        hmm = self.hmm_types_available[kwargs["qsr_type"]]().get_hmm(
             **kwargs
         )
         return HMMReqResponseCreate(data=self.__create_dict_from_hmm(hmm), qsr_type=kwargs["qsr_type"])
@@ -69,8 +70,9 @@ class RepHMM(object):
         :return: A 'HMMReqResponseSamples' object containing the resulting data
 
         """
-        sample = self.__hmm_types_active[kwargs["qsr_type"]].get_samples(
-            hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"]),
+        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_symbols()
+        sample = self.hmm_types_available[kwargs["qsr_type"]]().get_samples(
+            hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"], num_symbols=num_symbols),
             **kwargs
         )
         return HMMReqResponseSample(data=json.dumps(sample), qsr_type=kwargs["qsr_type"])
@@ -90,8 +92,9 @@ class RepHMM(object):
         :return: A 'HMMReqResponseLogLikelihood' object containing the resulting data
 
         """
-        loglike = self.__hmm_types_active[kwargs["qsr_type"]].get_log_likelihood(
-            hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"]),
+        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_symbols()
+        loglike = self.hmm_types_available[kwargs["qsr_type"]]().get_log_likelihood(
+            hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"], num_symbols=num_symbols),
             **kwargs
         )
         return HMMReqResponseLogLikelihood(data=json.dumps(loglike), qsr_type=kwargs["qsr_type"])
@@ -113,7 +116,7 @@ class RepHMM(object):
 
         return ret
 
-    def __create_hmm_from_dict(self, dictionary, qsr_type):
+    def __create_hmm_from_dict(self, dictionary, qsr_type, num_symbols):
         """Creates a hmm from the xml representation. Not nice to use tempfile
         but not otherwise possible due to hidden code and swig in ghmm.
 
@@ -121,7 +124,7 @@ class RepHMM(object):
 
         :return: the ghmm hmm object
         """
-        symbols = self.__hmm_types_active[qsr_type].generate_alphabet(self.__hmm_types_active[qsr_type].get_num_possible_states())
+        symbols = self.__hmm_types_active[qsr_type].generate_alphabet(num_symbols)
         hmm = gh.HMMFromMatrices(
             symbols,
             gh.DiscreteDistribution(symbols),
