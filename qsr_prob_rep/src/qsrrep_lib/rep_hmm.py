@@ -11,7 +11,6 @@ from qsrrep_hmms.rcc3_hmm import RCC3HMM
 from qsrrep_hmms.generic_hmm import GenericHMM
 import ghmm as gh
 import json
-import numpy as np
 
 
 class RepHMM(object):
@@ -27,14 +26,10 @@ class RepHMM(object):
         "generic": GenericHMM
     }
 
-    __hmm_types_active = {}
-
     namespace = "hmm"
 
     def __init__(self):
-        # Activate hmms
-        for k, v in self.hmm_types_available.items():
-            self.__hmm_types_active[k] = v()
+        pass
 
     @ServiceManager.service_function(namespace, HMMRepRequestCreate, HMMReqResponseCreate)
     def create(self, **kwargs):
@@ -70,7 +65,7 @@ class RepHMM(object):
         :return: A 'HMMReqResponseSamples' object containing the resulting data
 
         """
-        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_symbols()
+        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_states()
         sample = self.hmm_types_available[kwargs["qsr_type"]]().get_samples(
             hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"], num_symbols=num_symbols),
             **kwargs
@@ -92,7 +87,7 @@ class RepHMM(object):
         :return: A 'HMMReqResponseLogLikelihood' object containing the resulting data
 
         """
-        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_symbols()
+        num_symbols = len(kwargs["lookup_table"]) if kwargs["qsr_type"] == "generic" else self.hmm_types_available[kwargs["qsr_type"]]().get_num_possible_states()
         loglike = self.hmm_types_available[kwargs["qsr_type"]]().get_log_likelihood(
             hmm=self.__create_hmm_from_dict(dictionary=kwargs["dictionary"], qsr_type=kwargs["qsr_type"], num_symbols=num_symbols),
             **kwargs
@@ -124,7 +119,7 @@ class RepHMM(object):
 
         :return: the ghmm hmm object
         """
-        symbols = self.__hmm_types_active[qsr_type].generate_alphabet(num_symbols)
+        symbols = self.hmm_types_available[qsr_type]().generate_alphabet(num_symbols)
         hmm = gh.HMMFromMatrices(
             symbols,
             gh.DiscreteDistribution(symbols),
