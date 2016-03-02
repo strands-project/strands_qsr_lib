@@ -124,7 +124,7 @@ class HMMAbstractclass():
         """
         return
 
-    def _generate_alphabet(self, num_symbols):
+    def generate_alphabet(self, num_symbols):
         """Generate a simple integer alphabet: [0:num_symbols-1]
 
         :param num_symbols: The number of different qsr symbols
@@ -149,7 +149,7 @@ class HMMAbstractclass():
         print 'Generating HMM:'
         print seq
         print '\tCreating symbols...'
-        symbols = self._generate_alphabet(num_possible_states)
+        symbols = self.generate_alphabet(num_possible_states)
         if start_at_zero:
             startprob = np.zeros(num_possible_states)
             startprob[0] = 1
@@ -236,7 +236,7 @@ class HMMAbstractclass():
         for i in range(int(kwargs["num_samples"])):
             ret.append(
                 map(
-                    self._generate_alphabet(num_symbols=self.num_possible_states).external,
+                    self.generate_alphabet(num_symbols=self.num_possible_states).external,
                     hmm.sampleSingle(int(kwargs["max_length"]))
                 )
             )
@@ -256,5 +256,5 @@ class HMMAbstractclass():
 
         return kwargs["hmm"].loglikelihood(self._create_sequence_set(
             qsr_seq=self._qsr_to_symbol(kwargs["qsr_seq"]),
-            symbols=self._generate_alphabet(num_symbols=self.num_possible_states)
+            symbols=self.generate_alphabet(num_symbols=self.num_possible_states)
         ))
