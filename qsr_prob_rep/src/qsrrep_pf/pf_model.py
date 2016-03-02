@@ -6,7 +6,8 @@ import json
 
 
 class PfModel(object):
-    _model = {}
+    def __init__(self):
+        self._model = {}
 
     def add_model(self, name, pred, obs):
         """Add a model to the particle filter model representation.
