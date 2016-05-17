@@ -1,8 +1,10 @@
 Moving or Stationary
 ====================
 
-The *Moving or Stationary* (MOS) QSR is a simple qualitative relation of an object determining whether it is
-moving or not with respect to its coordinate frame origin.
+Description
+-----------
+
+The *Moving or Stationary* (MOS) QSR is a simple qualitative relation of an object determining whether it is moving or not with respect to its coordinate frame origin.
 
 Relations
 ---------
@@ -14,4 +16,5 @@ The relations are simply:
 
 API
 ---
+
 The API can be found :mod:`here <qsrlib_qsrs.qsr_moving_or_stationary>`.

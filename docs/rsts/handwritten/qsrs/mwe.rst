@@ -1,8 +1,10 @@
 Minimal Working Example
 =======================
 
-The *Minimal Working Example* (MWE) is a simple directional QSR aimed to demonstrate how to implement a new QSR and integrate
-it in QSRlib.
+Description
+-----------
+
+The *Minimal Working Example* (MWE) is a simple directional QSR aimed to demonstrate how to implement a new QSR and integrate it in QSRlib.
 
 Relations
 ---------
@@ -21,5 +23,6 @@ All the possible MWE relations between a blue object X and a red object Y are:
 
 API
 ---
+
 The API can be found :mod:`here <qsrlib_qsrs.qsr_new_mwe>`.
 
