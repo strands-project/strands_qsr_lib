@@ -1,5 +1,14 @@
-Usage
-=====
+For users
+=========
+
+The following figure presents a flowchart with the main step processes for computing QSRs via the library. Raw data first needs to  be converted into the common input data format of QSRlib, which represents a timeseries of the states of the perceived objects, such Cartesian position and rotation, size of the object in each dimension, and allows other custom information about the objects to be kept on a per QSR-need basis. Utility functions are provided that allow easy conversion of the raw data to this standard input data structure. This input data structure, the names of the requested QSRs to be computed and other options that control their behaviours are used to create a request message to the QSRlib server, which upon computation returns a response message that includes the computed QSRs as an output data structure similar to the input one, i.e. a timeseries of the QSRs between the objects, as well as other information.
+
+.. image:: images/flowchart.pdf
+    :width: 500px
+    :align: center
+    :alt: Flowchart showing the main step processes for computing QSRs via the library.
+
+The following minimal working example explains how to conduct these steps and use the library to compute QSRs from your data.
 
 .. _MWE:
 

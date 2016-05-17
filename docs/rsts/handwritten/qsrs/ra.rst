@@ -1,8 +1,10 @@
 Rectangle Algebra
 =================
 
-The *Rectangle Algebra* [1]_ [2]_ (RA) computes :doc:`Allen's Interval Algebra <allen>` relations on the
-projected to their xy-axes segments between two 2D-rectangles.
+Description
+-----------
+
+The *Rectangle Algebra* [1]_ [2]_ (RA) computes :doc:`Allen's Interval Algebra <allen>` relations on the projected to their xy-axes segments between two 2D-rectangles.
 
 Relations
 ---------

@@ -1,13 +1,13 @@
 Allen's Interval Algebra
 ========================
 
-*Allen's Interval Algebra* [1]_ (AIA) is a system for reasoning about temporal relations.
-The calculus defines possible relations between time intervals and provides a composition
-table that can be used as a basis for reasoning about temporal descriptions of events [2]_.
+Description
+-----------
+
+*Allen's Interval Algebra* [1]_ (AIA) is a system for reasoning about temporal relations. The calculus defines possible relations between time intervals and provides a composition table that can be used as a basis for reasoning about temporal descriptions of events [2]_.
 
 AIA is used in a variety of QSRs and other topics in QSRlib, e.g. in the
 :doc:`Regional Algebra <ra>` QSR, in the :doc:`QSR graphs <qstag>`, etc.
-
 
 Relations
 ---------
@@ -32,9 +32,9 @@ Allen's Interval Algebra defines 13 possible qualitative temporal base relations
 | X **f** Y     | Y **fi** X   | |allen_finishes|          | X finishes Y.                                   |
 +---------------+--------------+---------------------------+-------------------------------------------------+
 
-
 References
 ----------
+
 .. [1] James F. Allen: Maintaining knowledge about temporal intervals. Communications of the ACM, 1983.
 
 .. [2] Wikipedia: Allen's interval algebra. Wikipedia, accessed October 2015, https://en.wikipedia.org/wiki/Allen%27s_interval_algebra

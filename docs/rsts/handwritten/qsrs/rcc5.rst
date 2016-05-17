@@ -1,12 +1,12 @@
 Region Connection Calculus 5
 ============================
 
-The *Region Connection Calculus* [1]_ [2]_ (RCC) is intended to serve for qualitative spatial representation and reasoning.
-RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to
-each other.
+Description
+-----------
 
-RCC5 consists of 5 basic relations that are possible between two regions; it is a stripped down version
-of :doc:`RCC8 <rcc8>`. The mapping from RCC8 to RCC5 can be seen below:
+The *Region Connection Calculus* [1]_ [2]_ (RCC) is intended to serve for qualitative spatial representation and reasoning. RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to each other.
+
+RCC5 consists of 5 basic relations that are possible between two regions; it is a stripped down version of :doc:`RCC8 <rcc8>`. The mapping from RCC8 to RCC5 can be seen below:
 
 
 +------------+------------+
@@ -64,5 +64,6 @@ The API can be found :mod:`here <qsrlib_qsrs.qsr_rcc5>`.
 
 References
 ----------
+
 .. [1] Randell, D. A., Cui, Z. and Cohn, A. G.: A spatial logic based on regions and connection, Proc. 3rd Int. Conf. on Knowledge Representation and Reasoning, Morgan Kaufmann, San Mateo, pp. 165–176, 1992. `(link) <http://wenxion.net/ac/randell92spatial.pdf>`_
 .. [2] Anthony G. Cohn, Brandon Bennett, John Gooday, Micholas Mark Gotts: Qualitative Spatial Representation and Reasoning with the Region Connection Calculus. GeoInformatica, 1, 275–316, 1997.
