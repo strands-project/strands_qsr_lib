@@ -4,7 +4,7 @@ Moving or Stationary
 Description
 -----------
 
-The *Moving or Stationary* (MOS) QSR is a simple qualitative relation of an object determining whether it is moving or not with respect to its coordinate frame origin.
+*Moving or Stationary* (MOS) is a simple qualitative relation of an object determining whether it is moving or not with respect to its coordinate frame origin.
 
 Relations
 ---------

@@ -1,5 +1,5 @@
-QTCCS
-=====
+Qualitative Trajectory Calculus c
+===================================
 
 Description
 -----------

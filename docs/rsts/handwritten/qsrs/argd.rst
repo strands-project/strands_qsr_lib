@@ -1,10 +1,10 @@
-Qualitative Distance System
-===========================
+Qualitative Distance Calculus
+=============================
 
 Description
 -----------
 
-*Qualitative Distance System* relations define qualitative spatial distance relations between two objects according to the relations names and distance thresholds defined by the user.
+*Qualitative Distance Calculus* (QDC) relations define qualitative spatial distance relations between two objects according to the relations names and distance thresholds defined by the user.
 
 Relations
 ---------
