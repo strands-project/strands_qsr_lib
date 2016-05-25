@@ -4,7 +4,7 @@ Cardinal Directions
 Description
 -----------
 
-Cardinal Directions are compass relations between two objects, and their minimum set consists of four relations north (n), east (e), south (s) and west (w). Intermediate relations between the main relations are north-east (ne), south-east (se), south-west (sw) and north-west (nw). These relations are shown schematically in the compass rose shown in the figure below, with the addition of an 'equal' (eq) relation when the objects are together.
+*Cardinal Directions* (CarDir) are compass relations between two objects, and their minimum set consists of four relations north (n), east (e), south (s) and west (w). Intermediate relations between the main relations are north-east (ne), south-east (se), south-west (sw) and north-west (nw). These relations are shown schematically in the compass rose shown in the figure below, with the addition of an 'equal' (eq) relation when the objects are together.
 
 For the computation of cardinal directions between two regions we use a point-based model (examples are [1]_ [2]_ [3]_ [4]_), i.e. we approximate the regions by their centroid.
 

@@ -1,5 +1,5 @@
-QTCBS
-=====
+Qualitative Trajectory Calculus *b*
+===================================
 
 Description
 -----------

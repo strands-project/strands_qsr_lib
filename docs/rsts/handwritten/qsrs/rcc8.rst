@@ -4,7 +4,7 @@ Region Connection Calculus 8
 Description
 -----------
 
-The *Region Connection Calculus* [1]_ [2]_ (RCC) is intended to serve for qualitative spatial representation and reasoning. RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to each other.
+*Region Connection Calculus* (RCC) [1]_ [2]_ is intended to serve for qualitative spatial representation and reasoning. RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to each other.
 
 RCC8 consists of 8 basic relations that are possible between two regions.
 

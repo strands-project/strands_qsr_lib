@@ -4,7 +4,7 @@ Minimal Working Example
 Description
 -----------
 
-The *Minimal Working Example* (MWE) is a simple directional QSR aimed to demonstrate how to implement a new QSR and integrate it in QSRlib.
+*Minimal Working Example* (MWE) is a simple directional QSR aimed to demonstrate how to implement a new QSR and integrate it in QSRlib.
 
 Relations
 ---------

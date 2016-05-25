@@ -4,7 +4,7 @@ Ternary Point Configuration Calculus
 Description
 -----------
 
-The Ternary Point Configuration Calculus (TPCC) deals with point-like objects in the 2D-plane. It is a application based variant of the Double Cross calculus, allowing finer distinctions of positional information than the calculi presented before.
+*Ternary Point Configuration Calculus* (TPCC) deals with point-like objects in the 2D-plane. It is a application based variant of the Double Cross calculus, allowing finer distinctions of positional information than the calculi presented before.
 
 
 Relations

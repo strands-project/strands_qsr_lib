@@ -4,7 +4,7 @@ Region Connection Calculus 2
 Description
 -----------
 
-The *Region Connection Calculus* [1]_ [2]_ (RCC) is intended to serve for qualitative spatial representation and reasoning. RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to each other.
+*Region Connection Calculus* (RCC) [1]_ [2]_ is intended to serve for qualitative spatial representation and reasoning. RCC abstractly describes regions (in Euclidean space, or in a topological space) by their possible relations to each other.
 
 RCC2 is the simplest form of RCC and consists of 2 basic relations that are possible between two regions. It is a stripped down version
 of :doc:`RCC8 <rcc8>`. The mapping from RCC8 to RCC2 can be seen below:

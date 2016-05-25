@@ -1,6 +1,8 @@
 Get Started
 ===========
 
+A list of included QSRs can be found in this :doc:`link <qsrs/qsrs>`.
+
 For installation instructions refer to the :doc:`install guidelines <install>`.
 
 To get started with using QSRlib read and go through the :doc:`usage examples <for_users>`.
