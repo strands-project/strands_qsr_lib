@@ -11,11 +11,13 @@ import warnings
 
 
 
-def compute_episodes(world_qsr, NOISE_THRESHOLD):
+def compute_episodes(world_qsr):
 	"""
 	Compute QSR Episodes from a QSRLib.QSR_World_Trace object.
 	QSR Episodes compresses repeating QSRs into a temporal interval over which they hold.
 	Returns: a long list of episodes with the format, `[(objects), {spatial relations}, (start_frame, end_frame)]`.
+
+	FILTERS: if any of the qsr values == Ignore, the entire episode will be ignored.
 
 	Example content:
 	----------------
@@ -33,13 +35,35 @@ def compute_episodes(world_qsr, NOISE_THRESHOLD):
 	obj_based_qsr_world = {}
 	frames = world_qsr.get_sorted_timestamps()
 
+	"""remove the first frame which cannot contain a qtcb relation"""
+	if "qtcbs" in world_qsr.qsr_type:
+		if frames[0] == 1.0: frames.pop(0)
+
 	for frame in frames:
 		for objs, qsrs in world_qsr.trace[frame].qsrs.items():
-			if objs not in obj_based_qsr_world: obj_based_qsr_world[objs] = []
-			obj_based_qsr_world[objs].append((frame, qsrs.qsr))
+			my_qsrs = {}
+			#print("h", objs, qsrs.qsr)
 
+			for qsr_key, qsr_val in qsrs.qsr.items():
+				#print("  ", qsr_key, qsr_val)
+				if qsr_key is "tpcc":
+					origin,relatum,datum = objs.split(',')
+					new_key=("%s-%s,%s") % (origin,relatum,datum)
+					try:
+						obj_based_qsr_world[new_key].append((frame, {"tpcc": qsrs.qsr["tpcc"]}))
+					except KeyError:
+						obj_based_qsr_world[new_key] = [(frame, {"tpcc": qsrs.qsr["tpcc"]})]
+				else:
+					my_qsrs[qsr_key] = qsr_val
+
+			if my_qsrs != {}:
+				try:
+					obj_based_qsr_world[objs].append((frame, my_qsrs))
+				except KeyError:
+					obj_based_qsr_world[objs] = [(frame, my_qsrs)]
+
+	#print("s", obj_based_qsr_world[objs])
 	for objs, frame_tuples in obj_based_qsr_world.items():
-
 		epi_start, epi_rel = frame_tuples[0]
 		epi_end  = copy.copy(epi_start)
 
@@ -52,8 +76,18 @@ def compute_episodes(world_qsr, NOISE_THRESHOLD):
 				epi_start = epi_end = frame
 				epi_rel = rel
 		episodes.append((objects, epi_rel, (epi_start, epi_end)))
-	print("number of eps:", len(episodes))
-	return episodes
+
+	"""If any of the qsr values == ignore. Remove that episode entirely. """
+	filtered_out_ignore = []
+	for ep in episodes:
+		ignore_flag = 0
+		for qsr, val in ep[1].items():
+			if val == "Ignore":	ignore_flag = 1
+		if ignore_flag == 0: filtered_out_ignore.append(ep)
+
+	print("number of eps:", len(filtered_out_ignore))
+
+	return filtered_out_ignore
 
 def get_E_set(objects, spatial_data):
 	"""Returns the Starting episode set (E_s) and the Endding episode set (E_s)

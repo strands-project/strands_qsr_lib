@@ -44,12 +44,14 @@ if __name__ == "__main__":
 	args = parser.parse_args()
 	args.distance_threshold = {"touch":1, "near":3, "medium":5, "far":10}
 
-	qtcbs_qsrs_for = [("o1", "o2"),("o1", "o3"),("o2", "o3")]
+	qtcbs_qsrs_for = [("o1", "o2"), ("o1", "o3"), ("o2", "o3")]
 	argd_qsrs_for = [("o1", "o2")]
 	mos_qsrs_for = ["o1", "o2"]
+	tpcc_qsrs_for = [("o1", "o2", "o3")]
 
 	object_types = {"o1": "Human",
-					"o2": "Chair"}
+					"o2": "Chair",
+					"o1-o2" : "tpcc-plane"}
 
 	if args.qsr in options:
 		if args.qsr != "multiple":
@@ -74,7 +76,9 @@ if __name__ == "__main__":
 					"mos": {"qsrs_for": mos_qsrs_for},
 
                     "qstag": {"object_types" : object_types,
-                              "params" : {"min_rows" : 1, "max_rows" : 1, "max_eps" : 3}}
+                              "params" : {"min_rows" : 1, "max_rows" : 1, "max_eps" : 3}},
+
+					"tpcc" : {"qsrs_for": tpcc_qsrs_for}
 
                     #"filters": {"median_filter" : {"window": 2}}
 					}
@@ -106,6 +110,8 @@ if __name__ == "__main__":
 	world.add_object_state_series(o3)
 	qsrlib_request_message = QSRlib_Request_Message(which_qsr=which_qsr, input_data=world, dynamic_args=dynamic_args)
 
+	print(which_qsr)
+	print(dynamic_args["tpcc"])
 
 	if args.ros:
 		try:

@@ -55,6 +55,7 @@ This function takes a qsrlib_io.World_QSR_Trace object as input, and performs th
 This function implements the median filter over a list of states in data
 using a window of 2*n.
 
-.. note::
 
-    Because the QSRs are not always ordinal, this function selects the most frequent state inside the requested window. If the most frequent state is ambiguous, then the previous state is returned.
+.. note:: Because the QSRs are not always ordinal, this function selects the most frequent state inside the requested window. If the most frequent state is ambiguous, then the previous state is returned.
+
+.. note:: The filter returns a World Trace with the same number of timepoints as the original. So the first 2*n -1 timepoints will not have used the entire length window.
