@@ -19,11 +19,17 @@ class ParticleFilterPredictor(object):
         o = ObservationPdf(states=states, models=models, rv=pb.RVComp(2, 'y_t'), cond_rv=[x_t])
 
         # prepare initial particle density:
-        init_pdf = UniIntPdf(
-            np.array([0., 0.]),
-            np.array([float(len(states)-1), float(len(models.keys())-1)]),
-            cheat=kwargs["ensure_particle_per_state"]
-        )
+        try:
+            init_pdf = UniIntPdf(
+                np.array([0., 0.]),
+                np.array([float(len(states)-1), float(len(models.keys())-1)]),
+                cheat=kwargs["ensure_particle_per_state"]
+            )
+        except ValueError as e:
+            print "### Encountered a problem while creating intial particle distribution:", e
+            print "### This might happen if there is only one model or one state defined."
+            print "### Currently defined number of states: %s and number of models: %s" % (str(len(states)),str(len(models.keys()))), models.keys()
+            return None
 
         return {
             "filter": ParticleFilter(kwargs["num_particles"], init_pdf, p, o, starvation_factor=1.-kwargs["starvation_factor"]),
