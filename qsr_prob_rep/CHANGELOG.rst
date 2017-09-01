@@ -2,6 +2,27 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* changed maintainer to marc
+* A little bit of error handling for incorrect model and state numbers. (`#241 <https://github.com/strands-project/strands_qsr_lib/issues/241>`_)
+* Merge pull request `#236 <https://github.com/strands-project/strands_qsr_lib/issues/236>`_ from cdondrup/noxml
+  Removing the xml overhead from the HMM representations
+* Merge pull request `#3 <https://github.com/strands-project/strands_qsr_lib/issues/3>`_ from pet1330/noxml
+  member variable init when constructed
+* member variable init when constructed
+* Transforming test HMMs into new format.
+  Adapted test script to work with new interface.
+* Removing the hmm types active
+* Adding script to transform old format HMMs into new format HMMs
+* Merge pull request `#2 <https://github.com/strands-project/strands_qsr_lib/issues/2>`_ from pet1330/noxml
+  Making the hmm lib thread safe. Especially for the generic HMM.
+* Making the hmm lib thread safe. Especially for the generic HMM.
+* Adapting example client to now hmm format.
+* Removing xml overhead form hmm library. This was horrid to begin with.
+  Using a dictionary of lists now.
+* Contributors: Christian Dondrup, Marc Hanheide, Peter Lightbody
+
 0.3.0 (2016-01-20)
 ------------------
 * Fixing normalisation of matrix. It only worked because they are square and all entries are 1.

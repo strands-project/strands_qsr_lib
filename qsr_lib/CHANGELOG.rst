@@ -2,6 +2,19 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* changed maintainer to marc
+* update the graphlets class - uses object type if provided in dynamic … (`#233 <https://github.com/strands-project/strands_qsr_lib/issues/233>`_)
+  * update the graphlets class - uses object type if provided in dynamic args
+  * updated qstag for tcpp (creates a plane-object node, and rcc4, rcc5 (simple)
+  * updated qstag for tcpp (creates a plane-object node, and rcc4, rcc5 (simple)
+  * updated the median filter and returns empty qstag if nop timepoints in qsr world trace
+  * updates to filters
+  * updated qstag filters and episodes
+  * noise threshold removed from episodes. Done by filter.
+* Contributors: Marc Hanheide, Paul
+
 0.3.0 (2016-01-20)
 ------------------
 * updated allen relation names to match standard.
