@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>qsr_prob_rep</name>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
   <description>The qsr_prob_rep package</description>
 
   <maintainer email="marc@hanheide.net">Marc Hanheide</maintainer>

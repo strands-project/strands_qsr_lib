@@ -2,8 +2,8 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2017-09-01)
+------------------
 * changed maintainer to marc
 * update the graphlets class - uses object type if provided in dynamic … (`#233 <https://github.com/strands-project/strands_qsr_lib/issues/233>`_)
   * update the graphlets class - uses object type if provided in dynamic args

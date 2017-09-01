@@ -2,8 +2,8 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2017-09-01)
+------------------
 * changed maintainer to marc
 * A little bit of error handling for incorrect model and state numbers. (`#241 <https://github.com/strands-project/strands_qsr_lib/issues/241>`_)
 * Merge pull request `#236 <https://github.com/strands-project/strands_qsr_lib/issues/236>`_ from cdondrup/noxml
