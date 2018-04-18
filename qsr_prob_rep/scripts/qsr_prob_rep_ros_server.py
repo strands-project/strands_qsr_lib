@@ -17,7 +17,7 @@ class HMMRepROSServer(object):
         """
         :param name: The name of the node
         """
-        rospy.loginfo("Starting %s" % name)
+        rospy.logdebug( "[" + rospy.get_name() + "]: " + "Starting " )
         self._lib = ProbRepLib()
         self.services = {}
         for namespace, services in ServiceManager.available_services.items():
@@ -27,11 +27,18 @@ class HMMRepROSServer(object):
                 # The outer lambda function creates a new scope for the inner lambda function
                 # This is necessary to preserve the value of k, otherwise it will have the same value for all services
                 # x will be substituded by the service request
+                rospy.logdebug( "[" + rospy.get_name() + "]: " + "Creating service: ["+namespace+"]["+service+"]" )
                 self.services[service] = rospy.Service("~"+namespace+"/"+service, QSRProbRep, (lambda a,b: lambda x: self.callback(x, a, b))(namespace,service))
+                rospy.logdebug( "[" + rospy.get_name() + "]: " + "Created" )
+        rospy.logdebug( "[" + rospy.get_name() + "]: " + "Done" )
 
     def callback(self, req, rep, srv_type):
         r = ServiceManager.available_services[rep][srv_type][0](**json.loads(req.data))
-        return QSRProbRepResponse(data=self._lib.request(r).get())
+        rr = self._lib.request(r)
+        dat = rr.get()
+        ans = QSRProbRepResponse(data=dat)
+        return ans
+
 
 
 if __name__ == '__main__':

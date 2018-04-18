@@ -109,13 +109,20 @@ class PredictionPdf(pb.CPdf):
 
         """
         res = np.zeros((len(particles),))
-        for m in range(len(self.models.keys())):
+        current_models = self.models.keys()
+        for m in range(len(current_models)):
             # Create a list of all current particles of that model
-            p = particles[particles[:,1]==m][:,0]
+            indexs = (particles[:,1]==m)
+
             # Lookup observation probability for all particles given x
-            o = np.array(self.models[self.models.keys()[m]][self.key])[p.astype(int),x[0]]
+            p_i = particles[indexs][:,0].astype(int)#.tolist()
+            x0 = int(x[0])
+            vector_obs = np.array(self.models[current_models[m]][self.key])
+           
+            o = vector_obs[p_i,x0]
+            
             # Create log likelihood list
-            res[particles[:,1]==m] = np.log(o)
+            res[indexs] = np.log(o)
         return res
 
     def to_string(self, x):
