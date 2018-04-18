@@ -32,10 +32,10 @@ class RepPf(object):
 
         if kwargs["debug"]:
             p = self.__filter_bank[kwargs["uuid"]]["filter"].emp.particles
-            print "INIT MODEL SIZES:", np.bincount(map(int,p[:,1].flatten()), minlength=2)
-            print "INIT STATES:", np.bincount(map(int,p[:,0].flatten())), len(np.bincount(map(int,p[:,0].flatten())))
+            print "[RepPf] INIT MODEL SIZES:", np.bincount(map(int,p[:,1].flatten()), minlength=2)
+            print "[RepPf] INIT STATES:", np.bincount(map(int,p[:,0].flatten())), len(np.bincount(map(int,p[:,0].flatten())))
             for i in range(int(np.max(p[:,1]))+1):
-                print "INIT STATES model %i:"%i, np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())), len(np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())))
+                print "[RepPf] INIT STATES model %i:"%i, np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())), len(np.bincount(map(int,p[np.where(p[:,1] == float(i)),0].flatten())))
 
         return PfReqResponseCreate(data=kwargs["uuid"])
 
@@ -47,10 +47,9 @@ class RepPf(object):
 
         z = kwargs.copy()
         z.update(self.__filter_bank[kwargs["uuid"]])
-
         res = self.pf.update(**z)
-
-        return PfReqResponseUpdate(data=json.dumps(res))
+        datum =  json.dumps(res)
+        return PfReqResponseUpdate(data=datum)
 
     @ServiceManager.service_function(namespace, PfRepRequestPredict, PfReqResponsePredict)
     def predict(self, **kwargs):

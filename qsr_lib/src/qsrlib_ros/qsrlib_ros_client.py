@@ -21,9 +21,9 @@ class QSRlib_ROS_Client(object):
         self.service_topic_names = {"request": service_node_name+"/request"}
         """dict: Topic names of the services."""
 
-        rospy.logdebug("Waiting for service '" + self.service_topic_names["request"] + "' to come up")
+        rospy.logdebug( "[" + rospy.get_name() + "]: " + "Waiting for service '" + self.service_topic_names["request"] + "' to come up")
         rospy.wait_for_service(self.service_topic_names["request"])
-        rospy.logdebug("done")
+        rospy.logdebug( "[" + rospy.get_name() + "]: " + "done")
 
     def request_qsrs(self, req):
         """Request to compute QSRs.

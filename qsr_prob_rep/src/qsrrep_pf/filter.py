@@ -26,9 +26,9 @@ class ParticleFilterPredictor(object):
                 cheat=kwargs["ensure_particle_per_state"]
             )
         except ValueError as e:
-            print "### Encountered a problem while creating intial particle distribution:", e
-            print "### This might happen if there is only one model or one state defined."
-            print "### Currently defined number of states: %s and number of models: %s" % (str(len(states)),str(len(models.keys()))), models.keys()
+            print "### [ParticleFilterPredictor] Encountered a problem while creating intial particle distribution:", e
+            print "### [ParticleFilterPredictor]  This might happen if there is only one model or one state defined."
+            print "### [ParticleFilterPredictor]  Currently defined number of states: %s and number of models: %s" % (str(len(states)),str(len(models.keys()))), models.keys()
             return None
 
         return {
@@ -45,33 +45,49 @@ class ParticleFilterPredictor(object):
             if kwargs["debug"]: start = time.time()
             pn = kwargs["filter"].p_xt_xtp.sample_multiple(p)
             if kwargs["debug"]:
-                print "elapsed", time.time() -start
-                print "###############################################################"
+                print "[ParticleFilterPredictor] elapsed time sampling particles.:", time.time() -start
+                print "[ParticleFilterPredictor] ################ PARTICLES ###############################################"
                 print pn
+                print "[ParticleFilterPredictor] ###############################################################"
+                
 
             _,bs,sp,_,bm,mp = self._get_best_state_and_model(pn, **kwargs)
             ret.append((bs,sp,bm,mp))
 
-            if kwargs["debug"]: print "total elapsed", time.time() -start
+            if kwargs["debug"]: print "[ParticleFilterPredictor]  total elapsed", time.time() -start
         return ret
 
     def update(self, **kwargs):
         obs = kwargs["observation"]
         if kwargs["debug"]:
             start = time.time()
-            print obs
-        kwargs["filter"].bayes(np.array([kwargs["states"].index(obs), np.nan]))
+            #print("[filter] Obs is ["+str(obs)+"]")   
+
+        obs_ind = kwargs["states"].index(obs)
+        #print("[filter] Obs ind ["+str(obs_ind)+"]")
+
+        obs_v = np.array([obs_ind, np.nan])
+        
+        #print("[filter] Performing bayes with vector ["+str(obs_v)+"]")
+        kwargs["filter"].bayes(obs_v)
+
+        #print("[filter] Getting particles ")
         p = kwargs["filter"].emp.particles
+        #print("[filter] Particle cloud is: ["+str(p)+"]")
+        
         if kwargs["debug"]:
-            print "###############################################################"
-            print "OBS:", obs, kwargs["states"].index(obs)
+            print "[ParticleFilterPredictor] ###############################################################"
+            print "[ParticleFilterPredictor] OBS:", obs, kwargs["states"].index(obs)
             try:
-                print "MODELS:", kwargs["models"]
-                print "MODEL SIZES:", np.bincount(map(int,p[:,1].flatten()), minlength=len(kwargs["models"]))
+                print "[ParticleFilterPredictor] MODELS:", kwargs["models"]
+                print "[ParticleFilterPredictor] MODEL SIZES:", np.bincount(map(int,p[:,1].flatten()), minlength=len(kwargs["models"]))
             except:
                 pass
+
+        #print("[filter] Obtaining best state and model")
         _,bs,sp,_,bm,mp = self._get_best_state_and_model(p, **kwargs)
-        if kwargs["debug"]: print "total elapsed", time.time()-start
+
+        if kwargs["debug"]: print "[ParticleFilterPredictor] total elapsed", time.time()-start
         return bs,sp,bm,mp
 
     def _get_best_state_and_model(self, p, **kwargs):
@@ -81,9 +97,9 @@ class ParticleFilterPredictor(object):
         best_model = model_bins.argmax()
 
         if kwargs["debug"]:
-            print state_bins, len(state_bins)
-            print model_bins, len(model_bins)
-            print best_state, best_model, len(kwargs["states"])
+            print "[ParticleFilterPredictor] states,len(state):",state_bins, len(state_bins)
+            print "[ParticleFilterPredictor] models,len(model):",model_bins, len(model_bins)
+            print "[ParticleFilterPredictor] best_state, best_model,len:",best_state, best_model, len(kwargs["states"])
 
         state_prob = float(state_bins[best_state])/float(np.sum(state_bins))
         model_prob = float(model_bins[best_model])/float(np.sum(model_bins))
