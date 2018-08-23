@@ -29,7 +29,7 @@ class ProbRepLib(object):
     }
 
     def __init__(self):
-        self.isDebug = false
+        self.isDebug = False
 
         if self.isDebug:
             print("[ProbRepLib]" + "Currently available services:")
