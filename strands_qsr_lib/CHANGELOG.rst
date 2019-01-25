@@ -2,6 +2,9 @@
 Changelog for package strands_qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.4.0 (2017-09-01)
 ------------------
 * changed maintainer to marc

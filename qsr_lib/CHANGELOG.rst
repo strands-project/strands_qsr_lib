@@ -2,6 +2,11 @@
 Changelog for package qsr_lib
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Solved casting issue. Testing on kinectic (`#243 <https://github.com/strands-project/strands_qsr_lib/issues/243>`_)
+* Contributors: Manuel Fernandez-Carmona
+
 0.4.0 (2017-09-01)
 ------------------
 * changed maintainer to marc

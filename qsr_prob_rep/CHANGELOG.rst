@@ -2,6 +2,13 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Typo in boolean (`#244 <https://github.com/strands-project/strands_qsr_lib/issues/244>`_)
+* Solved casting issue. Testing on kinectic (`#243 <https://github.com/strands-project/strands_qsr_lib/issues/243>`_)
+* Updated email to new Oxford address
+* Contributors: Manuel Fernandez-Carmona, Nick Hawes
+
 0.4.0 (2017-09-01)
 ------------------
 * changed maintainer to marc
