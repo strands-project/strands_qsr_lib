@@ -2,8 +2,8 @@
 Changelog for package qsr_prob_rep
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.1 (2019-01-25)
+------------------
 * Typo in boolean (`#244 <https://github.com/strands-project/strands_qsr_lib/issues/244>`_)
 * Solved casting issue. Testing on kinectic (`#243 <https://github.com/strands-project/strands_qsr_lib/issues/243>`_)
 * Updated email to new Oxford address
