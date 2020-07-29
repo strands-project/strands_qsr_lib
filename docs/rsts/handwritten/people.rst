@@ -9,6 +9,6 @@ People
 * Muhannad Alomari <scmara@leeds.ac.uk>, University of Leeds
 * Marc Hanheide <marc@hanheide.net>, University of Lincoln
 * Nick Hawes <n.a.hawes@cs.bham.ac.uk>, University of Birmigham
-* Tony Cohn <a.g.cogn@leeds.ac.uk>, University of Leeds
+* Tony Cohn <a.g.cohn@leeds.ac.uk>, University of Leeds
 
 We would like to gratefull acknowledge the financial support of the EC under FP7 project STRANDS, 600623.
