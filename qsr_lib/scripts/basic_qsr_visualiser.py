@@ -19,7 +19,7 @@ from pylab import *
 import textwrap
 import math
 from math import sin, cos, radians
-from matplotlib.widgets import CheckButtons
+from matplotlib.widgets import CheckButtons, Slider, Button
 import time
 from qsrlib.qsrlib import QSRlib, QSRlib_Request_Message
 from qsrlib_io.world_trace import Object_State, World_Trace
@@ -27,10 +27,13 @@ from qsrlib_io.world_trace import Object_State, World_Trace
 class qsr_gui():
     bb1 = None # (x1, y1, x1+w1, y1+h1)
     bb2 = None # (x2, y2, x2+w2, y2+h2)
+    qfBB1 = []
+    qfBB2 = []
+    qf = 0
     qsr = list()
-    qsr_type = ("rcc2", "rcc3", "rcc8", "cardir", "argd")
+    qsr_type = ("rcc2", "rcc3", "rcc4", "rcc8", "cardir", "argd")
 
-    def __compute_qsr(self, bb1, bb2):
+    def __compute_qsr(self, bb1, bb2,q):
         if not self.qsr:
             return ""
         ax, ay, bx, by = self.bb1
@@ -38,9 +41,13 @@ class qsr_gui():
         
         qsrlib = QSRlib()
         world = World_Trace()
-        world.add_object_state_series([Object_State(name="red", timestamp=0, x=((ax+bx)/2.0), y=((ay+by)/2.0), xsize=abs(bx-ax), ysize=abs(by-ay)),
-            Object_State(name="yellow", timestamp=0, x=((cx+dx)/2.0), y=((cy+dy)/2.0), xsize=abs(dx-cx), ysize=abs(dy-cy))])
-        dynamic_args = {"argd": {"qsr_relations_and_values": self.distance}}
+        world.add_object_state_series([Object_State(name="red", timestamp=0, x=((ax+bx)/2.0), y=((ay+by)/2.0), width=abs(bx-ax), length=abs(by-ay)),
+            Object_State(name="yellow", timestamp=0, x=((cx+dx)/2.0), y=((cy+dy)/2.0), width=abs(dx-cx), length=abs(dy-cy))])
+        dynamic_args = {"argd": {"qsr_relations_and_values": self.distance},
+                    "rcc2": {"quantisation_factor": q},
+                    "rcc3": {"quantisation_factor": q},
+                    "rcc4": {"quantisation_factor": q},
+                    "rcc8": {"quantisation_factor": q}}
         qsrlib_request_message = QSRlib_Request_Message(which_qsr=self.qsr, input_data=world, dynamic_args=dynamic_args)
         qsrlib_response_message = qsrlib.request_qsrs(req_msg=qsrlib_request_message)
 
@@ -51,37 +58,52 @@ class qsr_gui():
                 foo += str(k) + ":" + str(v.qsr) + "; \n"
         return foo
 
-    def randomBB(self):
-            x1 = randint(1,10);
-            y1 = randint(1,10);
-            w1 = randint(1,10);
-            h1 = randint(1,10);
-            x2 = randint(1,10);
-            y2 = randint(1,10);
-            w2 = randint(1,10);
-            h2 = randint(1,10);
+    def __randomBB(self):
+            x1 = randint(1,10)
+            y1 = randint(1,10)
+            w1 = randint(1,10)
+            h1 = randint(1,10)
+            x2 = randint(1,10)
+            y2 = randint(1,10)
+            w2 = randint(1,10)
+            h2 = randint(1,10)
             self.bb1 = (x1, y1, x1+w1, y1+h1)
             self.bb2 = (x2, y2, x2+w2, y2+h2)
+            self.qfBB1 = [x1-self.qf,y1-self.qf,x1+w1+self.qf,y1+h1+self.qf] 
+            self.qfBB2 = [x2-self.qf,y2-self.qf,x2+w2+self.qf,y2+h2+self.qf]
 
-    def EventClick(self,label):
+    def __eventClick(self,label):
         if label in self.qsr:
             self.qsr.remove(label)
         else:
             self.qsr.append(label)
-        if not (self.args.placeOne and self.args.placeTwo):
-            self.randomBB()
-        self.updateWindow()
+        self.__updateWindow()
 
-    def updateWindow(self):
+    def __randomiseBoxesClicked(self,event):
+        self.__randomBB()
+        self.__updateWindow()
+
+    def __update(self,val):
+        self.qf = val
+        self.qfBB1 = [self.bb1[0]-self.qf, self.bb1[1]-self.qf,self.bb1[2]+self.qf,self.bb1[3]+self.qf]
+        self.qfBB2 = [self.bb2[0]-self.qf, self.bb2[1]-self.qf,self.bb2[2]+self.qf,self.bb2[3]+self.qf]
+        self.__updateWindow()
+
+    def __updateWindow(self):
         plt.subplot(2, 2, (1, 2)).clear()
         plt.subplot(2, 2, 3)
         plt.subplot(2, 2, 3).clear()
         plt.axis('off')
-        plt.text(1, 1, (self.__compute_qsr(self.bb1, self.bb2)), family='serif', style='italic', ha='center')
+        plt.text(1, 1, (self.__compute_qsr(self.bb1, self.bb2,self.qf)), family='serif', style='italic', ha='center')
         rect1 = matplotlib.patches.Rectangle((self.bb1[0],self.bb1[1]), abs(self.bb1[2]-self.bb1[0]),  abs(self.bb1[1]-self.bb1[3]), color='yellow', alpha=0.5)
         rect2 = matplotlib.patches.Rectangle((self.bb2[0],self.bb2[1]), abs(self.bb2[2]-self.bb2[0]),  abs(self.bb2[1]-self.bb2[3]), color='red', alpha=0.5)
         ax, ay, bx, by = self.bb1
         cx, cy, dx, dy = self.bb2
+        if self.qfBB1 and self.qfBB2:
+            qf_box1 = matplotlib.patches.Rectangle((self.qfBB1[0],self.qfBB1[1]), abs(self.qfBB1[2]-self.qfBB1[0]),  abs(self.qfBB1[1]-self.qfBB1[3]), color='blue', alpha=0.3)
+            qf_box2 = matplotlib.patches.Rectangle((self.qfBB2[0],self.qfBB2[1]), abs(self.qfBB2[2]-self.qfBB2[0]),  abs(self.qfBB2[1]-self.qfBB2[3]), color='blue', alpha=0.3)
+            plt.subplot(2, 2, (1, 2)).add_patch(qf_box1)
+            plt.subplot(2, 2, (1, 2)).add_patch(qf_box2)
         plt.subplot(2, 2, (1, 2)).add_patch(rect1)
         plt.subplot(2, 2, (1, 2)).add_patch(rect2)
         self.qsr_specific_reference_gui()
@@ -90,17 +112,16 @@ class qsr_gui():
         draw()
 
     def qsr_specific_reference_gui(self):
-
         ax, ay, bx, by = self.bb1
         cx, cy, dx, dy = self.bb2
         # Centre of BB1 on the X angle
-        AcentreX = ((ax+bx)/2.0)
+        AcentreX = ((self.bb1[0]+self.bb1[2])/2.0)
         # Centre of BB1 on the Y angle
-        AcentreY = ((ay+by)/2.0)
+        AcentreY = ((self.bb1[1]+self.bb1[3])/2.0)
         # Centre of BB2 on the X angle
-        BcentreX = ((cx+dx)/2.0)
+        BcentreX = ((self.bb2[0]+self.bb2[2])/2.0)
         # Centre of BB2 on the Y angle
-        BcentreY = ((cy+dy)/2.0)
+        BcentreY = ((self.bb2[1]+self.bb2[3])/2.0)
 
         plt.subplot(2, 2, (1, 2))
 
@@ -128,7 +149,7 @@ class qsr_gui():
 
     def initWindow(self):
         if not (self.args.placeOne and self.args.placeTwo):
-            self.randomBB()
+            self.__randomBB()
         axes().set_aspect('equal', 'datalim')
         plt.subplot(2, 2, (1, 2))
         plt.subplot(2, 2, (1, 2)).set_aspect('equal')
@@ -137,13 +158,20 @@ class qsr_gui():
         plt.title('QSR Visualisation')
         axcolor = 'lightgoldenrodyellow'
         rax = plt.axes([0.03, 0.4, 0.22, 0.45], axisbg=axcolor)
-        checkBox = CheckButtons(rax, self.qsr_type,(False,False,False,False,False))
-        checkBox.on_clicked(self.EventClick)
+        checkBox = CheckButtons(rax, self.qsr_type,[not bool(f) for f in self.qsr_type])
+        checkBox.on_clicked(self.__eventClick)
         plt.subplot(2, 2, 3)
         plt.axis('off')
-        plt.text(1, 1, (self.__compute_qsr(self.bb1, self.bb2)), family='serif', style='italic', ha='center')
+        plt.text(1, 1, (self.__compute_qsr(self.bb1, self.bb2,self.qf)), family='serif', style='italic', ha='center')
+        axfreq = plt.axes([0.04, 0.3, 0.2, 0.03], axisbg=axcolor)
+        sfreq = Slider(axfreq, 'QF', 0.0, 5.0, valinit=0)
+        sfreq.on_changed(self.__update)
+        randomPos = plt.axes([0.04, 0.25, 0.2, 0.03])
+        button = Button(randomPos, 'Random', color=axcolor, hovercolor='0.975')
+        button.on_clicked(self.__randomiseBoxesClicked)
+
         if self.qsr:
-            self.updateWindow()
+            self.__updateWindow()
         plt.show()
 
     def processArgs(self):
