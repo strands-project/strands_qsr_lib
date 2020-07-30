@@ -1,38 +1,45 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, division
-from numpy import isnan
-from qsrlib_qsrs.qsr_dyadic_abstractclass import QSR_Dyadic_1t_Abstractclass
+import itertools
+from qsrlib_qsrs.qsr_ra_abstract import QSR_RA_Abstract
 
 
-class QSR_RA(QSR_Dyadic_1t_Abstractclass):
+class QSR_RA(QSR_RA_Abstract):
     """Rectangle Algebra.
 
     Members:
-        * _unique_id: "ra"
-        * _all_possible_relations: ("<", ">", "m", "mi", "o", "oi", "s", "si", "d", "di", "f", "fi", "=")
-        * _dtype: "bounding_boxes"
+        * **_unique_id** = "ra"
+        * **_all_possible_relations** = quite long to list here (169) but they are all possible pairs between the 13 Allen's relations
+        * **_dtype** = "bounding_boxes_2d"
+
+    QSR specific `dynamic_args`
+        * **'qfactor'** (*int or float*) = 0.0: This factor provides some tolerance on the edges that are difficult
+          when the variables are floats, e.g. in the 'meets' relation it is unlikely that the end of one
+          segment will meet the beginning of the other to the decimal value.
+
+    .. warning::
+        Use of 'qfactor' might have strange and undesired results. Use it at your own risk.
+
+        For further details, you might want to consult with the exact implementation of the method
+        `_allen`_ in class `QSR_RA`.
 
     .. seealso:: For further details about RA, refer to its :doc:`description. <../handwritten/qsrs/ra>`
+
+    .. _`_allen`: https://github.com/strands-project/strands_qsr_lib/blob/master/qsr_lib/src/qsrlib_qsrs/qsr_ra.py
     """
 
     _unique_id = "ra"
     """str: Unique identifier name of the QSR."""
 
-    _all_possible_relations = ("<", ">", "m", "mi", "o", "oi", "s", "si", "d", "di", "f", "fi", "=")
-    """tuple: All possible relations of the QSR."""
-
-    _dtype = "bounding_boxes"
+    _dtype = "bounding_boxes_2d"
     """str: On what kind of data the QSR works with."""
 
-    _inverse_map = {"<": ">", "m": "mi", "o": "oi", "s": "si", "d": "di", "f": "fi",
-                    ">": "<", "mi": "m", "o1": "o", "si": "s", "di": "d", "fi": "f"}
-    """dict: Inverse relations"""
+    _all_possible_relations = tuple(itertools.product(("<", ">", "m", "mi", "o", "oi", "s", "si", "d", "di", "f", "fi", "="),
+                                                      repeat=2))
+    """tuple: All possible relations of the QSR."""
 
     def __init__(self):
-        """Constructor.
-
-        :return:
-        """
+        """Constructor."""
         super(QSR_RA, self).__init__()
 
     def _compute_qsr(self, bb1, bb2, qsr_params, **kwargs):
@@ -48,32 +55,5 @@ class QSR_RA(QSR_Dyadic_1t_Abstractclass):
         :return: The computed QSR value: two/three comma separated Allen relations for 2D/3D.
         :rtype: str
         """
-        if len(bb1) == 4 and len(bb2) == 4:  # 2D version
-            return ",".join([self.__allen((bb1[0], bb1[2]), (bb2[0], bb2[2])),
-                             self.__allen((bb1[1], bb1[3]), (bb2[1], bb2[3]))])
-        elif len(bb1) == 6 and len(bb2) == 6:  # 3D version
-            return ",".join([self.__allen((bb1[0], bb1[3]), (bb2[0], bb2[3])),
-                             self.__allen((bb1[1], bb1[4]), (bb2[1], bb2[4])),
-                             self.__allen((bb1[2], bb1[5]), (bb2[2], bb2[5]))])
-        else:
-            raise ValueError("bb1 and bb2 must have length of 4 (2D) or 6 (3D)")
-
-    def __allen(self, i1, i2):
-        if isnan(i1).any() or isnan(i2).any():  # nan values cause dragons
-            raise ValueError("illegal 'nan' values found")
-
-        if i1[1] < i2[0]:
-            return "<"
-        if i1[1] == i2[0]:
-            return "m"
-        if i1[0] < i2[0] < i1[1] and i2[0] < i1[1] < i2[1]:
-            return "o"
-        if i1[0] == i2[0] and i1[1] < i2[1]:
-            return "s"
-        if i2[0] < i1[0] < i2[1] and i2[0] < i1[1] < i2[1]:
-            return "d"
-        if i2[0] < i1[0] < i2[1] and i1[1] == i2[1]:
-            return "f"
-        if i1[0] == i2[0] and i1[1] == i2[1]:
-            return "="
-        return self._inverse_map[self.__allen(i2, i1)]
+        return ",".join([self._allen((bb1[0], bb1[2]), (bb2[0], bb2[2]), qsr_params),
+                         self._allen((bb1[1], bb1[3]), (bb2[1], bb2[3]), qsr_params)])

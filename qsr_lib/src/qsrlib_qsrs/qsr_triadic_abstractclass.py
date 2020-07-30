@@ -65,6 +65,19 @@ class QSR_Triadic_Abstractclass(QSR_Abstractclass):
         """
         return data1.return_bounding_box_2d(), data2.return_bounding_box_2d(), data3.return_bounding_box_2d()
 
+    def _return_bounding_boxes_3d(self, data1, data2, data3):
+        """Return the 3D bounding boxes of the arguments.
+
+        :param data1: First object data.
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :param data2: Second object data.
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :param data3: Third object data.
+        :type data3: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :return: `bbox1`, `bbox2`, `bbox3`
+        :rtype: three lists of floats
+        """
+        return data1.return_bounding_box_3d(), data2.return_bounding_box_3d(), data3.return_bounding_box_3d()
 
 class QSR_Triadic_1t_Abstractclass(QSR_Triadic_Abstractclass):
     """Special case abstract class of triadic QSRs. Works with triadic QSRs that require data over one timestamp."""

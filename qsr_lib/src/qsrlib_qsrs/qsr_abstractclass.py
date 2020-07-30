@@ -18,6 +18,7 @@ class QSR_Abstractclass(object):
             * "points": self._return_points
             * "bounding_boxes": self._return_bounding_boxes_2d
             * "bounding_boxes_2d": self._return_bounding_boxes_2d
+            * "bounding_boxes_3d": self._return_bounding_boxes_3d
 
     """
 
@@ -120,6 +121,14 @@ class QSR_Abstractclass(object):
         """Return the 2D bounding boxes of the arguments.
 
         :return: 2D bounding boxes of the arguments.
+        """
+        return
+
+    @abstractmethod
+    def _return_bounding_boxes_3d(self):
+        """Return the 3D bounding boxes of the arguments.
+
+        :return: 3D bounding boxes of the arguments.
         """
         return
 

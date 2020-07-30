@@ -20,6 +20,8 @@ Submodules
    qsrlib_qsrs.qsr_qtc_c_simplified
    qsrlib_qsrs.qsr_qtc_simplified_abstractclass
    qsrlib_qsrs.qsr_ra
+   qsrlib_qsrs.qsr_ra3d
+   qsrlib_qsrs.qsr_ra_abstract
    qsrlib_qsrs.qsr_rcc2
    qsrlib_qsrs.qsr_rcc3_rectangle_bounding_boxes_2d
    qsrlib_qsrs.qsr_rcc4

@@ -126,6 +126,23 @@ class Object_State(object):
         ysize = ysize_minimal if isnan(self.ysize) else self.ysize
         return [self.x-xsize/2, self.y-ysize/2, self.x+xsize/2, self.y+ysize/2]
 
+    def return_bounding_box_3d(self, xsize_minimal=0, ysize_minimal=0, zsize_minimal=0):
+        """Compute the 3D bounding box of the object.
+
+        :param xsize_minimal: If object has no x-size (i.e. a point) then compute bounding box based on this minimal x-size.
+        :type xsize_minimal: positive int or float
+        :param ysize_minimal: If object has no y-size (i.e. a point) then compute bounding box based on this minimal y-size.
+        :type ysize_minimal: positive int or float
+        :param zsize_minimal: If object has no z-size (i.e. a point) then compute bounding box based on this minimal z-size.
+        :type zsize_minimal: positive int or float
+        :return: The 3D coordinates of the first (closest to origin) and third (farthest from origin) corners of the bounding box.
+        :rtype: list of 6 int or float
+        """
+        xsize = xsize_minimal if isnan(self.xsize) else self.xsize
+        ysize = ysize_minimal if isnan(self.ysize) else self.ysize
+        zsize = zsize_minimal if isnan(self.zsize) else self.zsize
+        return [self.x-xsize/2, self.y-ysize/2, self.z-zsize/2, self.x+xsize/2, self.y+ysize/2, self.z+zsize/2]
+
 
 class World_State(object):
     """Data class structure that is holding various information about the world at a particular time."""

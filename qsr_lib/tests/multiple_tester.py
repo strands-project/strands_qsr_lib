@@ -11,8 +11,11 @@ from unittests_utils import *
 class Multiple_Test(AbstractClass_UnitTest):
     def __init__(self, *args):
         super(Multiple_Test, self).__init__(*args)
+
+        self.__EXCLUDE = ["ra3d"]
+
         self._unique_id = "multiple"
-        self.__which_qsr = sorted(self._qsrlib.qsrs_registry.keys())
+        self.__which_qsr = self.__multiple()
         self.__seed = 100
         self.__dynamic_args = {"argd": {"qsr_relations_and_values": {"close": 10.0, "near": 20.0,
                                                                      "far": 30.0, "veryfar": 40.0}},
@@ -21,6 +24,15 @@ class Multiple_Test(AbstractClass_UnitTest):
                                "qtcbs": {"validate": False, "no_collapse": True},
                                "qtccs": {"validate": False, "no_collapse": True},
                                "qtcbcs": {"validate": False, "no_collapse": True}}
+
+    def __multiple(self):
+        which_qsr = sorted(self._qsrlib.qsrs_registry.keys())
+        for i in self.__EXCLUDE:
+            try:
+                which_qsr.remove(i)
+            except ValueError:
+                pass
+        return which_qsr
 
     def test_defaults(self):
         random.seed(self.__seed)

@@ -23,7 +23,7 @@ of two rectangles.
 API
 ---
 
-The API can be found :mod:`here <qsrlib_qsrs.qsr_ra>`.
+The API for RA can be found in the following links: :mod:`2D version<qsrlib_qsrs.qsr_ra>` | :mod:`3D version <qsrlib_qsrs.qsr_ra3d>`.
 
 
 References

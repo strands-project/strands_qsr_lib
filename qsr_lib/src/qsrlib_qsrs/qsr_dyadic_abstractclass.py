@@ -61,6 +61,17 @@ class QSR_Dyadic_Abstractclass(QSR_Abstractclass):
         """
         return data1.return_bounding_box_2d(), data2.return_bounding_box_2d()
 
+    def _return_bounding_boxes_3d(self, data1, data2):
+        """Return the 3D bounding boxes of the arguments.
+
+        :param data1: First object data.
+        :type data1: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :param data2: Second object data.
+        :type data2: :class:`Object_State <qsrlib_io.world_trace.Object_State>`
+        :return: `bbox1`, `bbox2`
+        :rtype: two lists of floats
+        """
+        return data1.return_bounding_box_3d(), data2.return_bounding_box_3d()
 
 class QSR_Dyadic_1t_Abstractclass(QSR_Dyadic_Abstractclass):
     """Special case abstract class of dyadic QSRs. Works with dyadic QSRs that require data over one timestamp."""
