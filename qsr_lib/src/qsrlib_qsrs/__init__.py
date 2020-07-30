@@ -13,6 +13,7 @@ from qsr_moving_or_stationary import QSR_Moving_or_Stationary
 from qsr_new_mwe import QSR_MWE
 from qsr_ra import QSR_RA
 from qsr_tpcc import QSR_TPCC
+from qsr_ba import QSR_BA
 # register new qsrs by class name below
 qsrs_registry = (QSR_RCC2,
                  QSR_RCC3_Rectangle_Bounding_Boxes_2D,
@@ -28,4 +29,5 @@ qsrs_registry = (QSR_RCC2,
                  QSR_Moving_or_Stationary,
                  QSR_MWE,
                  QSR_RA,
-                 QSR_TPCC)
+                 QSR_TPCC, 
+                 QSR_BA)
